@@ -100,8 +100,10 @@
   dd { text-wrap: pretty; }
   .org { font-family: "LM Roman Caps", var(--serif); letter-spacing: 0.06em; color: var(--rubric); }
 
+  .about { margin: 4.5rem 0 0; }
+  .about h2 { margin: 0 0 0.9rem; font-weight: 700; font-size: 1.15rem; }
   dl {
-    margin: 4.5rem 0 0;
+    margin: 0;
     display: grid;
     grid-template-columns: 7.5rem 1fr;
     column-gap: 1rem;
@@ -170,6 +172,11 @@
   .draft .fresh.ok { color: inherit; }
   .draft ul.outline { margin: 0 0 1.4rem; padding-left: 1.3em; list-style: disc; }
   .draft ul.outline li { margin: 0 0 0.15rem; }
+  .draft .pilots ul.outline { grid-column: 1 / -1; }
+  .draft .refs ul.outline li { display: list-item; margin: 0 0 0.15rem; font-size: 1rem; }
+  .draft .refs ul.outline li > span:first-child { color: inherit; }
+  .draft ul.outline { font-size: 19px; }
+  @media (max-width: 560px) { .draft ul.outline { font-size: 17.5px; } }
   .draft .note { font-family: var(--mono); font-size: 0.82rem; color: var(--soft); margin: 0.5rem 0 1rem; transition: opacity 0.25s; }
   .draft .note.gone { opacity: 0; }
   .draft .caret { display: inline-block; width: 1px; height: 0.85em; background: currentColor; margin-left: 2px; vertical-align: -0.05em; animation: al-blink 0.8s steps(1) infinite; }
@@ -198,7 +205,7 @@
     main > p, .pilot p { text-align: left; hyphens: manual; -webkit-hyphens: manual; }
     .refs { margin-top: 3rem; }
     .pilots { grid-template-columns: 1fr; margin-top: 3.25rem; }
-    dl { margin-top: 3.5rem; }
+    .about { margin-top: 3.5rem; }
     .pilot { padding-right: 0; }
     .pilot + .pilot { padding-left: 0; border-left: 0; border-top: 0; padding-top: 0; margin-top: 1.6rem; }
   }
@@ -220,7 +227,7 @@
 
       <p>Avoiding catastrophe from AI depends on safety research that we can trust and that keeps pace with capabilities. Within a few years, AI agents will likely write most of that research, faster than peer review, funding, and oversight can absorb. Most safety work on sabotage and research quality happens inside one lab’s pipeline. Few treat the scientific literature itself as the surface to secure: a shared record that any model, trusted or not, can write into, and that researchers build on without coordinating.</p>
 
-      <p><span class="org">Averroes Labs</span> is a metascience org that builds infrastructure for that surface. We start with audits for sabotage and legibility. Next come coordination tools, so researchers can move faster together.</p>
+      <p><span class="org">Averroes Labs</span> is a metascience org that builds tools for the literature as a whole. We start with audits for sabotage and legibility. Next come coordination tools, so researchers can move faster together.</p>
 
       <section class="pilots" aria-labelledby="pilots-h">
         <h2 id="pilots-h">Pilot projects</h2>
@@ -235,6 +242,8 @@
         </div>
       </section>
 
+      <section class="about" aria-labelledby="about-h">
+        <h2 id="about-h">Get involved</h2>
       <dl>
         <dt>Team</dt>
         <dd><a href="https://jasonfantl.com">Jason Fantl</a>, founder. AI safety research fellow at the Cambridge Boston Alignment Initiative (2026). Previously built distributed ML systems at Raytheon BBN for three years.</dd>
@@ -245,6 +254,7 @@
         <dt>Contact</dt>
         <dd><a class="tt" href="mailto:contact@averroeslabs.org">contact@averroeslabs.org</a></dd>
       </dl>
+      </section>
 
       <section class="refs" aria-labelledby="refs-h">
         <h2 id="refs-h">References</h2>
@@ -259,8 +269,8 @@
 /* Opening animation: the page is "written" like a document, from a blank page to an
    outline to prose to revisions. Purely visual. The real content is in the HTML from
    the start; this runs on a copy laid over it, then removes the copy. Skipped for
-   reduced motion, bots, and repeat visits in the same browser session. Any click,
-   key, scroll, or touch skips to the end. */
+   reduced motion, bots, and repeat visits in the same browser session. A click or
+   Escape skips to the end; scrolling is allowed while it plays. */
 (function () {
   var main = document.querySelector("main");
   var page = document.querySelector(".page");
@@ -276,6 +286,9 @@
     } catch (e) {}
   }
 
+  /* the page was opened scrolled down (e.g. a reload), so skip straight to the content */
+  if ((window.scrollY || window.pageYOffset || 0) > 10) return;
+
   /* ---- the copy we animate ---- */
   var d = main.cloneNode(true);
   d.classList.add("draft");
@@ -283,9 +296,14 @@
   d.querySelectorAll("[id]").forEach(function (n) { n.removeAttribute("id"); });
   d.querySelectorAll("a").forEach(function (a) { a.tabIndex = -1; });
   d.style.position = "absolute";
-  d.style.left = main.offsetLeft + "px";
-  d.style.top = main.offsetTop + "px";
-  d.style.width = main.offsetWidth + "px";
+  var mr = main.getBoundingClientRect(), pr = page.getBoundingClientRect();
+  d.style.left = (mr.left - pr.left) + "px";   /* exact, sub-pixel placement over the real page */
+  d.style.top = (mr.top - pr.top) + "px";
+  d.style.width = mr.width + "px";
+  d.style.height = mr.height + "px";          /* the page never changes size */
+  d.style.overflow = "visible";
+  var foot = document.querySelector("footer");
+  if (foot) foot.style.visibility = "hidden"; /* the copy may run a line or two long in some browsers */
   main.style.opacity = "0";
   page.appendChild(d);
 
@@ -300,10 +318,15 @@
     done = true;
     timers.forEach(clearTimeout);
     main.style.opacity = "";
+    if (foot) foot.style.visibility = "";
     if (d.parentNode) d.parentNode.removeChild(d);
-    ["pointerdown", "keydown", "wheel", "touchstart"].forEach(function (ev) { window.removeEventListener(ev, finish); });
+    window.removeEventListener("click", finish);
+    window.removeEventListener("keydown", onKey);
   }
-  ["pointerdown", "keydown", "wheel", "touchstart"].forEach(function (ev) { window.addEventListener(ev, finish, { passive: true }); });
+  /* scrolling is allowed while it plays; a click or Escape skips to the end */
+  function onKey(e) { if (e.key === "Escape") finish(); }
+  window.addEventListener("click", finish);
+  window.addEventListener("keydown", onKey);
 
   /* ---- helpers ---- */
   function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
@@ -336,13 +359,17 @@
     wait(text.length * per);
   }
   function fresh(n) { n.classList.add("fresh"); }
+  function flatten(scope) {
+    scope.querySelectorAll("span.ins, span.was").forEach(function (s) { if (s.hidden) { s.remove(); return; } s.replaceWith(document.createTextNode(s.textContent)); });
+    scope.normalize();
+  }
   function settle(scope) { scope.querySelectorAll(".fresh, .ins").forEach(function (n) { n.classList.add("ok"); }); }
 
   /* ---- grab the final pieces ---- */
   var h1 = d.querySelector("h1"), finalTitle = h1.textContent;
   var ps = d.querySelectorAll(":scope > p"), p1 = ps[0], p2 = ps[1];
   var pilots = d.querySelector(".pilots"), intro = pilots.querySelector(".pilots-intro");
-  var dl = d.querySelector("dl"), bib = d.querySelector(".refs");
+  var dl = d.querySelector(".about") || d.querySelector("dl"), bib = d.querySelector(".refs");
   var refs = d.querySelectorAll("a.ref"), refText = [];
   refs.forEach(function (r, i) { refText[i] = r.textContent; r.textContent = "[?]"; });
 
@@ -374,37 +401,112 @@
     at(T + 380, function () { if (e[0]) e[0].remove(); });
   }
 
+  /* Replace one text node with [kept text] / [draft words, final words] segments.
+     Returns the list of edits, or [] (leaving the text alone) if the copy has changed. */
+  function segmentNode(node, list) {
+    if (!node || node.nodeType !== 3) return [];
+    var fin = list.map(function (s) { return typeof s === "string" ? s : s[1]; }).join("");
+    if (fin !== node.data) return [];
+    var frag = document.createDocumentFragment(), out = [];
+    list.forEach(function (s) {
+      if (typeof s === "string") { frag.appendChild(document.createTextNode(s)); return; }
+      var old = el("span", "was", s[0]), neu = el("span", "ins", s[1]);
+      neu.hidden = true;
+      if (s[0]) frag.appendChild(old);
+      if (s[1]) frag.appendChild(neu);
+      out.push([s[0] ? old : null, s[1] ? neu : null]);
+    });
+    node.parentNode.replaceChild(frag, node);
+    return out;
+  }
+
+  /* Rough drafts for the lower sections, which keep being edited after the top is done */
+  var dts = dl.querySelectorAll("dt"), dds = dl.querySelectorAll("dd");
+  function row(label) { for (var i = 0; i < dts.length; i++) if (dts[i].textContent.trim() === label) return [dts[i], dds[i]]; return null; }
+  var team = row("Team"), seek = row("Seeking"), back = row("Background"), contact = row("Contact");
+  var eTeam = team ? segmentNode(team[1].lastChild, [", founder. ",
+    ["Fellow at CBAI.", "AI safety research fellow at the Cambridge Boston Alignment Initiative (2026)."],
+    ["", " Previously built distributed ML systems at Raytheon BBN for three years."]]) : [];
+  var eLabel = seek ? segmentNode(seek[0].firstChild, [["Hiring", "Seeking"]]) : [];
+  var eSeek = seek ? segmentNode(seek[1].firstChild, [
+    ["Engineers", "Founding research engineers (remote is fine), collaborators"], ", advisors, ",
+    ["", "feedback, and "], "funding.", ["", " We are not funded yet."]]) : [];
+  var mail = contact && contact[1].querySelector("a");
+  var eContact = mail ? segmentNode(mail.firstChild, [["TBD", mail.textContent]]) : [];
+  var refItems = bib.querySelectorAll("li");
+  /* each reference is typed out, so collect its text and empty it */
+  var refText2 = [];
+  refItems.forEach(function (li) {
+    var body = li.children[1] || li, nodes = [];
+    var w = document.createTreeWalker(body, NodeFilter.SHOW_TEXT, null);
+    while (w.nextNode()) nodes.push([w.currentNode, w.currentNode.data]);
+    nodes.forEach(function (n) { n[0].data = ""; });
+    refText2.push(nodes);
+  });
+  function typeNodes(nodes, per) {
+    nodes.forEach(function (n) {
+      var node = n[0], text = n[1];
+      now(function () { node.parentNode.insertBefore(caret, node.nextSibling); });
+      for (var i = 1; i <= text.length; i++) (function (k) { at(T + k * per, function () { node.data = text.slice(0, k); }); })(i);
+      wait(text.length * per);
+    });
+    now(function () { caret.remove(); });
+  }
+
   /* ---- start from a blank page ---- */
+  var pilotsH = pilots.querySelector("h2"), pilotDivs = pilots.querySelectorAll(".pilot");
+  var aboutH = dl.querySelector("h2"), dlist = dl.querySelector("dl") || dl;
+  var bibH = bib.querySelector("h2");
+  var heads = [[pilotsH, pilotsH ? pilotsH.textContent : ""], [aboutH, aboutH ? aboutH.textContent : ""], [bibH, bibH ? bibH.textContent : ""]];
+
   h1.textContent = "";
   var tA = el("span"), tB = el("span", "ins"), tM = el("span", "ins"), tC = el("span", "ins");
   h1.appendChild(tA);
-  var outline = el("ul", "outline");
-  h1.after(outline);
-  [p1, p2, pilots, dl, bib].forEach(hideNow);
-  hideNow(intro);
-  var pv = pilots.querySelectorAll(".pilot");
-  pilots.insertBefore(pv[1], pv[0]);
+  var outTop = el("ul", "outline"), outPilots = el("ul", "outline"), outAbout = el("ul", "outline"), outBib = el("ul", "outline");
+  h1.after(outTop);
+  if (pilotsH) pilotsH.after(outPilots); else pilots.prepend(outPilots);
+  if (aboutH) aboutH.after(outAbout); else dl.prepend(outAbout);
+  if (bibH) bibH.after(outBib); else bib.prepend(outBib);
+  heads.forEach(function (h) { if (h[0]) h[0].textContent = ""; });
+
+  [p1, p2, pilots, dl, bib, intro].forEach(hideNow);
+  pilotDivs.forEach(hideNow);
+  if (dlist !== dl) hideNow(dlist);
+  if (back) { hideNow(back[0]); hideNow(back[1]); }
+  refItems.forEach(hideNow);
+  pilots.insertBefore(pilotDivs[1], pilotDivs[0]);
   tA.after(caret);
 
+  function addBullets(ul, texts) {
+    texts.forEach(function (txt) {
+      var li = el("li"), s = el("span");
+      li.appendChild(s);
+      now(function () { ul.appendChild(li); });
+      type(s, txt, 11);
+      wait(80);
+    });
+  }
+  function skeleton(sec, head, texts, ul) {
+    now(function () { grow(sec, 160); });
+    wait(180);
+    if (head[0]) type(head[0], head[1], 13);
+    wait(60);
+    addBullets(ul, texts);
+    now(function () { caret.remove(); });
+    wait(120);
+  }
+
   /* ---- timeline ---- */
+  /* a working title and an outline of the whole document */
   wait(350);
   type(tA, "Notes", 45);
   wait(200);
-  var bullets = [
-    "why: catastrophe, trust, pace",
-    "AI will write most safety research",
-    "who checks the literature as a whole?",
-    "pilots: sabotage, legibility",
-    "team, contact, refs"
-  ].map(function (txt) {
-    var li = el("li"), s = el("span");
-    li.appendChild(s);
-    now(function () { outline.appendChild(li); });
-    type(s, txt, 11);
-    wait(90);
-    return li;
-  });
-  wait(150);
+  addBullets(outTop, ["why: catastrophe, trust, pace", "AI will write most safety research", "who checks the literature as a whole?"]);
+  wait(100);
+  skeleton(pilots, heads[0], ["sabotage: extend ASB to full papers?", "legibility: quiz gate"], outPilots);
+  skeleton(dl, heads[1], ["team: me (+ engineers?)", "contact"], outAbout);
+  skeleton(bib, heads[2], ["ASB, KnowledgeGain, my LW post"], outBib);
+  wait(100);
 
   /* first title rewrite */
   now(function () { tA.className = "del"; tA.after(tB); });
@@ -413,15 +515,15 @@
   now(function () { tA.remove(); caret.remove(); });
   wait(200);
 
-  /* expand the first three bullets into prose */
-  now(function () { fresh(p1); grow(p1, 520); [0, 1, 2].forEach(function (i) { shrink(bullets[i], 420); }); });
+  /* expand the top bullets into prose */
+  now(function () { fresh(p1); grow(p1, 520); shrink(outTop, 420); });
   wait(650);
   now(function () { p1.classList.add("ok"); });
 
-  /* expand the pilots bullet */
-  now(function () { fresh(pilots); grow(pilots, 520); shrink(bullets[3], 420); });
+  /* expand the pilot bullets into the two pilots */
+  now(function () { pilotDivs.forEach(function (n) { fresh(n); grow(n, 520); }); shrink(outPilots, 420); });
   wait(600);
-  now(function () { pilots.classList.add("ok"); });
+  now(function () { pilotDivs.forEach(function (n) { n.classList.add("ok"); }); });
 
   /* second title rewrite: pull back to something defensible */
   now(function () { tB.className = "del"; tB.after(tM); });
@@ -435,6 +537,7 @@
   edits.forEach(function (e, i) { edit(e); wait(i === edits.length - 1 ? 420 : 170); });
   wait(150);
   now(function () { settle(p1); });
+  at(T + 600, function () { flatten(p1); });
   wait(80);
 
   /* final title */
@@ -465,14 +568,44 @@
   wait(420);
   now(function () { fresh(intro); grow(intro, 360); });
   wait(380);
+  now(function () { [h1, p1, p2, pilots].forEach(function (n) { n.classList.add("ok"); settle(n); }); });
 
-  /* expand the last bullet into the team list and the bibliography */
-  now(function () { fresh(dl); fresh(bib); grow(dl, 480); grow(bib, 480); shrink(bullets[4], 380); });
+  /* below the fold, fill in the outlined sections: most visitors are still reading the top */
+  now(function () { fresh(dlist); grow(dlist, 480); shrink(outAbout, 380); });
   wait(520);
-  now(function () { outline.remove(); refs.forEach(function (r, i) { r.textContent = refText[i]; }); });
-  wait(250);
+  now(function () { dlist.classList.add("ok"); });
+  wait(400);
+  function run(list, gap) { list.forEach(function (e) { edit(e); wait(gap); }); }
+  run(eTeam, 420); wait(350);
+  run(eLabel, 300); run(eSeek, 380); wait(350);
+  if (back) { now(function () { fresh(back[0]); fresh(back[1]); grow(back[0], 420); grow(back[1], 420); }); wait(650); }
+  run(eContact, 420); wait(300);
+  now(function () { settle(dl); });
+  at(T + 600, function () { flatten(dl); });
+
+  /* the bibliography, one entry at a time, then the citations resolve */
+  now(function () { shrink(outBib, 380); });
+  wait(300);
+  refItems.forEach(function (li, i) {
+    now(function () {
+      fresh(li);
+      li.style.height = ""; li.style.overflow = ""; li.style.opacity = "1";
+      li.style.marginTop = li.dataset.mt || ""; li.style.marginBottom = li.dataset.mb || "";
+    });
+    wait(60);
+    typeNodes(refText2[i], 6);
+    wait(300);
+  });
+  now(function () { refs.forEach(function (r, i) { r.textContent = refText[i]; }); });
+  wait(350);
   now(function () { settle(d); d.querySelectorAll(".del").forEach(function (n) { n.remove(); }); });
-  wait(1100);
+  wait(600);
+  /* merge the edit spans back into plain text so the hand-off is pixel-exact */
+  now(function () {
+    d.querySelectorAll("span.ins").forEach(function (s) { s.replaceWith(document.createTextNode(s.textContent)); });
+    d.normalize();
+  });
+  wait(500);
   now(finish);
 })();
     </script>
