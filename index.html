@@ -162,26 +162,18 @@
   .refs li > span:first-child { color: var(--rubric); }
   .refs a { color: var(--ink); text-decoration: underline; text-decoration-thickness: 0.6px; text-underline-offset: 3px; }
 
-  /* opening draft animation (visual only; see script after main) */
+  /* opening animation (visual only; see the script after main) */
   .draft { pointer-events: none; }
-  .draft .del { color: var(--fail); text-decoration: line-through; text-decoration-thickness: 1px; }
-  .draft .ins { color: var(--ins); text-decoration: underline; text-decoration-color: var(--ins); text-decoration-thickness: 0.6px; text-underline-offset: 3px; transition: color 0.3s, text-decoration-color 0.3s; }
-  .draft .ins.ok { color: inherit; text-decoration-color: transparent; }
-  .draft .fresh { color: var(--ins); transition: color 0.5s; }
-  .draft .del + .ins { margin-left: 0.28em; }
-  .draft .fresh.ok { color: inherit; }
-  .draft ul.outline { margin: 0 0 1.4rem; padding-left: 1.3em; list-style: disc; }
-  .draft ul.outline li { margin: 0 0 0.15rem; }
-  .draft .pilots ul.outline { grid-column: 1 / -1; }
-  .draft .refs ul.outline li { display: list-item; margin: 0 0 0.15rem; font-size: 1rem; }
-  .draft .refs ul.outline li > span:first-child { color: inherit; }
-  .draft ul.outline { font-size: 19px; }
-  @media (max-width: 560px) { .draft ul.outline { font-size: 17.5px; } }
-  .draft .note { font-family: var(--mono); font-size: 0.82rem; color: var(--soft); margin: 0.5rem 0 1rem; transition: opacity 0.25s; }
-  .draft .note.gone { opacity: 0; }
-  .draft .caret { display: inline-block; width: 1px; height: 0.85em; background: currentColor; margin-left: 2px; vertical-align: -0.05em; animation: al-blink 0.8s steps(1) infinite; }
-  .draft .pilots.swapping .pilot + .pilot { border-left-color: transparent; }
-  @keyframes al-blink { 50% { opacity: 0; } }
+  .draft .hd { visibility: hidden; }
+  .draft .cur { position: absolute; display: none; width: 1px; background: var(--ink); }
+  .draft .todo { position: absolute; left: 0; right: 0; font-family: var(--mono); font-size: 0.8rem; line-height: 1.4; color: var(--soft); white-space: pre-wrap; }
+  .draft .pilots.nodiv .pilot + .pilot { border-left-color: transparent; }
+  .draft .rpt { position: absolute; margin: 0; white-space: nowrap; text-indent: 0; }
+  .draft .wt { position: absolute; margin: 0; color: var(--ink); }
+  /* tracked changes: added text fades from blue, removed text is red and struck */
+  @keyframes al-ins { from { color: var(--ins); } }
+  .draft .ins { animation: al-ins 1s ease-out; }
+  .draft .del, .draft .del * { color: var(--fail) !important; text-decoration: line-through; text-decoration-thickness: 1px; animation: none; }
 
   /* background simulation in the margins */
   #sim {
@@ -227,13 +219,13 @@
 
       <p>Avoiding catastrophe from AI depends on safety research that we can trust and that keeps pace with capabilities. Within a few years, AI agents will likely write most of that research, faster than peer review, funding, and oversight can absorb. Most safety work on sabotage and research quality happens inside one lab’s pipeline. Few treat the scientific literature itself as the surface to secure: a shared record that any model, trusted or not, can write into, and that researchers build on without coordinating.</p>
 
-      <p><span class="org">Averroes Labs</span> is a metascience org that builds tools for the literature as a whole. We start with audits for sabotage and legibility. Next come coordination tools, so researchers can move faster together.</p>
+      <p><span class="org">Averroes Labs</span> is a metascience org that builds tools for the literature as a whole. We start with audits for sabotage and legibility. Funders can require that funded work builds only on audited results. Next come coordination tools, so researchers can move faster together.</p>
 
       <section class="pilots" aria-labelledby="pilots-h">
         <h2 id="pilots-h">Pilot projects</h2>
         <p class="pilots-intro">Each pilot turns existing research into a filter that publication platforms could run on AI-written papers.</p>
         <div class="pilot">
-          <h3>Sabotage audit</h3>
+          <h3>Soundness audit</h3>
           <p>Can an audit catch a model that quietly sabotages its own research? We extend Redwood Research’s Auditing Sabotage Bench <a class="ref" href="#ref1">[1]</a> from code to full submissions (paper plus code) and measure the catch rate.</p>
         </div>
         <div class="pilot">
@@ -248,7 +240,7 @@
         <dt>Team</dt>
         <dd><a href="https://jasonfantl.com">Jason Fantl</a>, founder. AI safety research fellow at the Cambridge Boston Alignment Initiative (2026). Previously built distributed ML systems at Raytheon BBN for three years.</dd>
         <dt>Seeking</dt>
-        <dd>Founding research engineers (remote is fine), collaborators, advisors, feedback, and funding. We are not funded yet.</dd>
+        <dd>Cofounders (remote is fine), collaborators, advisors, feedback, and funding. We are not funded yet.</dd>
         <dt>Background</dt>
         <dd><em>Autonomous researchers will strain peer review, funding, and oversight</em> <a class="ref" href="#ref3">[3]</a></dd>
         <dt>Contact</dt>
@@ -266,15 +258,19 @@
       </section>
     </main>
     <script>
-/* Opening animation: the page is "written" like a document, from a blank page to an
-   outline to prose to revisions. Purely visual. The real content is in the HTML from
-   the start; this runs on a copy laid over it, then removes the copy. Skipped for
-   reduced motion, bots, and repeat visits in the same browser session. A click or
-   Escape skips to the end; scrolling is allowed while it plays. */
+/* Opening animation: the page is typed out like a document being written, with a few
+   rephrasings along the way. Calm by design: every character is laid out in its final
+   position from the first frame and only revealed, so nothing on the page moves,
+   grows or slides. Like tracked changes in Overleaf, new text arrives blue and fades
+   to its own colour, and text being removed turns red and struck through before it
+   is backspaced one character at a time. Purely visual: the real content is in the HTML from the
+   start; this runs on a copy laid over it, then removes the copy. Skipped for reduced
+   motion, bots, and repeat visits in the same browser session. Clicking and scrolling
+   never interrupt it; only the Escape key skips to the end. */
 (function () {
   var main = document.querySelector("main");
   var page = document.querySelector(".page");
-  if (!main || !page || !main.cloneNode || !window.requestAnimationFrame) return;
+  if (!main || !page || !main.cloneNode || !document.createTreeWalker) return;
 
   var force = location.hash === "#draft";
   if (!force) {
@@ -289,28 +285,32 @@
   /* the page was opened scrolled down (e.g. a reload), so skip straight to the content */
   if ((window.scrollY || window.pageYOffset || 0) > 10) return;
 
-  /* ---- the copy we animate ---- */
+  /* hide the real text now, and measure only once the fonts are ready */
+  main.style.opacity = "0";
+  main.style.pointerEvents = "none";
+  var ready = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  var gaveUp = setTimeout(function () { main.style.opacity = ""; main.style.pointerEvents = ""; }, 4000);
+  ready.then(function () { clearTimeout(gaveUp); if (main.style.opacity === "0") start(); });
+  function start() {
+  /* ---- the copy we animate, laid exactly over the real page ---- */
   var d = main.cloneNode(true);
   d.classList.add("draft");
+  d.style.opacity = ""; d.style.pointerEvents = ""; /* the copy must not inherit the hidden state */
   d.setAttribute("aria-hidden", "true");
   d.querySelectorAll("[id]").forEach(function (n) { n.removeAttribute("id"); });
   d.querySelectorAll("a").forEach(function (a) { a.tabIndex = -1; });
   d.style.position = "absolute";
   var mr = main.getBoundingClientRect(), pr = page.getBoundingClientRect();
-  d.style.left = (mr.left - pr.left) + "px";   /* exact, sub-pixel placement over the real page */
+  d.style.left = (mr.left - pr.left) + "px";
   d.style.top = (mr.top - pr.top) + "px";
   d.style.width = mr.width + "px";
-  d.style.height = mr.height + "px";          /* the page never changes size */
-  d.style.overflow = "visible";
-  var foot = document.querySelector("footer");
-  if (foot) foot.style.visibility = "hidden"; /* the copy may run a line or two long in some browsers */
-  main.style.opacity = "0";
+  d.style.height = mr.height + "px";
   page.appendChild(d);
 
-  /* ---- scheduling ---- */
-  var K = 0.5; /* overall speed: smaller is faster */
+  /* ---- scheduling (all times in milliseconds) ---- */
+  var SPEED = 0.8; /* scales the whole timeline; smaller is faster */
   var timers = [], done = false, T = 0;
-  function at(ms, fn) { timers.push(setTimeout(function () { if (!done) fn(); }, ms * K)); }
+  function at(ms, fn) { timers.push(setTimeout(function () { if (!done) fn(); }, ms * SPEED)); }
   function now(fn) { at(T, fn); }
   function wait(ms) { T += ms; }
   function finish() {
@@ -318,295 +318,276 @@
     done = true;
     timers.forEach(clearTimeout);
     main.style.opacity = "";
-    if (foot) foot.style.visibility = "";
+    main.style.pointerEvents = "";
     if (d.parentNode) d.parentNode.removeChild(d);
-    window.removeEventListener("click", finish);
     window.removeEventListener("keydown", onKey);
   }
-  /* scrolling is allowed while it plays; a click or Escape skips to the end */
   function onKey(e) { if (e.key === "Escape") finish(); }
-  window.addEventListener("click", finish);
   window.addEventListener("keydown", onKey);
 
-  /* ---- helpers ---- */
   function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
-  function remember(n) { var cs = getComputedStyle(n); n.dataset.mt = cs.marginTop; n.dataset.mb = cs.marginBottom; }
-  function hideNow(n) {
-    remember(n);
-    n.style.height = "0px"; n.style.overflow = "hidden"; n.style.opacity = "0";
-    n.style.marginTop = "0px"; n.style.marginBottom = "0px";
+
+  /* copy a text style property by property (the "font" shorthand often reads back empty) */
+  function copyFont(to, from) {
+    var cs = getComputedStyle(from);
+    ["fontFamily", "fontSize", "fontWeight", "fontStyle", "fontVariant", "fontVariantCaps", "fontKerning",
+     "letterSpacing", "wordSpacing", "color"].forEach(function (k) { to.style[k] = cs[k]; });
+    return cs;
   }
-  function grow(n, ms) {
-    var dur = Math.round(ms * K);
-    n.style.transition = "none"; n.style.height = "auto";
-    var h = n.scrollHeight; n.style.height = "0px"; void n.offsetHeight;
-    n.style.transition = "height " + dur + "ms ease, margin " + dur + "ms ease, opacity " + dur + "ms ease";
-    n.style.height = h + "px"; n.style.opacity = "1";
-    n.style.marginTop = n.dataset.mt || ""; n.style.marginBottom = n.dataset.mb || "";
-    setTimeout(function () { if (done) return; n.style.height = ""; n.style.overflow = ""; n.style.transition = ""; n.style.marginTop = ""; n.style.marginBottom = ""; }, dur + 30);
+
+  /* a steady, non-blinking cursor, drawn on top of the copy so it never touches the text */
+  var caret = el("div", "cur");
+  d.appendChild(caret);
+  function rectAt(node, i) { var r = document.createRange(); r.setStart(node, i); r.setEnd(node, i + 1); return r.getBoundingClientRect(); }
+  function caretTo(x, top, h) {
+    var o = d.getBoundingClientRect();
+    caret.style.display = "block";
+    caret.style.left = (x - o.left) + "px"; caret.style.top = (top - o.top) + "px"; caret.style.height = h + "px";
   }
-  function shrink(n, ms) {
-    var dur = Math.round(ms * K);
-    n.style.height = n.offsetHeight + "px"; n.style.overflow = "hidden"; void n.offsetHeight;
-    n.style.transition = "height " + dur + "ms ease, margin " + dur + "ms ease, opacity " + dur + "ms ease";
-    n.style.height = "0px"; n.style.opacity = "0"; n.style.marginTop = "0px"; n.style.marginBottom = "0px";
-    setTimeout(function () { if (!done && n.parentNode) n.parentNode.removeChild(n); }, dur + 30);
+  function lastNode(rec) { return rec.spans.length ? rec.spans[rec.spans.length - 1].firstChild : rec.t; }
+  function caretAfter(rec) {
+    var b, nd = lastNode(rec);
+    if (nd.data.length) { b = rectAt(nd, nd.data.length - 1); caretTo(b.right, b.top, b.height); }
+    else if (rec.hid.parentNode && rec.hid.firstChild && rec.hid.firstChild.data.length) { b = rectAt(rec.hid.firstChild, 0); caretTo(b.left, b.top, b.height); }
   }
-  var caret = el("span", "caret");
-  function type(node, text, per) {
-    now(function () { node.textContent = ""; node.after(caret); });
-    for (var i = 1; i <= text.length; i++) (function (k) { at(T + k * per, function () { node.textContent = text.slice(0, k); }); })(i);
+
+  /* ---- tracked-change colours ----
+     Added text arrives in word-sized spans that fade from blue to their own colour.
+     Faded words are merged back into plain text, so each paragraph soon returns to a
+     single run of text and lays out exactly like the finished page. */
+  function newWord(parent, before) {
+    var s = el("span", "ins"); s.appendChild(document.createTextNode("")); s._t0 = performance.now();
+    parent.insertBefore(s, before || null);
+    return s;
+  }
+  function addChar(box, ch) {
+    var last = box._last;
+    if (!last || !last.parentNode || (/\s$/.test(last.firstChild.data) && /\S/.test(ch))) last = box._last = newWord(box, null);
+    last.firstChild.data += ch;
+  }
+  function typeOverlay(box, text, per, step) {
+    for (var i = 1; i <= text.length; i++) (function (j) { at(T + j * per, function () { addChar(box, text.charAt(j - 1)); if (step) step(); }); })(i);
     wait(text.length * per);
   }
-  function fresh(n) { n.classList.add("fresh"); }
-  function flatten(scope) {
-    scope.querySelectorAll("span.ins, span.was").forEach(function (s) { if (s.hidden) { s.remove(); return; } s.replaceWith(document.createTextNode(s.textContent)); });
-    scope.normalize();
+  /* removal: the whole chunk turns red and struck through, then goes a character at a time */
+  function eraseOverlay(box, per, step) {
+    var s = "";
+    now(function () { s = box.textContent; box.textContent = s; box._last = null; box.classList.add("del"); if (step) step(); });
+    wait(320);
+    var len = 0;
+    now(function () { len = s.length; for (var i = len - 1; i >= 0; i--) (function (j) { setTimeout(function () { if (done) return; if (box.firstChild) box.firstChild.data = s.slice(0, j); if (step) step(); }, (len - j) * per * SPEED); })(i); });
   }
-  function settle(scope) { scope.querySelectorAll(".fresh, .ins").forEach(function (n) { n.classList.add("ok"); }); }
 
-  /* ---- grab the final pieces ---- */
-  var h1 = d.querySelector("h1"), finalTitle = h1.textContent;
-  var ps = d.querySelectorAll(":scope > p"), p1 = ps[0], p2 = ps[1];
-  var pilots = d.querySelector(".pilots"), intro = pilots.querySelector(".pilots-intro");
-  var dl = d.querySelector(".about") || d.querySelector("dl"), bib = d.querySelector(".refs");
-  var refs = d.querySelectorAll("a.ref"), refText = [];
-  refs.forEach(function (r, i) { refText[i] = r.textContent; r.textContent = "[?]"; });
+  /* ---- hide every character in place ----
+     Each text node becomes [typed text][hidden rest]. The hidden rest keeps its full
+     width, so lines break exactly where they will in the finished page. */
+  var blocks = [];
+  function prep(elm, edits) {
+    if (!elm) return null;
+    var recs = [], w = document.createTreeWalker(elm, NodeFilter.SHOW_TEXT, null), list = [];
+    while (w.nextNode()) list.push(w.currentNode);
+    list.forEach(function (t) {
+      if (!/\S/.test(t.data)) return;
+      var hid = el("span", "hd", t.data), rec = { t: t, hid: hid, text: t.data, edits: [], spans: [], shown: 0 };
+      t.data = "";
+      t.parentNode.insertBefore(hid, t.nextSibling);
+      /* words that break across lines with a hyphen must not be split while typing,
+         or the browser drops the hyphen and the line re-spaces for a moment */
+      rec.skip = {};
+      var ht = hid.firstChild, re = /\S+/g, m;
+      while ((m = re.exec(rec.text))) {
+        if (m[0].length < 4) continue;
+        var r = document.createRange(); r.setStart(ht, m.index); r.setEnd(ht, m.index + 1);
+        var r2 = document.createRange(); r2.setStart(ht, m.index + m[0].length - 1); r2.setEnd(ht, m.index + m[0].length);
+        if (Math.abs(r.getBoundingClientRect().top - r2.getBoundingClientRect().top) > 2) {
+          for (var z = m.index + 1; z < m.index + m[0].length; z++) rec.skip[z] = 1;
+        }
+      }
+      (edits || []).forEach(function (e) {
+        var i = rec.text.indexOf(e[0]);
+        if (i >= 0) rec.edits.push([i, e[1]]);
+      });
+      recs.push(rec);
+    });
+    var b = { el: elm, recs: recs };
+    blocks.push(b);
+    return b;
+  }
 
-  /* First paragraph as a rough draft: [kept text] or [draft words, final words].
-     If the page copy changes and these no longer add up, the paragraph just appears as is. */
-  var segs = [
-    ["Avoiding disaster", "Avoiding catastrophe"],
-    " from AI depends on safety research that we can trust and that keeps pace with capabilities. ",
-    ["Soon", "Within a few years,"], " AI", ["", " agents"], " will ", ["", "likely "], "write most of ",
-    ["it", "that research"], [".", ", faster than peer review, funding, and oversight can absorb."], " ",
-    ["Nobody secures science as a whole.",
-     "Most safety work on sabotage and research quality happens inside one lab’s pipeline. Few treat the scientific literature itself as the surface to secure: a shared record that any model, trusted or not, can write into, and that researchers build on without coordinating."]
-  ];
-  var built = segs.map(function (s) { return typeof s === "string" ? s : s[1]; }).join("");
-  var edits = [];
-  if (built === p1.textContent) {
-    p1.textContent = "";
-    segs.forEach(function (s) {
-      if (typeof s === "string") { p1.appendChild(document.createTextNode(s)); return; }
-      var old = el("span", "was", s[0]), neu = el("span", "ins", s[1]);
-      neu.hidden = true;
-      if (s[0]) p1.appendChild(old);
-      if (s[1]) p1.appendChild(neu);
-      edits.push([s[0] ? old : null, s[1] ? neu : null]);
+  /* pin each block's height, so a rephrasing in progress can never push the page */
+  function pin(elm) { if (elm) elm.style.height = elm.getBoundingClientRect().height + "px"; }
+
+  /* type a draft word at the cursor, then strike it and backspace it. The draft word is
+     drawn on top of the copy, in the paragraph's own font, so the paragraph never changes. */
+  function rephrase(rec, k, draft) {
+    var s = el("div", "rpt");
+    now(function () {
+      var host = rec.t.parentNode, o = d.getBoundingClientRect(), b, x, nd = lastNode(rec);
+      copyFont(s, host);
+      if (nd.data.length) { b = rectAt(nd, nd.data.length - 1); x = b.right; } else { b = rectAt(rec.hid.firstChild, 0); x = b.left; }
+      s.style.left = (x - o.left) + "px"; s.style.top = (b.top - o.top) + "px"; s.style.lineHeight = b.height + "px";
+      d.appendChild(s);
+      s.dataset.h = b.height; s.dataset.top = b.top;
+    });
+    function follow() { var w = s.getBoundingClientRect(); caretTo(w.right, +s.dataset.top, +s.dataset.h); }
+    typeOverlay(s, draft, 18, follow);
+    wait(260);
+    eraseOverlay(s, 10, follow);
+    wait(draft.length * 10 + 60);
+    now(function () { s.remove(); caretAfter(rec); });
+  }
+
+  function typeBlock(b, per) {
+    if (!b) return;
+    b.recs.forEach(function (rec) {
+      var n = rec.text.length, edits = rec.edits.slice().sort(function (x, y) { return x[0] - y[0]; }), k = 0;
+      edits.concat([[n, null]]).forEach(function (e) {
+        for (var i = k + 1; i <= e[0]; i++) (function (j) {
+          if (rec.skip[j]) return;
+          at(T + (j - k) * per, function () { reveal(rec, j, n); caretAfter(rec); });
+        })(i);
+        wait((e[0] - k) * per);
+        k = e[0];
+        if (e[1]) rephrase(rec, k, e[1]);
+      });
+      at(T + 1300, function () { merge(rec, true); });
     });
   }
-  function edit(e) {
-    now(function () { if (e[0]) e[0].className = "del"; if (e[1]) e[1].hidden = false; });
-    at(T + 380, function () { if (e[0]) e[0].remove(); });
+  function reveal(rec, j, n) {
+    var add = rec.text.slice(rec.shown, j);
+    rec.shown = j;
+    for (var c = 0; c < add.length; c++) {
+      var ch = add.charAt(c), last = rec.spans[rec.spans.length - 1];
+      if (!last || (/\s$/.test(last.firstChild.data) && /\S/.test(ch))) { last = newWord(rec.hid.parentNode, rec.hid); rec.spans.push(last); }
+      last.firstChild.data += ch;
+    }
+    if (j < n) rec.hid.textContent = rec.text.slice(j); else if (rec.hid.parentNode) rec.hid.remove();
+    merge(rec, false);
+  }
+  function merge(rec, all) {
+    var t0 = performance.now();
+    while (rec.spans.length && (all || t0 - rec.spans[0]._t0 > 1100) && rec.spans.length > (all ? 0 : 1)) {
+      var s = rec.spans.shift();
+      rec.t.data += s.firstChild.data;
+      s.remove();
+    }
   }
 
-  /* Replace one text node with [kept text] / [draft words, final words] segments.
-     Returns the list of edits, or [] (leaving the text alone) if the copy has changed. */
-  function segmentNode(node, list) {
-    if (!node || node.nodeType !== 3) return [];
-    var fin = list.map(function (s) { return typeof s === "string" ? s : s[1]; }).join("");
-    if (fin !== node.data) return [];
-    var frag = document.createDocumentFragment(), out = [];
-    list.forEach(function (s) {
-      if (typeof s === "string") { frag.appendChild(document.createTextNode(s)); return; }
-      var old = el("span", "was", s[0]), neu = el("span", "ins", s[1]);
-      neu.hidden = true;
-      if (s[0]) frag.appendChild(old);
-      if (s[1]) frag.appendChild(neu);
-      out.push([s[0] ? old : null, s[1] ? neu : null]);
-    });
-    node.parentNode.replaceChild(frag, node);
-    return out;
+  /* gray TODO notes, typed in empty space below a heading and later backspaced away */
+  function note(sec, head, text) {
+    if (!sec || !head) return null;
+    sec.style.position = "relative";
+    var n = el("div", "todo");
+    n.style.top = (head.offsetTop + head.offsetHeight + 6) + "px";
+    sec.appendChild(n);
+    return { n: n, text: text };
+  }
+  function typeNote(o) {
+    if (!o) return;
+    typeOverlay(o.n, o.text, 4);
+  }
+  function eraseNote(o) {
+    if (!o) return;
+    eraseOverlay(o.n, 5);
+    wait(o.text.length * 5 + 60);
+    now(function () { o.n.remove(); });
   }
 
-  /* Rough drafts for the lower sections, which keep being edited after the top is done */
-  var dts = dl.querySelectorAll("dt"), dds = dl.querySelectorAll("dd");
-  function row(label) { for (var i = 0; i < dts.length; i++) if (dts[i].textContent.trim() === label) return [dts[i], dds[i]]; return null; }
-  var team = row("Team"), seek = row("Seeking"), back = row("Background"), contact = row("Contact");
-  var eTeam = team ? segmentNode(team[1].lastChild, [", founder. ",
-    ["Fellow at CBAI.", "AI safety research fellow at the Cambridge Boston Alignment Initiative (2026)."],
-    ["", " Previously built distributed ML systems at Raytheon BBN for three years."]]) : [];
-  var eLabel = seek ? segmentNode(seek[0].firstChild, [["Hiring", "Seeking"]]) : [];
-  var eSeek = seek ? segmentNode(seek[1].firstChild, [
-    ["Engineers", "Founding research engineers (remote is fine), collaborators"], ", advisors, ",
-    ["", "feedback, and "], "funding.", ["", " We are not funded yet."]]) : [];
-  var mail = contact && contact[1].querySelector("a");
-  var eContact = mail ? segmentNode(mail.firstChild, [["TBD", mail.textContent]]) : [];
-  var refItems = bib.querySelectorAll("li");
-  /* each reference is typed out, so collect its text and empty it */
-  var refText2 = [];
-  refItems.forEach(function (li) {
-    var body = li.children[1] || li, nodes = [];
-    var w = document.createTreeWalker(body, NodeFilter.SHOW_TEXT, null);
-    while (w.nextNode()) nodes.push([w.currentNode, w.currentNode.data]);
-    nodes.forEach(function (n) { n[0].data = ""; });
-    refText2.push(nodes);
+  /* ---- the pieces of the page ---- */
+  var q = function (s, r) { return (r || d).querySelector(s); };
+  var h1 = q("h1"), ps = d.querySelectorAll(":scope > p"), p1 = ps[0], p2 = ps[1];
+  var pilots = q(".pilots"), pilotsH = q("h2", pilots), intro = q(".pilots-intro", pilots);
+  var pilotDivs = pilots ? pilots.querySelectorAll(".pilot") : [];
+  var about = q(".about"), aboutH = q("h2", about), dts = about ? about.querySelectorAll("dt") : [], dds = about ? about.querySelectorAll("dd") : [];
+  var bib = q(".refs"), bibH = q("h2", bib), refItems = bib ? bib.querySelectorAll("li") : [];
+
+  var pinned = [h1, p1, p2, pilotsH, intro, aboutH, bibH];
+  pilotDivs.forEach(function (p) { pinned.push(q("h3", p), q("p", p)); });
+  dts.forEach(function (x) { pinned.push(x); }); dds.forEach(function (x) { pinned.push(x); });
+  refItems.forEach(function (x) { pinned.push(x); });
+  pinned.forEach(pin);
+
+  /* drafts that get rephrased while writing: [final text, what was typed first] */
+  var bTitle = prep(h1);
+  var bP1 = prep(p1, [["catastrophe", "disaster"], ["Within a few years,", "Soon"]]);
+  var bP2 = prep(p2, [["tools for the literature", "infrastructure"]]);
+  var bPH = prep(pilotsH), bIntro = prep(intro);
+  var bPilots = [];
+  pilotDivs.forEach(function (p) {
+    bPilots.push([prep(q("h3", p)), prep(q("p", p), [["Can people", "Will people"]])]);
   });
-  function typeNodes(nodes, per) {
-    nodes.forEach(function (n) {
-      var node = n[0], text = n[1];
-      now(function () { node.parentNode.insertBefore(caret, node.nextSibling); });
-      for (var i = 1; i <= text.length; i++) (function (k) { at(T + k * per, function () { node.data = text.slice(0, k); }); })(i);
-      wait(text.length * per);
-    });
-    now(function () { caret.remove(); });
-  }
+  var bAH = prep(aboutH), bRows = [];
+  dts.forEach(function (dt, i) {
+    bRows.push([prep(dt, [["Seeking", "Hiring"]]), prep(dds[i], [["Cofounders", "Engineers"], ["contact@", "TBD"]])]);
+  });
+  var bBH = prep(bibH), bRefs = [];
+  refItems.forEach(function (li) { bRefs.push(prep(li)); });
 
-  /* ---- start from a blank page ---- */
-  var pilotsH = pilots.querySelector("h2"), pilotDivs = pilots.querySelectorAll(".pilot");
-  var aboutH = dl.querySelector("h2"), dlist = dl.querySelector("dl") || dl;
-  var bibH = bib.querySelector("h2");
-  var heads = [[pilotsH, pilotsH ? pilotsH.textContent : ""], [aboutH, aboutH ? aboutH.textContent : ""], [bibH, bibH ? bibH.textContent : ""]];
-
-  h1.textContent = "";
-  var tA = el("span"), tB = el("span", "ins"), tM = el("span", "ins"), tC = el("span", "ins");
-  h1.appendChild(tA);
-  var outTop = el("ul", "outline"), outPilots = el("ul", "outline"), outAbout = el("ul", "outline"), outBib = el("ul", "outline");
-  h1.after(outTop);
-  if (pilotsH) pilotsH.after(outPilots); else pilots.prepend(outPilots);
-  if (aboutH) aboutH.after(outAbout); else dl.prepend(outAbout);
-  if (bibH) bibH.after(outBib); else bib.prepend(outBib);
-  heads.forEach(function (h) { if (h[0]) h[0].textContent = ""; });
-
-  [p1, p2, pilots, dl, bib, intro].forEach(hideNow);
-  pilotDivs.forEach(hideNow);
-  if (dlist !== dl) hideNow(dlist);
-  if (back) { hideNow(back[0]); hideNow(back[1]); }
-  refItems.forEach(hideNow);
-  pilots.insertBefore(pilotDivs[1], pilotDivs[0]);
-  tA.after(caret);
-
-  function addBullets(ul, texts) {
-    texts.forEach(function (txt) {
-      var li = el("li"), s = el("span");
-      li.appendChild(s);
-      now(function () { ul.appendChild(li); });
-      type(s, txt, 11);
-      wait(80);
-    });
-  }
-  function skeleton(sec, head, texts, ul) {
-    now(function () { grow(sec, 160); });
-    wait(180);
-    if (head[0]) type(head[0], head[1], 13);
-    wait(60);
-    addBullets(ul, texts);
-    now(function () { caret.remove(); });
-    wait(120);
-  }
+  var nPilots = note(pilots, pilotsH, "% TODO: two pilots, sabotage and legibility");
+  var nAbout = note(about, aboutH, "% TODO: team, who we need, contact");
+  var nBib = note(bib, bibH, "% TODO: ASB, KnowledgeGain, LW post");
+  if (pilots) pilots.classList.add("nodiv");
 
   /* ---- timeline ---- */
-  /* a working title and an outline of the whole document */
+  /* a working title, typed and left for a while */
+  var working = "The largest research lab ever built.", wt = el("span");
   wait(350);
-  type(tA, "Notes", 45);
-  wait(200);
-  addBullets(outTop, ["why: catastrophe, trust, pace", "AI will write most safety research", "who checks the literature as a whole?"]);
-  wait(100);
-  skeleton(pilots, heads[0], ["sabotage: extend ASB to full papers?", "legibility: quiz gate"], outPilots);
-  skeleton(dl, heads[1], ["team: me (+ engineers?)", "contact"], outAbout);
-  skeleton(bib, heads[2], ["ASB, KnowledgeGain, my LW post"], outBib);
-  wait(100);
-
-  /* first title rewrite */
-  now(function () { tA.className = "del"; tA.after(tB); });
-  wait(120);
-  type(tB, "The largest research lab ever built.", 16);
-  now(function () { tA.remove(); caret.remove(); });
-  wait(200);
-
-  /* expand the top bullets into prose */
-  now(function () { fresh(p1); grow(p1, 520); shrink(outTop, 420); });
-  wait(650);
-  now(function () { p1.classList.add("ok"); });
-
-  /* expand the pilot bullets into the two pilots */
-  now(function () { pilotDivs.forEach(function (n) { fresh(n); grow(n, 520); }); shrink(outPilots, 420); });
-  wait(600);
-  now(function () { pilotDivs.forEach(function (n) { n.classList.add("ok"); }); });
-
-  /* second title rewrite: pull back to something defensible */
-  now(function () { tB.className = "del"; tB.after(tM); });
-  wait(100);
-  type(tM, "Auditing the AI-written literature.", 12);
-  now(function () { caret.remove(); });
-  at(T + 320, function () { tB.remove(); });
-  wait(250);
-
-  /* revise words and sentences in the first paragraph */
-  edits.forEach(function (e, i) { edit(e); wait(i === edits.length - 1 ? 420 : 170); });
+  wt.className = "wt";
+  now(function () {
+    var o = d.getBoundingClientRect(), hb = h1.getBoundingClientRect(), cs = getComputedStyle(h1);
+    copyFont(wt, h1); wt.style.lineHeight = cs.lineHeight; wt.style.left = (hb.left - o.left) + "px"; wt.style.top = (hb.top - o.top) + "px"; wt.style.width = hb.width + "px";
+    d.appendChild(wt);
+  });
+  function wtCaret() {
+    var tw = document.createTreeWalker(wt, NodeFilter.SHOW_TEXT), tn = null;
+    while (tw.nextNode()) if (tw.currentNode.data.length) tn = tw.currentNode;
+    if (!tn) { var hb = h1.getBoundingClientRect(); caretTo(hb.left, hb.top + 4, parseFloat(getComputedStyle(h1).fontSize)); return; }
+    var b = rectAt(tn, tn.data.length - 1); caretTo(b.right, b.top, b.height);
+  }
+  typeOverlay(wt, working, 16, wtCaret);
   wait(150);
-  now(function () { settle(p1); });
-  at(T + 600, function () { flatten(p1); });
-  wait(80);
 
-  /* final title */
-  now(function () { tM.className = "del"; tM.after(tC); });
-  wait(80);
-  type(tC, finalTitle, 7);
-  now(function () { caret.remove(); });
-  at(T + 300, function () { tM.remove(); });
-  at(T + 650, function () { settle(h1); });
-  wait(120);
+  /* an outline: section headings with notes to self */
+  typeBlock(bPH, 8); typeNote(nPilots); wait(60);
+  typeBlock(bAH, 8); typeNote(nAbout); wait(60);
+  typeBlock(bBH, 8); typeNote(nBib); wait(150);
 
-  /* add a paragraph, reorder the pilots, add the pilots intro */
-  now(function () { fresh(p2); grow(p2, 420); });
-  wait(380);
+  /* the opening paragraph, rephrasing as it goes */
+  typeBlock(bP1, 1.8); wait(150);
+
+  /* one rewrite of the title */
+  eraseOverlay(wt, 7, wtCaret);
+  wait(working.length * 7 + 120);
+  now(function () { wt.remove(); });
+  typeBlock(bTitle, 11); wait(150);
+
+  typeBlock(bP2, 2); wait(150);
+
+  /* the pilots replace their note */
+  eraseNote(nPilots);
+  now(function () { if (pilots) pilots.classList.remove("nodiv"); });
+  typeBlock(bIntro, 2); wait(80);
+  bPilots.forEach(function (b) { typeBlock(b[0], 8); typeBlock(b[1], 1.8); wait(80); });
+
+  /* get involved */
+  eraseNote(nAbout);
+  bRows.forEach(function (b) { typeBlock(b[0], 8); typeBlock(b[1], 1.8); wait(60); });
+  wait(100);
+
+  /* references */
+  eraseNote(nBib);
+  bRefs.forEach(function (b) { typeBlock(b, 2); wait(100); });
+  /* let the last words fade, put every block back to plain text, hand over to the real page */
+  wait(1200);
   now(function () {
-    var a = pilots.querySelectorAll(".pilot"), r0 = a[0].getBoundingClientRect(), r1 = a[1].getBoundingClientRect();
-    pilots.classList.add("swapping");
-    pilots.insertBefore(a[1], a[0]);
-    var n0 = a[0].getBoundingClientRect(), n1 = a[1].getBoundingClientRect();
-    [[a[0], r0, n0], [a[1], r1, n1]].forEach(function (x) {
-      x[0].style.transition = "none";
-      x[0].style.transform = "translate(" + (x[1].left - x[2].left) + "px," + (x[1].top - x[2].top) + "px)";
-    });
-    void pilots.offsetHeight;
-    a.forEach(function (n) { n.style.transition = "transform " + Math.round(480 * K) + "ms cubic-bezier(.3,.7,.2,1)"; n.style.transform = ""; });
-    setTimeout(function () { if (done) return; pilots.classList.remove("swapping"); a.forEach(function (n) { n.style.transition = ""; }); }, 520 * K);
-  });
-  wait(420);
-  now(function () { fresh(intro); grow(intro, 360); });
-  wait(380);
-  now(function () { [h1, p1, p2, pilots].forEach(function (n) { n.classList.add("ok"); settle(n); }); });
-
-  /* below the fold, fill in the outlined sections: most visitors are still reading the top */
-  now(function () { fresh(dlist); grow(dlist, 480); shrink(outAbout, 380); });
-  wait(520);
-  now(function () { dlist.classList.add("ok"); });
-  wait(400);
-  function run(list, gap) { list.forEach(function (e) { edit(e); wait(gap); }); }
-  run(eTeam, 420); wait(350);
-  run(eLabel, 300); run(eSeek, 380); wait(350);
-  if (back) { now(function () { fresh(back[0]); fresh(back[1]); grow(back[0], 420); grow(back[1], 420); }); wait(650); }
-  run(eContact, 420); wait(300);
-  now(function () { settle(dl); });
-  at(T + 600, function () { flatten(dl); });
-
-  /* the bibliography, one entry at a time, then the citations resolve */
-  now(function () { shrink(outBib, 380); });
-  wait(300);
-  refItems.forEach(function (li, i) {
-    now(function () {
-      fresh(li);
-      li.style.height = ""; li.style.overflow = ""; li.style.opacity = "1";
-      li.style.marginTop = li.dataset.mt || ""; li.style.marginBottom = li.dataset.mb || "";
-    });
-    wait(60);
-    typeNodes(refText2[i], 6);
-    wait(300);
-  });
-  now(function () { refs.forEach(function (r, i) { r.textContent = refText[i]; }); });
-  wait(350);
-  now(function () { settle(d); d.querySelectorAll(".del").forEach(function (n) { n.remove(); }); });
-  wait(600);
-  /* merge the edit spans back into plain text so the hand-off is pixel-exact */
-  now(function () {
-    d.querySelectorAll("span.ins").forEach(function (s) { s.replaceWith(document.createTextNode(s.textContent)); });
+    caret.remove();
+    blocks.forEach(function (b) { b.recs.forEach(function (r) { r.spans.forEach(function (s) { s.remove(); }); r.spans = []; r.t.data = r.text; if (r.hid.parentNode) r.hid.remove(); }); });
+    pinned.forEach(function (x) { if (x) x.style.height = ""; });
     d.normalize();
   });
-  wait(500);
+  wait(250);
   now(finish);
+  }
 })();
     </script>
 
