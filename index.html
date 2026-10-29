@@ -149,6 +149,7 @@
   .pilot h3 { margin: 0 0 0.35rem; font-weight: 700; font-size: 1rem; }
   .pilot h3 .pn { font-style: normal; color: var(--rubric); margin-right: 0.15em; }
   .pilot p { margin: 0; }
+  .pilot.wide { grid-column: 1 / -1; padding: 1.1rem 0 0; margin-top: 1.4rem; border-left: 0; border-top: 0.6px solid var(--ink); }
 
   /* typeset paragraphs: indent instead of gaps, justified on wide screens */
   main > p { margin: 0; text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
@@ -168,6 +169,7 @@
   .draft .cur { position: absolute; display: none; width: 1px; background: var(--ink); }
   .draft .todo { position: absolute; left: 0; right: 0; font-family: var(--mono); font-size: 0.8rem; line-height: 1.4; color: var(--soft); white-space: pre-wrap; }
   .draft .pilots.nodiv .pilot + .pilot { border-left-color: transparent; }
+  .draft .pilots.nodiv .pilot.wide { border-top-color: transparent; }
   .draft .rpt { position: absolute; margin: 0; white-space: nowrap; text-indent: 0; }
   .draft .wt { position: absolute; margin: 0; color: var(--ink); }
   /* tracked changes: added text fades from blue, removed text is red and struck */
@@ -217,20 +219,24 @@
     <main>
       <h1>Keeping AI safety research trustworthy and scalable.</h1>
 
-      <p>Avoiding catastrophe from AI depends on safety research that we can trust and that keeps pace with capabilities. Within a few years, AI agents will likely write most of that research. They will write it faster than peer review, funding, and oversight can absorb, and some of them may quietly sabotage it. Labs guard against sabotage inside their own pipelines, but few treat the scientific literature itself as the surface to secure: a shared record that any model, trusted or not, can write into.</p>
+      <p>Avoiding catastrophe from AI depends on safety research that we can trust and that keeps pace with capabilities. Within a few years, AI agents will likely write most of that research, faster than peer review, funding, and oversight can absorb. Most of the trouble will be old problems at a new scale: errors that slip through, duplicated effort, and work too dense for people to follow. Some will be new, such as a model that quietly sabotages its own research.</p>
 
       <p><span class="org">Averroes Labs</span> is a metascience org that builds tools for the literature as a whole. We start with audits for sabotage and legibility. Next come coordination tools, so AI safety can move faster. Together they let funders measure what their grants produce, and reward work that keeps the literature reliable and fast.</p>
 
       <section class="pilots" aria-labelledby="pilots-h">
         <h2 id="pilots-h">Pilot projects</h2>
-        <p class="pilots-intro">Each pilot tests whether existing research can transition into an operational tool.</p>
+        <p class="pilots-intro">The first two pilots test whether existing research can transition into operational audits. The third tests how knowing about an audit changes the research.</p>
         <div class="pilot">
           <h3>Soundness audit</h3>
-          <p>Can an audit catch a model that quietly sabotages its own research? We extend Redwood Research’s Auditing Sabotage Bench <a class="ref" href="#ref1">[1]</a> from code to full submissions (paper plus code) and measure the catch rate.</p>
+          <p>Can an audit catch a model that quietly sabotages its own research? We extend Redwood Research’s Auditing Sabotage Bench <a class="ref" href="#ref1">[1]</a> from code to full submissions (paper plus code) and measure the catch rate. The main challenge is separating sabotage from honest but poor research. Are they distinct, or does sabotage pass detection more often?</p>
         </div>
         <div class="pilot">
           <h3>Legibility quiz</h3>
           <p>Can people still follow AI-written papers? We adapt KnowledgeGain <a class="ref" href="#ref2">[2]</a>, a measure of how much readers learn from science news, to research papers. A paper passes only if a weaker model, standing in for a human reader, can answer an independent quiz after reading <span style="white-space:nowrap">it.</span></p>
+        </div>
+        <div class="pilot wide">
+          <h3>Incentive pilot</h3>
+          <p>Does telling research agents how they will be graded change their research? Agents work on the same questions, some told they will be graded on reproducibility and some on ordinary peer review. We measure whether results become more reproducible and robust, what that costs in compute and time, and whether agents narrow their claims, pick easier questions, or game the grade.</p>
         </div>
       </section>
 
@@ -523,7 +529,7 @@
   var bBH = prep(bibH), bRefs = [];
   refItems.forEach(function (li) { bRefs.push(prep(li)); });
 
-  var nPilots = note(pilots, pilotsH, "% TODO: two pilots, sabotage and legibility");
+  var nPilots = note(pilots, pilotsH, "% TODO: sabotage, legibility, incentives");
   var nAbout = note(about, aboutH, "% TODO: team, who we need, contact");
   var nBib = note(bib, bibH, "% TODO: ASB, KnowledgeGain, LW post");
   if (pilots) pilots.classList.add("nodiv");
