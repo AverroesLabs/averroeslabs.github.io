@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Averroes Labs</title>
-<meta name="description" content="Averroes Labs is a metascience org building infrastructure for the AI-written scientific literature, starting with audits for sabotage and legibility, with coordination tools to follow.">
+<meta name="description" content="Averroes Labs is a metascience org that builds audits and coordination tools for AI safety research written by AI.">
 <meta property="og:title" content="Averroes Labs">
 <meta property="og:description" content="Keeping AI safety research trustworthy and scalable.">
 <meta property="og:url" content="https://averroeslabs.org">
@@ -136,6 +136,30 @@
     justify-content: space-between;
   }
 
+  /* theory of change figure: two parallel tracks between a shared start and end */
+  .toc { --g: 1.6rem; --cg: 1.6rem; --ca: calc((100% - var(--g)) / 4); --cb: calc(100% - (100% - var(--g)) / 4); margin: 2.75rem 0 0; font-size: 0.9rem; line-height: 1.45; }
+  .toc .grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: var(--g); }
+  .toc .node { display: flex; gap: 0.55rem; padding: 0.45rem 0.75rem; border: 0.6px solid var(--ink); background: var(--paper); text-align: left; }
+  .toc .node.wide { grid-column: 1 / -1; justify-self: center; width: 64%; box-sizing: border-box; }
+  .toc .node.ours { border-width: 2px; padding: calc(0.45rem - 1px) calc(0.75rem - 1px); }
+  .toc .n { font-weight: 700; flex: none; }
+  .toc .conn { position: relative; height: var(--cg); }
+  .toc .conn.fork, .toc .conn.merge, .toc .conn.wide { grid-column: 1 / -1; }
+  .toc .conn.fork { height: calc(var(--cg) + 0.9rem); }
+  .toc .v { position: absolute; width: 0; border-left: 0.6px solid var(--ink); }
+  .toc .v.top { top: 0; height: 50%; }
+  .toc .v.bot { top: 50%; bottom: 5px; }
+  .toc .v.full { top: 0; bottom: 5px; }
+  .toc .v.bot::after, .toc .v.full::after { content: ""; position: absolute; left: -3.6px; bottom: -5px; border-left: 3.3px solid transparent; border-right: 3.3px solid transparent; border-top: 5px solid var(--ink); }
+  .toc .v.c, .toc .v.m { left: 50%; }
+  .toc .v.a { left: var(--ca); }
+  .toc .v.b { left: var(--cb); }
+  .toc .h { position: absolute; top: 50%; left: var(--ca); width: calc(var(--cb) - var(--ca)); border-top: 0.6px solid var(--ink); }
+  .toc .lab { position: absolute; bottom: calc(50% + 0.2rem); font-size: 0.8rem; font-style: italic; line-height: 1.2; color: var(--soft); }
+  .toc .la { left: calc(var(--ca) + 0.4rem); }
+  .toc .lb { right: calc(100% - var(--cb) + 0.4rem); }
+  .toc figcaption { margin: 1.1rem 0 0; text-align: center; text-wrap: balance; font-size: 0.85rem; }
+
   /* pilot projects */
   .pilots {
     margin: 4.25rem 0 0;
@@ -171,6 +195,8 @@
   .draft .cur { position: absolute; display: none; width: 1px; background: var(--ink); }
   .draft .todo { position: absolute; left: 0; right: 0; font-family: var(--mono); font-size: 0.8rem; line-height: 1.4; color: var(--soft); white-space: pre-wrap; }
   .draft .pilots.nodiv .pilot + .pilot { border-left-color: transparent; }
+  .draft .toc .node:not(.on) { border-color: transparent; }
+  .draft .toc .conn:not(.on) { visibility: hidden; }
   .draft .pilots.nodiv .pilot.wide { border-top-color: transparent; }
   .draft .rpt { position: absolute; margin: 0; white-space: nowrap; text-indent: 0; }
   .draft .wt { position: absolute; margin: 0; color: var(--ink); }
@@ -203,6 +229,10 @@
     .pilots { grid-template-columns: 1fr; margin-top: 3.25rem; }
     .about { margin-top: 3.5rem; }
     .pilot { padding-right: 0; }
+    .toc { --g: 0.9rem; --cg: 1.3rem; margin-top: 2.25rem; font-size: 0.84rem; }
+    .toc .node { padding: 0.4rem 0.55rem; gap: 0.4rem; }
+    .toc .node.ours { padding: calc(0.4rem - 1px) calc(0.55rem - 1px); }
+    .toc .node.wide { width: 100%; }
     .pilot + .pilot { padding-left: 0; border-left: 0; border-top: 0; padding-top: 0; margin-top: 1.6rem; }
   }
 </style>
@@ -223,7 +253,25 @@
 
       <p>Avoiding catastrophe from AI depends on safety research that we can trust and that keeps pace with capabilities. Within a few years, AI agents will likely write most of that research, faster than peer review, funding, and oversight can absorb. Most of the trouble will be old problems at a new scale: errors that slip through, duplicated effort, and work too dense for people to follow. Some will be new, such as a model that quietly sabotages its own research.</p>
 
-      <p><span class="org">Averroes Labs</span> is a metascience org that builds tools for the literature as a whole. We start with audits for sabotage and legibility. Next come coordination tools, so AI safety can move faster. Together they let funders measure what their grants produce, and reward work that keeps the literature reliable and fast.</p>
+      <p><span class="org">Averroes Labs</span> is a metascience org that builds audits and coordination tools for AI safety research written by AI. The audits check whether a paper’s results hold and whether people can follow it. The coordination tools show which research directions are crowded, and alert everyone who built on a result that later fails. Each audit is an open standard that anyone can run, including frontier labs.</p>
+
+      <figure class="toc" aria-labelledby="toc-cap">
+        <div class="grid">
+          <div class="node wide"><span class="n">1</span><span>AI agents write most AI safety research, faster than peer review and coordination can absorb.</span></div>
+          <div class="conn fork" aria-hidden="true"><i class="v c top"></i><i class="h"></i><i class="v a bot"></i><i class="v b bot"></i><span class="lab la">trust</span><span class="lab lb">speed</span></div>
+          <div class="node ours"><span class="n">2a</span><span>Soundness audits and legibility quizzes.</span></div>
+          <div class="node ours"><span class="n">2b</span><span>A research registry and retraction alerts.</span></div>
+          <div class="conn" aria-hidden="true"><i class="v m full"></i></div>
+          <div class="conn" aria-hidden="true"><i class="v m full"></i></div>
+          <div class="node"><span class="n">3a</span><span>Funders require audits, so researchers make their work auditable from the start.</span></div>
+          <div class="node"><span class="n">3b</span><span>Researchers avoid duplicated work and stop building on failed results.</span></div>
+          <div class="conn merge" aria-hidden="true"><i class="v a top"></i><i class="v b top"></i><i class="h"></i><i class="v c bot"></i></div>
+          <div class="node wide"><span class="n">4</span><span>AI safety research stays trustworthy and keeps pace with capabilities.</span></div>
+          <div class="conn wide" aria-hidden="true"><i class="v c full"></i></div>
+          <div class="node wide"><span class="n">5</span><span>Catastrophic risk falls.</span></div>
+        </div>
+        <figcaption id="toc-cap">Figure 1: Theory of change. We build the boxes in bold, then work with funders and researchers to adopt them.</figcaption>
+      </figure>
 
       <section class="pilots" aria-labelledby="pilots-h">
         <h2 id="pilots-h">Pilot projects</h2>
@@ -504,6 +552,7 @@
   /* ---- the pieces of the page ---- */
   var q = function (s, r) { return (r || d).querySelector(s); };
   var h1 = q("h1"), ps = d.querySelectorAll(":scope > p"), p1 = ps[0], p2 = ps[1];
+  var fig = q(".toc"), figItems = fig ? q(".grid", fig).children : [], figCap = q("figcaption", fig);
   var pilots = q(".pilots"), pilotsH = q("h2", pilots), intro = q(".pilots-intro", pilots);
   var pilotDivs = pilots ? pilots.querySelectorAll(".pilot") : [];
   var about = q(".about"), aboutH = q("h2", about), dts = about ? about.querySelectorAll("dt") : [], dds = about ? about.querySelectorAll("dd") : [];
@@ -518,12 +567,18 @@
   /* drafts that get rephrased while writing: [final text, what was typed first] */
   var bTitle = prep(h1);
   var bP1 = prep(p1, [["catastrophe", "disaster"], ["Within a few years,", "Soon"]]);
-  var bP2 = prep(p2, [["tools for the literature", "infrastructure"]]);
+  var bP2 = prep(p2, [["audits and coordination tools", "infrastructure"]]);
   var bPH = prep(pilotsH), bIntro = prep(intro);
   var bPilots = [];
   pilotDivs.forEach(function (p) {
     bPilots.push([prep(q("h3", p)), prep(q("p", p), [["Can people", "Will people"]])]);
   });
+  var bFig = [];
+  Array.prototype.forEach.call(figItems, function (x) {
+    if (x.classList.contains("conn")) { var labs = []; x.querySelectorAll(".lab").forEach(function (l) { labs.push(prep(l)); }); bFig.push([x, null, labs]); }
+    else bFig.push([x, prep(x), []]);
+  });
+  var bCap = prep(figCap);
   var bAH = prep(aboutH), bRows = [];
   dts.forEach(function (dt, i) {
     bRows.push([prep(dt, [["Seeking", "Hiring"]]), prep(dds[i], [["Cofounders", "Engineers"], ["contact@", "TBD"]])]);
@@ -531,6 +586,8 @@
   var bBH = prep(bibH), bRefs = [];
   refItems.forEach(function (li) { bRefs.push(prep(li)); });
 
+  var nFig = null;
+  if (fig) { fig.style.position = "relative"; var fn = el("div", "todo"); fn.style.top = "0px"; fig.appendChild(fn); nFig = { n: fn, text: "% TODO: figure, theory of change" }; }
   var nPilots = note(pilots, pilotsH, "% TODO: sabotage, legibility, incentives");
   var nAbout = note(about, aboutH, "% TODO: team, who we need, contact");
   var nBib = note(bib, bibH, "% TODO: ASB, KnowledgeGain, LW post");
@@ -556,6 +613,7 @@
   wait(150);
 
   /* an outline: section headings with notes to self */
+  typeNote(nFig); wait(60);
   typeBlock(bPH, 8); typeNote(nPilots); wait(60);
   typeBlock(bAH, 8); typeNote(nAbout); wait(60);
   typeBlock(bBH, 8); typeNote(nBib); wait(150);
@@ -570,6 +628,16 @@
   typeBlock(bTitle, 11); wait(150);
 
   typeBlock(bP2, 2); wait(150);
+
+  /* the figure, drawn one box and one arrow at a time */
+  eraseNote(nFig);
+  bFig.forEach(function (b) {
+    now(function () { b[0].classList.add("on"); });
+    wait(b[1] ? 100 : 140);
+    if (b[1]) { typeBlock(b[1], 4); wait(80); }
+    b[2].forEach(function (l) { typeBlock(l, 14); });
+  });
+  typeBlock(bCap, 6); wait(150);
 
   /* the pilots replace their note */
   eraseNote(nPilots);
