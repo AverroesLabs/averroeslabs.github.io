@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Jason Fantl, Averroes Labs" />
+  <meta name="dcterms.date" content="2026-11-18" />
+  <title>Can Planted Errors Test Whether a Paper Is Legible to Humans?</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <style>
+  :root{--fg:#1d1d1f;--muted:#5a5a60;--rule:#e2e2e6;--link:#0b5cad;--bg:#fff;--code:#f4f4f6}
+  html{background:var(--bg)}
+  body{color:var(--fg);background:var(--bg);font:18px/1.6 Charter,"Bitstream Charter","Sitka Text",Cambria,Georgia,serif;max-width:46rem;margin:0 auto;padding:2.5rem 1rem 5rem}
+  header{margin-bottom:2rem;border-bottom:1px solid var(--rule);padding-bottom:1.2rem}
+  h1.title{font-size:2.1rem;line-height:1.2;margin:0 0 .6rem}
+  .author,.date{margin:0;color:var(--muted);font-size:1rem}
+  h2,h3{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;line-height:1.3}
+  h2{font-size:1.45rem;margin-top:2.6rem}
+  h3{font-size:1.15rem;margin-top:2rem}
+  a{color:var(--link)}
+  img{display:block;max-width:100%;height:auto;margin:1.6rem auto .6rem}
+  p:has(>img:only-child){margin:0}
+  table{border-collapse:collapse;font-size:.85rem;line-height:1.4;margin:1.2rem 0;display:block;overflow-x:auto}
+  th,td{border-bottom:1px solid var(--rule);padding:.4rem .6rem;text-align:left;vertical-align:top}
+  code{background:var(--code);padding:.1em .3em;border-radius:3px;font-size:.85em}
+  pre{background:var(--code);padding:1rem;overflow-x:auto;font-size:.8rem;line-height:1.45;border-radius:4px}
+  pre code{background:none;padding:0}
+  blockquote{margin:1rem 0;padding-left:1rem;border-left:3px solid var(--rule);color:var(--muted)}
+  nav#TOC{font-size:.95rem;border:1px solid var(--rule);border-radius:6px;padding:.6rem 1.2rem;margin:1.5rem 0}
+  nav#TOC ul{padding-left:1.1rem;margin:.3rem 0}
+  nav#TOC>ul>li{margin:.15rem 0}
+  .citebox{background:var(--code);padding:1rem;border-radius:6px}
+  @media (max-width:600px){body{font-size:17px;padding-top:1.5rem}h1.title{font-size:1.6rem}}
+  @media print{body{max-width:none;font-size:11pt}nav#TOC{display:none}a{color:inherit}}
+  .formats{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;font-size:.95rem;margin:.4rem 0 0}
+
+  </style>
+  <meta name="description" content="In Part 1, rewriting papers to be hard to follow barely lowered a model&#39;s quiz score, so here we tried a more direct test of legibility, following a suggestion from Jan Kirchner. We plant the same error in a paper and in a garbled version of it, and ask a model to find it. If writing quality matters">
+  <meta name="citation_title" content="Can Planted Errors Test Whether a Paper Is Legible to Humans?">
+  <meta name="citation_author" content="Fantl, Jason">
+  <meta name="citation_publication_date" content="2026/11/18">
+  <meta name="citation_publisher" content="Averroes Labs">
+  <meta name="citation_pdf_url" content="https://averroeslabs.org/blog/legibility-planted-errors.pdf">
+  <link rel="canonical" href="https://averroeslabs.org/blog/legibility-planted-errors/">
+  <meta property="og:url" content="https://averroeslabs.org/blog/legibility-planted-errors/">
+  <meta property="og:title" content="Can Planted Errors Test Whether a Paper Is Legible to Humans?">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://averroeslabs.org/blog/legibility-planted-errors/fig-2-whole-paper.png">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Can Planted Errors Test Whether a Paper Is Legible to
+Humans?</h1>
+<p class="author">Jason Fantl, Averroes Labs</p>
+<p class="date">18 November 2026</p>
+<p class="formats"><a href="/blog/legibility-planted-errors.pdf">PDF</a> · <a href="/blog/legibility-planted-errors.md">Markdown</a> · <a href="https://github.com/AverroesLabs/legibility-quiz-pilot">Data and code</a> · <a href="/blog/">Blog</a></p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#why-plant-errors" id="toc-why-plant-errors">Why plant
+errors</a></li>
+<li><a href="#the-test" id="toc-the-test">The test</a></li>
+<li><a href="#result-1-reading-the-whole-paper"
+id="toc-result-1-reading-the-whole-paper">Result 1: Reading the whole
+paper</a></li>
+<li><a href="#result-2-asking-about-every-paragraph"
+id="toc-result-2-asking-about-every-paragraph">Result 2: Asking about
+every paragraph</a></li>
+<li><a href="#result-3-reading-one-section-at-a-time"
+id="toc-result-3-reading-one-section-at-a-time">Result 3: Reading one
+section at a time</a></li>
+<li><a href="#mapping-the-solution-space"
+id="toc-mapping-the-solution-space">Mapping the solution space</a></li>
+<li><a href="#what-this-means" id="toc-what-this-means">What this
+means</a></li>
+<li><a href="#related-work" id="toc-related-work">Related work</a></li>
+<li><a href="#limitations" id="toc-limitations">Limitations</a></li>
+<li><a href="#how-to-cite" id="toc-how-to-cite">How to cite</a></li>
+</ul>
+</nav>
+<p><em>Preliminary results. This follows <a
+href="https://averroeslabs.org/blog/legibility-quiz/">Part
+1</a>.</em></p>
+<p><strong>TL;DR.</strong> In Part 1, rewriting papers to be hard to
+follow barely lowered a model’s quiz score, so here we tried a more
+direct test of legibility, following a suggestion from Jan Kirchner. We
+plant the same error in a paper and in a garbled version of it, and ask
+a model to find it. If writing quality matters to the reader, it should
+find fewer errors in the garbled version. Reading the whole paper, three
+of our four readers found about as many errors in garbled text as in the
+originals, and only the strongest, GPT-5.5, found clearly fewer. Asked
+about every paragraph in turn, the readers caught most errors in every
+version, but all four flagged more correct paragraphs when the text was
+garbled. Reading one section at a time and keeping only short notes,
+every reader found slightly fewer errors in garbled text, but no gap was
+clearly larger than chance. So bad writing rarely stops a model from
+judging an error, but we cannot yet rule this method out.</p>
+<h2 id="why-plant-errors">Why plant errors</h2>
+<p>Part 1 asked whether a weak model with the paper open could answer
+questions that need understanding. Scrambled, convoluted rewrites
+lowered its scores by only about five points. A model holds the whole
+paper in context, so it can dig an answer out of bad prose that a person
+would give up on.</p>
+<p>Jan Kirchner, whose <a
+href="https://arxiv.org/abs/2407.13692">prover-verifier work</a> made
+model outputs easier for time-limited people to check, pointed out what
+a quiz misses. A reader that gives the right answer has not shown that
+it would notice a wrong one. On his view, a text is legible when the
+reader’s answers are robustly correct, so a text written just as clearly
+but containing a mistake would not fool it.</p>
+<p>His games trained a “sneaky” model to write such mistakes, which is
+tricky and possibly risky. We used his lighter alternative instead,
+planting errors from a small fixed set of templates. The hope was that
+catching an error needs the reader to hold a claim and its contradicting
+evidence together, which is exactly what hard writing gets in the way
+of.</p>
+<h2 id="the-test">The test</h2>
+<p>The test is as simple as we could make it. Plant one error in a paper
+and ask a model to review the paper for internal inconsistencies. Then
+plant the same error in a garbled version of the same paper and ask
+again, and repeat over many errors. If the reader finds fewer errors in
+the garbled version, its success depends on how the paper is written,
+which is what a legibility test needs. Nothing else is required, no quiz
+and no rewritten reference copy, only the paper, the errors and the
+reader.</p>
+<p><img src="/blog/legibility-planted-errors/fig-1-setup.png"
+alt="The experiment, top to bottom: ten machine learning papers; clarified, original and garbled versions; five planted error types; four readers reading in three ways (whole paper, every paragraph, one section at a time); measures of errors caught and false alarms." /></p>
+<p><strong>Figure 1.</strong> The experiment, read top to bottom. Each
+error is planted in all three versions of a paper, and every reader
+reads every version in each of the three ways. The pattern next to each
+version is the one it has in the result figures.</p>
+<p><strong>Papers.</strong> Ten in all: three of Part 1’s arXiv
+preprints, the 2014 JMLR Dropout paper, and six papers accepted at
+peer-reviewed venues, drawn at random across lengths of about 4,000 to
+15,000 words.</p>
+<p><strong>Garbled versions.</strong> Each stacks every kind of
+difficulty we had. It compresses the paper to about two thirds of its
+length, swaps terms for opaque codes, moves evidence away from the
+claims it supports, and leaves connecting steps unstated. GPT-6.1 Sol
+checked it against the original until no fact or number was lost.</p>
+<p><strong>Clarified versions.</strong> As a known more-legible
+standard, Sol also rewrote each original as a structured explainer, with
+a summary first, a glossary, and each claim listed with its evidence. A
+separate check against the original confirmed nothing was lost or added.
+The clarified version only serves as a reference point. The test itself
+runs on the submitted paper alone.</p>
+<p><strong>Errors.</strong> GPT-6.1 Sol planted errors from seven
+templates, such as a wrong number, a reversed comparison or a claim
+stretched beyond what was tested, one error per copy, and kept only the
+ones it could find itself in the clarified versions, so every error is
+findable when the writing is clear. It did not have to find them in the
+garbled versions, since errors that garbling hides are what the test
+looks for. That left 82 errors across the ten papers.</p>
+<p><strong>Readers.</strong> We used OpenAI models only, the API we had.
+From strongest to weakest by how many errors they found, they were
+GPT-5.5 at low effort, GPT-5 mini at high effort, GPT-5.6 Luna at low
+effort and GPT-5.4 mini at medium effort, and every figure orders them
+that way. In the main test, each reader gets the whole paper and lists
+any internal inconsistencies, or none. Results 2 and 3 vary how the
+reader is asked and how much of the paper it can see. A cheap model
+graded whether each review named the planted error.</p>
+<p>Everything here cost about $1,500 in API calls at OpenAI’s list
+prices.</p>
+<h2 id="result-1-reading-the-whole-paper">Result 1: Reading the whole
+paper</h2>
+<p><img src="/blog/legibility-planted-errors/fig-2-whole-paper.png"
+alt="Share of planted errors found with the whole paper in view, in clarified, original and garbled versions, for four readers from strongest to weakest, pooled over ten papers. Only GPT-5.5 finds clearly fewer in the garbled version." /></p>
+<p><strong>Figure 2.</strong> Share of planted errors found by four
+readers (groups) reviewing the whole paper, pooled over all ten papers
+(82 errors). Plain bars are the clarified original, diagonal hatching
+the original, and crosshatching the garbled version. Whiskers are 95%
+intervals.</p>
+<p>Each reader reviewed the whole paper and listed any internal
+inconsistencies. GPT-5 mini, GPT-5.6 Luna and GPT-5.4 mini found about
+as many errors in the garbled versions as in the originals. GPT-5.5 was
+the exception. It found 0.67 of the errors in the garbled versions
+against 0.84 in the originals. Readers rarely accused clean papers of
+the planted errors.</p>
+<p>For three readers that made almost no difference, which is Part 1’s
+result again from a different direction. GPT-5.5’s gap is the first sign
+that a reader with the whole paper in view can pay for bad writing. It
+is still one reader of four on ten papers, and its catch rates on the
+two versions remain close enough that it cannot yet sort a single paper
+as legible or not.</p>
+<p>GPT-5.5’s gap was not spread evenly across error types. It found
+reversed comparisons about as often in garbled text as in the originals,
+but found causal claims and wrong calculations much less often. Errors
+that can be spotted by matching two facts seem to survive garbling,
+while errors that need the reader to follow the reasoning do not. The
+groups are small and we chose this split after seeing the data, so we
+treat it as a lead for the next experiment.</p>
+<h2 id="result-2-asking-about-every-paragraph">Result 2: Asking about
+every paragraph</h2>
+<p><img src="/blog/legibility-planted-errors/fig-3-every-paragraph.png"
+alt="Every-paragraph check pooled over ten papers, four readers from strongest to weakest. Top, share of planted errors caught, nearly all for the three stronger readers in every version. Bottom, false alarms: correct paragraphs flagged per 1,000 words, highest in the garbled versions and lowest in the clarified ones for every reader." /></p>
+<p><strong>Figure 3.</strong> The reader has the whole paper and is
+asked about each paragraph in turn whether it is consistent with the
+rest. Top, the share of planted errors caught. Bottom, other paragraphs
+flagged per 1,000 words, including real inconsistencies already in the
+original papers. Hatching as in Figure 2. Whiskers are 95%
+intervals.</p>
+<p>Result 2 removes the search step. The reader still has the whole
+paper, but we ask about every paragraph in turn, so it cannot miss an
+error by never looking at it. Because most paragraphs hold no error,
+this also measures how often the reader flags correct text.</p>
+<p>The three stronger readers caught nearly every planted error this way
+in every version, so without the search, garbling no longer hid errors
+from them. GPT-5.4 mini, the weakest, caught somewhat fewer. Every
+reader flagged more correct paragraphs in the garbled versions than in
+the originals, about half again as many, and the fewest in the clarified
+ones. Some flags land on real contradictions in the original papers,
+such as a count given as one number in the abstract and another later,
+and these raise every version alike. The extra flags on garbled text are
+a second place a legibility signal could show up, next to missed
+errors.</p>
+<p>We also told all four readers which passage holds the error and asked
+only about that passage. Each then judged the error about as well in
+garbled text as in the original. So what bad writing costs these readers
+lies in finding errors and in flagging correct text, not in judging
+them.</p>
+<h2 id="result-3-reading-one-section-at-a-time">Result 3: Reading one
+section at a time</h2>
+<p><img
+src="/blog/legibility-planted-errors/fig-4-section-by-section.png"
+alt="Share of planted errors found by four readers that see one section at a time, pooled over ten papers, in clarified, original and garbled versions. Every reader finds slightly fewer in the garbled version and the most in the clarified one." /></p>
+<p><strong>Figure 4.</strong> Share of planted errors found by readers
+that read each paper once, one section at a time, with notes of at most
+300 words, pooled over all ten papers. Hatching and whiskers as in
+Figure 2.</p>
+<p>Result 3 makes the reader read more like a person. It goes through
+the paper once, one section at a time, rewrites notes of at most 300
+words after each section, and cannot look back. A code defined pages
+earlier, or evidence far from its claim, should then cost it
+something.</p>
+<p>Every reader found slightly fewer errors in the garbled versions, but
+no gap was clearly larger than chance. As with the whole paper, every
+reader found the most errors in the clarified versions, so the readers
+respond to clearer writing, but not reliably to worse writing.</p>
+<h2 id="mapping-the-solution-space">Mapping the solution space</h2>
+<p>Every setting in this post comes down to two numbers: the share of
+errors it catches in the originals and the share it catches in the
+garbled versions. Plotting one against the other puts all of them on one
+map (Figure 5). On the diagonal a setting cannot tell the two versions
+apart. A useful test would sit in the bottom-right corner, catching most
+errors in text people can follow and few in text they cannot.</p>
+<p><img src="/blog/legibility-planted-errors/fig-5-map.png"
+alt="Map pooled over ten papers: each reader setting’s catch rate on original papers against its catch rate on garbled versions. Fill shows how the reader read the paper and marker shape shows which reader. Most settings sit near the diagonal; GPT-5.5 with the whole paper sits below it, still far above the green target corner. Asked about every paragraph, three of the four readers sit near the top corner." /></p>
+<p><strong>Figure 5.</strong> Each point is one reader setting, pooled
+over all ten papers. Its position shows the share of planted errors
+caught in the original papers (horizontal) and in their garbled versions
+(vertical). Black points read the whole paper, blue points were asked
+about every paragraph, and ochre points read one section at a time. The
+shape shows which reader. On the dashed diagonal a setting cannot tell
+the two apart, and the green corner is the target.</p>
+<p>Most settings sit near the diagonal. Figure 6 shows what each change
+we made did to a setting’s position.</p>
+<p><img src="/blog/legibility-planted-errors/fig-6-levers.png"
+alt="Six small maps on full 0 to 1 axes, pooled over ten papers, one per change: which reader, whole paper to one section at a time, smaller notes for GPT-5.5, being told where the error is, and GPT-5.5’s errors split by difficulty and by distance to the evidence. Arrows show how each change moved the setting; the green corner is the target." /></p>
+<p><strong>Figure 6.</strong> Each panel is the map of Figure 5, with
+the same axes, for one kind of change, pooled over all ten papers.
+Arrows run from a starting setting (open circle) to the changed one
+(filled circle), and lines join settings that differ in one way. The
+last two panels split GPT-5.5’s errors, read with the whole paper, into
+three groups each, by the difficulty each was built at and by how far
+its contradicting evidence sits.</p>
+<p>Only one change moved a setting off the diagonal, the choice of
+reader. GPT-5.5 is the one reader whose catch rate falls clearly on
+garbled text, and it stays below the diagonal whether it reads the whole
+paper or one section at a time, though less clearly by section. Cutting
+its notes from 1,200 words to 300 cost it errors in both versions alike,
+so the setting slid along the diagonal with its gap unchanged.
+Everything else also slid settings along the diagonal or up to the top
+corner. Reading one section at a time made GPT-5.6 Luna and GPT-5.4 mini
+miss more errors in both versions, and telling readers where the error
+is moved them all toward the top corner.</p>
+<p>The errors themselves gave little to work with. Splitting GPT-5.5’s
+errors by difficulty or by distance to the evidence moved it around a
+small region below the diagonal, and no subset came near the target.
+These subsets are small, so we read nothing more into them.</p>
+<p>Part 1’s quiz fits on the same map. Its readers lost about five
+points on the rewrites, which puts them near the diagonal with most
+settings here. Any test that scores a reader on text people can follow
+and text they cannot can be compared this way.</p>
+<h2 id="what-this-means">What this means</h2>
+<p>A direct test of legibility needs a reader that pays something for
+bad writing. With the whole paper in view, three of our four readers pay
+almost nothing. GPT-5.5 pays in finding errors, though the cost is still
+too small to sort a single paper. Asked about every paragraph, all four
+readers pay in another way, by flagging more correct text when it is
+garbled.</p>
+<p>Several parts of the test work, and all of them need nothing but the
+paper itself. Errors can be planted and checked automatically, readers
+rarely accuse clean papers of them, a cheap grader agrees with a
+stronger one on nearly every review, and telling the reader where the
+error is separates finding an error from judging it.</p>
+<p>The method may still work. Every reader found the most errors and
+raised the fewest false alarms in the clarified versions, so readers do
+respond to how text is written. And the strongest reader, GPT-5.5, was
+the only one that found fewer errors in garbled text, so newer, stronger
+models may do better.</p>
+<h2 id="related-work">Related work</h2>
+<p>Prover-verifier games (<a
+href="https://arxiv.org/abs/2407.13692">Kirchner et al. 2024</a>)
+trained a helpful and a sneaky prover against a small verifier. Outputs
+trained this way became easier for time-limited people to check. We keep
+the small checker, but replace the trained sneaky prover with errors
+planted from fixed templates, as Jan Kirchner suggested.</p>
+<p>Benchmarks of error detection in scientific papers ask whether a
+model can find real mistakes. They hold the paper fixed and test the
+reviewer, while we hold the reviewer fixed and vary the writing.</p>
+<p>Other work has also found that writing which slows people barely
+touches models. OneStopQA rewrote the same articles at three reading
+levels with the same questions. People did worse on the hardest level,
+while a RoBERTa reader scored the same on all three (<a
+href="https://arxiv.org/abs/2004.14797">Berzak et al. 2020</a>).
+Simplifying text helps people but lowered the accuracy of GPT-4o-mini
+and Llama-3.1-70B by up to 20 points (<a
+href="https://aclanthology.org/2025.gem-1.70">Anschütz et al. 2025</a>).
+GPT-4 kept 88% of its question-answering accuracy when every word’s
+inner letters were scrambled (<a
+href="https://arxiv.org/abs/2311.18805">Cao et al. 2023</a>), and
+RoBERTa kept its answers on sentence pairs with words shuffled so badly
+that human experts did little better than chance (<a
+href="https://aclanthology.org/2021.acl-long.569">Sinha et
+al. 2021</a>). What does hurt models is different from what hurts
+people. Shuffling the premises of a proof, adding one plausible but
+irrelevant clause, or making the reader link facts that share no words
+all cost strong models many points (<a
+href="https://arxiv.org/abs/2402.08939">Chen et al. 2024</a>; <a
+href="https://arxiv.org/abs/2410.05229">Mirzadeh et al. 2024</a>; <a
+href="https://arxiv.org/abs/2502.05167">Modarressi et al. 2025</a>).
+Weaker models are far more fragile to scrambling, and GPT-3.5 lost half
+its accuracy where GPT-4 lost a tenth (Cao et al. 2023). Part 1’s quiz
+result and this post’s Result 1 fit that pattern.</p>
+<p>People have been tested in pieces of this design, never as a whole.
+Peer reviewers given manuscripts with planted flaws report about a
+quarter to a third of them (<a
+href="https://europepmc.org/article/MED/9676667">Godlee et al. 1998</a>;
+<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC2586872">Schroter et
+al. 2008</a>), and a checklist naming what to look for raises detection
+at the cost of more false alarms (<a
+href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6864983">Chauvin et
+al. 2019</a>). Students miss contradictions planted in short texts more
+often when the two statements sit far apart or need an inference to
+connect (<a href="https://files.eric.ed.gov/fulltext/ED237577.pdf">Baker
+1985</a>; <a
+href="https://link.springer.com/article/10.3758/BF03198295">Epstein et
+al. 1984</a>), which is what our garbling does. We found no study that
+plants the same error in clear and garbled versions of a text and asks
+people to find it.</p>
+<h2 id="limitations">Limitations</h2>
+<ul>
+<li><strong>Small samples.</strong> Ten papers and 82 errors give
+intervals of about ±0.1 on each rate, so only large differences show up
+clearly.</li>
+<li><strong>Many tries.</strong> We tried several readers and ways of
+asking, and in that many tries some result is likely to look good by
+chance. GPT-5.5’s whole-paper gap is the clearest result, but it is
+still one reader on ten papers. The false-alarm difference in Result 2
+was not planned as a test before we saw it, and its intervals cover
+paragraphs, not differences between papers.</li>
+<li><strong>The garbled versions were not checked with people.</strong>
+We assume they are hard for a person to follow, and Result 1 suggests
+they are not hard for most models. If they are easy for people too, the
+test was never really challenged.</li>
+<li><strong>Legibility to people is assumed, not measured.</strong> We
+treat the original papers as legible because they were written for
+people. We have not measured how people read them.</li>
+<li><strong>One provider.</strong> Every reader, writer and grader was
+an OpenAI model, so their blind spots may be shared.</li>
+<li><strong>Our errors.</strong> We chose the error templates. Two
+kinds, a result left out of a summary and a claim with no support, could
+not yet be tested properly, and naturally occurring errors may behave
+differently.</li>
+<li><strong>A strong model is the referee.</strong> GPT-6.1 Sol built
+and checked the errors, the garbled versions and the clarified versions.
+Its own mistakes would pass into the results unnoticed.</li>
+</ul>
+<p>The next step is to calibrate the test. We would tune a setting
+toward the target corner on these ten papers, pick it by a rule fixed in
+advance, and only then run it once on nine papers held out from
+everything so far. The repository that accompanies this post holds the
+code, prompts, raw model outputs and every experiment’s preregistered
+predictions, so each result here can be rerun. A detailed reference
+report written for AI agents, <a
+href="https://github.com/AverroesLabs/legibility-quiz-pilot/blob/main/docs/part2-agent-report.md">docs/part2-agent-report.md</a>,
+gathers every number behind this post with its source, so an agent can
+answer questions about it without searching the repository.</p>
+<hr />
+<p>Previous: <a
+href="https://averroeslabs.org/blog/legibility-quiz/">Part 1: Can a quiz
+test whether a paper is legible to humans?</a></p>
+<h2 id="how-to-cite">How to cite</h2>
+<p>Jason Fantl. <em>Can Planted Errors Test Whether a Paper Is Legible
+to Humans?.</em> Averroes Labs, November 2026.
+https://averroeslabs.org/blog/legibility-planted-errors/</p>
+<pre class="bibtex"><code>@misc{fantl2026legibilityerrors,
+  title  = {Can Planted Errors Test Whether a Paper Is Legible to Humans?},
+  author = {Fantl, Jason},
+  year   = {2026},
+  month  = nov,
+  publisher = {Averroes Labs},
+  url    = {https://averroeslabs.org/blog/legibility-planted-errors/},
+  note   = {Data and code: https://github.com/AverroesLabs/legibility-quiz-pilot}
+}</code></pre>
+</body>
+</html>
