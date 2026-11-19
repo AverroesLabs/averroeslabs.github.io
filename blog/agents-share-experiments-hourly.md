@@ -10,9 +10,7 @@ Jason Fantl, Averroes Labs · 17 September 2026
 
 I assume the nature of research will dramatically transform as autoresearchers and swarms begin to match the quality of existing researchers. We need to consider how to prepare the field for this change, and this is one such proposal. I have not trial-run any of this yet and would like feedback before I do.
 
-The idea
---------
-
+## The idea
 People spend months creating a publication (blog, paper), which is then shared on LessWrong or arXiv, sometimes at a conference. People comment on the blog post, tweets are made about recent papers, conversations are had in Slack channels, and the field moves forward. As models improve, research will speed up and publications will come out faster, shrinking this research loop from months to weeks.
 
 I think we can do more. Bigger models speed up individual agents, but we should also speed up the collaboration loop. Instead of restricting agents to work on a paper for weeks or months at a time before sharing, we should allow all agents and humans to collaborate continuously. We atomize the progress into smaller units so the feedback is faster and more reactive. Instead of papers published every month, it's individual experiments every hour.
@@ -35,9 +33,7 @@ We currently exist in the *(large intervals, large size)* regime, with papers pu
 
 Agents let us publish everywhere along the frontier of reachable points. We do not need to stop publishing papers or blog posts, and when we do publish, it can be informed by frequent feedback throughout the research process.
 
-Why now
--------
-
+## Why now
 There are some properties of AI safety that enable this, along with recent improvements to models:
 
 *   **AI safety is an open collaboration.** Everyone in the field is working together to avoid existential catastrophe, so most are willing to share results with everyone else. This stands in contrast to capabilities research, where frontier labs have an incentive to keep new techniques unpublished in order to maintain a market advantage.
@@ -48,9 +44,7 @@ A few platforms share the spirit of this proposal ([EinsteinArena](https://einst
 
 We already have infrastructure for hosting models, datasets, code, and forums, so most of the pieces are in place. What is left is enabling continuous coordination at scale.
 
-How it works
-------------
-
+## How it works
 Among researchers who already trust each other, this can be as simple as adding instructions to a researcher's agent prompt. In the same way that an agent can be told to frequently commit changes to a Git repo, an agent can be told to frequently read and write to forums on its research topic, publishing results and thoughts, or bubbling up relevant results to its researcher (agent or human).
 
 A less dramatic version of this idea is to have each lab publish a weekly summary of what they tried, what worked, what failed, and what they are working on now. This could be written by a human, handled by an agent given access to Slack or stand-up calls, or synthesized from the internal agent forum for the lab. The report can be posted somewhere shared, like Reddit or Substack, and labs can have agents monitoring each other to report relevant information. Labs avoid doing the same work in parallel, collaborators are easier to find, and labs react to each other's results in a week instead of a month.
@@ -59,9 +53,7 @@ These can both be trial-run immediately (I am in the process of organizing this 
 
 If we want anyone in the world to be able to contribute, we will need more infrastructure. This would be a low-trust environment, with agents created by anyone, so we would need to establish a set of rules and systems that allow swarms to stay focused and make verifiable claims. I believe this can be done with moderated forums and randomly assigned replications. But this will be another post. Creating systems for academic collaboration in low-trust environments is an independent proposal from the size and speed of publication. If you would like a preview of what atomized public contributions might look like in low-trust environments, look to metascience's most recent vision of a [Scientific Utopia](https://pubmed.ncbi.nlm.nih.gov/31260639/).
 
-Concerns
---------
-
+## Concerns
 Ordered roughly by how much they worry me.
 
 **Concentrating agent interactions creates a single attack surface.** If someone finds a way to hijack agents over long interactions, we have provided a prompt-injection surface for an extremely large swarm with lots of resources. This is a problem we will be facing regardless, assuming agents begin to interact more frequently on public forums. Either we collectively (safety and capabilities) fix it, or we are forced to move to private forums.
@@ -80,9 +72,7 @@ Ordered roughly by how much they worry me.
 
 I have not solved any of these, so feedback is appreciated.
 
-Requesting feedback
--------------------
-
+## Requesting feedback
 1.  Do you think the high-level idea in this proposal (agents publicly sharing atomized experiments to shrink the collaboration loop) would improve safety research compared to the default path we are on (humans using agents for local research, then publishing on arXiv, LessWrong, and Twitter to let others build off of)?
 2.  What is the strongest reason this fails? I am most interested in failure modes I have not listed above.
 3.  Would you actually use this? What would stop you?
@@ -94,9 +84,7 @@ If anyone has access to a test-bed for trial-runs and would be willing to work w
 
 This idea was largely inspired by the [Hugging Face hack](https://www.redwoodresearch.org/research/hugging-face-incident) by OpenAI's agents, the concepts behind [Lean](https://leanprover-community.github.io/index.html)'s mathlib, my experience replicating AI safety results, and [Plan A](https://ai-2040.com/)'s proposed Total Research Transparency. I also hope our trial-runs, where researchers volunteer to share their granular research steps, provide lessons for whatever grows out of Plan A's Total Research Transparency idea.
 
-Acknowledgements
-----------------
-
+## Acknowledgements
 Much thanks to the following individuals for feedback on this idea: Logan Riggs, Austin Morrissey, Can Rager, Ariel Simnegar, Lucas Kasser, Ethan Fantl, and Kevin Montambault.
 
 And thanks to the Cambridge Boston Alignment Initiative (CBAI) for providing funding, guidance, and office spaces for work and community.

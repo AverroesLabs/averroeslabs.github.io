@@ -12,17 +12,15 @@ As we enter into a new era of research where the primary scientific contributors
 
 This post catalogs about 50 failure modes in science, the evidence for each, what makes each category worse, and rough predictions on how AI researchers will impact that failure mode. This does not include the *novel* failure modes we should expect from AI researchers, and only lightly touches on potential solutions. The primary focus here is on the failure modes; a different post will discuss mitigations. I group the failure modes into seven categories.
 
-1.  [Statistical selection](#Statistical_selection)
-2.  [Publish or perish](#Publish_or_perish)
-3.  [Misconduct](#Misconduct)
-4.  [Honest errors](#Honest_errors)
-5.  [Experimental design](#Experimental_design)
-6.  [Verification failure](#Verification_failure)
-7.  [Compounding effects](#Compounding_effects)
+1.  [Statistical selection](#statistical-selection)
+2.  [Publish or perish](#publish-or-perish)
+3.  [Misconduct](#misconduct)
+4.  [Honest errors](#honest-errors)
+5.  [Experimental design](#experimental-design)
+6.  [Verification failure](#verification-failure)
+7.  [Compounding effects](#compounding-effects)
 
-Statistical selection
-=====================
-
+## Statistical selection
 Science is filled with exaggerated effects and false positives, mostly unintentionally. The essential issue is that experiments are noisy, filtered by significance (p < 0.05), and the base rate of true results is low in many fields.
 
 With noisy experiments and a filter, we only publish the lucky results that made it past the filter, which inflates the estimated effect of the result (sometimes called the Winner's Curse), see ["Why most discovered true associations are inflated" Ioannidis (2008)](https://doi.org/10.1097/EDE.0b013e31818131e7). This is concerning since it will make effects look larger than they are.
@@ -56,9 +54,7 @@ This gets worse when people use low-power experiments, the base rate of tested f
 
 As we transition to AI researchers, I expect the File Drawer Problem to get much worse. AI can run many more experiments and variations of experiments, look through more data, and therefore publish more false positives, at least in computational fields such as AI safety. There are known solutions to these issues; the challenge is building those solutions into infrastructure. Proposals have been made for re-running promising results, requiring a lower p value, labeling results as confirmatory or exploratory with the number of experiments it took, pre-registering experiments, publishing the null results, and/or requiring independent replications. It should also become easier to count the null results and identify when a researcher made a decision in the garden of forking paths, as AI researchers produce logs containing their every action and thought, which might be submitted alongside research or just used by the researcher to look back and identify null results and decisions. While these solutions can and should be implemented, their success will depend on whether they are incentivized, which we consider next.
 
-Publish or perish
-=================
-
+## Publish or perish
 Researchers are incentivized to publish as early as possible and spend the smallest amount of effort to publish, sometimes going as far as fabricating work. Often attributed to the "publish-or-perish" incentives in academia, researchers will optimize for the metric they are judged on, which is typically citation count and number of publications.
 
 Many of the issues in this document are downstream of incentives, but this section is specifically for issues stemming directly from the "publish-or-perish" incentives that most researchers operate under.
@@ -76,9 +72,7 @@ What incentives AI researchers will have is deeply unclear, so all predictions i
 
 In the extreme case these incentives can lead to misconduct, which we look at next.
 
-Misconduct
-==========
-
+## Misconduct
 Most of this document is about unintentional failures, but some are deliberate.
 
 *   **Fabrication:** Results are sometimes modified to fit a claim, or made up altogether. ["How Many Scientists Fabricate and Falsify Research?" Fanelli (2009)](https://doi.org/10.1371/journal.pone.0005738) pooled surveys and found about 2% of scientists admitted to fabricating or falsifying data at least once, and about 14% reported knowing a colleague who had. The Dutch National Survey on Research Integrity ([Gopalakrishna et al. 2022](https://doi.org/10.1371/journal.pone.0263023)) found 4.3% admitted to fabrication.
@@ -90,9 +84,7 @@ These issues get worse with less oversight by the community, or with more coordi
 
 Assuming we still do not replicate experiments, I suspect AI researchers will cause fabricated results to become more common and paper mills more prevalent. This is because the ability to create credible-looking fraudulent papers will increase, academics will face increased competition from the increased number of AI researchers, and it will be easier to create citation cartels since new papers and authors can be fabricated. This can be mitigated by incentivizing replications and quality peer reviews, as long as the replications are themselves not also fabricated, which I believe is possible to do through a redesign of the ecosystem's infrastructure, such as randomly assigning replications.
 
-Honest errors
-=============
-
+## Honest errors
 Some results are wrong simply because someone made a mistake and no one caught it.
 
 *   **Code bugs:** Analysis code contains a bug that changes the result. Geoffrey Chang retracted five papers in 2006, including three in Science, because his analysis software flipped two columns of data, inverting the protein structures he reported ([Miller 2006](https://doi.org/10.1126/science.314.5807.1856)).
@@ -102,11 +94,9 @@ Some results are wrong simply because someone made a mistake and no one caught i
 
 Everyone makes mistakes, so these errors only get caught when time is dedicated to looking for those mistakes. This means we can expect these to get worse if the quality of research goes down or the time spent looking for mistakes goes down.
 
-AI researchers should minimize most of these issues. It does not cost an AI much to spend extra time looking for bugs or corrupted data, and its ability to avoid these issues in the first place will improve with capabilities. This does depend on whether there is an incentive to catch bugs, which should be true as long as retractions are treated more seriously. However, if AI researchers continue to reward hack, they also have an incentive to ignore or intentionally add bugs which support their conclusions. This may also compound with the correlated errors we consider in [Verification failure](#Verification_failure).
+AI researchers should minimize most of these issues. It does not cost an AI much to spend extra time looking for bugs or corrupted data, and its ability to avoid these issues in the first place will improve with capabilities. This does depend on whether there is an incentive to catch bugs, which should be true as long as retractions are treated more seriously. However, if AI researchers continue to reward hack, they also have an incentive to ignore or intentionally add bugs which support their conclusions. This may also compound with the correlated errors we consider in [Verification failure](#verification-failure).
 
-Experimental design
-===================
-
+## Experimental design
 Even if something is measured in good faith, the code has no bugs, and it replicates, [you may not be measuring what you think you are measuring](https://www.lesswrong.com/posts/9kNxhKWvixtKW5anS/you-are-not-measuring-what-you-think-you-are-measuring).
 
 This is a deep topic and essentially the study of experimental design, so we only list a few of the known failures here. The failures below are organized using the four types of validity from [*Experimental and Quasi-Experimental Designs for Generalized Causal Inference* Shadish, Cook & Campbell (2002)](https://books.google.com/books/about/Experimental_and_Quasi_experimental_Desi.html?id=o7jaAAAAMAAJ).
@@ -132,9 +122,7 @@ I suspect AI researchers will make these problems moderately worse. We have yet 
 
 A lot of these errors could be caught by review, so we look next at some of the failure modes in science around verification.
 
-Verification failure
-====================
-
+## Verification failure
 There is a well-known crisis in academia where most papers are not replicated, which allows false claims to spread unchallenged. Even when someone does carry out a replication and they find errors that falsify the original paper, the field does not update and often even continues to cite the original result as if it had never been falsified.
 
 *   **Won't replicate:** Most work is never checked. See [Makel et al. (2012)](https://doi.org/10.1177/1745691612460688) under Novelty bias, and [Wallach et al. (2017)](https://doi.org/10.1001/jamainternmed.2016.9125) under Subsets of data.
@@ -152,9 +140,7 @@ AI researchers have the potential to alleviate these concerns, but under the exi
 
 If peer reviews and replications are not functioning well, then the scientific ecosystem will become contaminated with false statements. This effect gets worse as new work builds on previous unverified work, and the issues compound. This is the type of failure we consider next.
 
-Compounding effects
-===================
-
+## Compounding effects
 As publications get more citations, they are more likely to be seen and cited in the future. This is one example of a feedback loop in science, but there are many, and they can have compounding effects which can be long-lasting and wide-reaching.
 
 *   **Attention collapse:** Researchers pay attention to whatever others are paying attention to, so the field can over-invest in one idea and fail to explore the full space of ideas. ["Slowed canonical progress in large fields of science" Chu & Evans (2021)](https://doi.org/10.1073/pnas.2021636118) analyzed 1.8 billion citations across 241 subjects and found that as fields grow, citations concentrate on already well-cited papers, the most-cited list stops changing, and new papers rarely break through.
@@ -171,9 +157,7 @@ Much of the scientific ecosystem is built on compounding work: papers building o
 
 I expect AI researchers to mitigate some of these issues while amplifying others. AI researchers will be able to read every single citation in a paper and verify it supports the claim it was cited for. But I expect they will have issues with correlated data, since if most AIs are the same model, they will all "independently" choose the same datasets, methods, and tools. I suspect there will be an increase in attention collapse since there will be a larger number of researchers, and positive feedback loops tend to grow more unequal as the number of participants grows. There will also be an additional novel pressure on the Matthew effect through publications being included in model training data, which makes models more likely to know about and cite popular work. It seems likely that paradigm lock-in will initially get worse as models are all the same and inherit perspectives and training data from their previous models (people switching to a new model is like a funeral, but the new models are not as distinct from model to model as people are from funeral to funeral), and then in the long term the models should discover new paradigms as capabilities improve. Biased meta-analyses will likely not change much, but they could be replaced with stronger meta-analyses which replicate every paper they analyze. Copy errors could be a real issue if there are more low-quality researchers, but this issue will diminish with capabilities, and can easily be minimized by dedicating some time to looking for bugs in any code the researcher uses.
 
-Read more
-=========
-
+## Read more
 While AI researchers have the potential to accelerate progress in all fields, there is also the possibility they break existing infrastructure, especially at the weak points considered in this post. This was not an exhaustive list, so below are more readings which attempt to catalog the failures of science.
 
 1.  ["A manifesto for reproducible science" Munafò et al. (2017)](https://www.nature.com/articles/s41562-016-0021): maps threats to reproducibility onto stages of the research cycle (design, collection and analysis, publication) and proposes fixes in five areas: methods, reporting, reproducibility, evaluation, and incentives.
@@ -186,9 +170,7 @@ While AI researchers have the potential to accelerate progress in all fields, th
 8.  ["The natural selection of bad science" Smaldino & McElreath (2016)](https://doi.org/10.1098/rsos.160384): a model of how rewarding publication count spreads poor methods, even without deliberate cheating.
 9.  ["Troubling Trends in Machine Learning Scholarship" Lipton & Steinhardt (2018)](https://arxiv.org/abs/1807.03341): four problems in ML papers: mixing explanation with speculation, misattributing the source of empirical gains, "mathiness," and misuse of language.
 
-Acknowledgements
-================
-
+## Acknowledgements
 Thanks to the Cambridge Boston Alignment Initiative (CBAI) for providing funding, guidance, and office space for work and community.
 
 ## How to cite

@@ -24,18 +24,14 @@ We should also keep in mind that autonomous researchers may cause the ecosystem 
 4.  Papers are staked with a dollar amount (or some "reputation" points) roughly representing the authors' confidence and effort, and anyone who falsifies the paper is awarded the stake, creating a market for true statements. This keeps out low-effort work by imposing a cost on submission and incentivizes replications through the potential reward from falsification. However, this only moves the verification problem to the falsification step, so it would need to be combined with another mechanism. Related ideas are [prediction markets on replication](https://www.pnas.org/doi/10.1073/pnas.1516179112) and the [ERROR project](https://www.dig.psy.unibe.ch/research/current_projects/error_estimating_the_reliability_and_robustness_of_research/index_eng.html), which pays bounties for errors found in published papers.
 5.  A user pays to have their paper reviewed (small payments for AI review, larger amounts for human review), and the more favorable the review, the more visibility the paper gets on a forum. This, along with a few other ideas, was proposed by [@Raemon](https://www.lesswrong.com/users/raemon?mention=user) in [An Alignment Forum for AIs? (or: Verification in the Age of Slop)](https://www.lesswrong.com/posts/KhmMXnR7s5HwXRLqB/an-alignment-forum-for-ais-or-verification-in-the-age-of).
 
-Today's infrastructure
-----------------------
-
+## Today's infrastructure
 Today's AI safety research infrastructure is largely the same as the rest of academia's: researchers from all over (university labs, non-profits, industry, think tanks, independents) receive funding to write papers, which they then submit to journals and conferences in the hope of publication, and then repeat the process. The publication platforms attempt to filter for high-quality work, first by desk-rejecting papers that fail to meet minimum standards, and then through peer review, which ML conferences increasingly staff by requiring submitting authors to serve as reviewers.
 
 It is also standard in ML to upload work to preprint servers such as arXiv. This lets researchers claim ideas that might otherwise get scooped during the long publication process, and share their research before it has been peer reviewed. The AI safety community has also developed the helpful habit of writing a blog post alongside each paper; the post has the same content but is easier to digest.
 
 Research dissemination is now done through a combination of Twitter, blog posts, arXiv, Google search, and, increasingly, LLM literature reviews. Journals and conferences play a smaller role in dissemination because their timelines are too long for AI safety research. The publication process can take several months to a year, but current AI safety research moves on the order of a few months, and this is only getting shorter.
 
-Autonomous researchers
-----------------------
-
+## Autonomous researchers
 If we expect autonomous researchers to improve and take over more of the research (as we are seeing), what qualities can we expect to see across science?
 
 *   **More research**. The number of researchers will scale with the number of GPUs, and the researchers will work non-stop. Publication rates will be unprecedented.
@@ -46,9 +42,7 @@ Because research quality is uncertain, I think it is best to assume that researc
 
 Autonomous researchers will also allow people with any background to do research in any field, although subject-matter experts will have an advantage because they can guide their autonomous researchers' thinking. This advantage will shrink as the AIs become more capable and disappear completely once AIs can match the experts' research quality. This means we should expect research, including high-quality research, to come from everywhere.
 
-The expected issues
--------------------
-
+## The expected issues
 If we continue to use the existing scientific ecosystem without changes, and autonomous researchers become widespread, here are the issues that I suspect will be the most pressing.
 
 *   **Peer review will collapse**.
@@ -71,9 +65,7 @@ If we continue to use the existing scientific ecosystem without changes, and aut
     *   [**Scalable Oversight**](https://www.lesswrong.com/w/scalable-oversight). In the same way that a layperson cannot understand a niche field of science today, the whole of humanity will not be able to understand any field of science in the future. We will need to either gate the progress of science on human understanding, let it accelerate even as we become unable to comprehend its results, or find some way to enforce legibility without slowing down progress.
     *   [**Gradual Disempowerment**](https://gradual-disempowerment.ai/). If AI writes the papers and only other AIs read them, then humans are not in the loop at all. Science could drift from human control. Without participating, we will not understand the field well enough to decide where research should be focused, so we will hand that control to AI.
 
-Takeaways
----------
-
+## Takeaways
 Autonomous researchers have huge potential to speed up progress in AI safety, but we should consider the issues they might introduce as well. Each issue above assumes no intervention. I suspect some have simple fixes, while others will require more thinking.
 
 The biggest issue I see is that the volume of research produced by autonomous researchers will disrupt much of our existing infrastructure. This will be compounded by model homogeneity, which will introduce issues science has not dealt with before. New results will vastly outpace our ability to verify them. We should be proactive in valuing replication and review now, before the increase in volume forces a rushed response. Diversity of thought will shrink. We should be developing diversifying mechanisms before this issue silently slows science. Humans will be distanced from science. We should find automated ways to anchor research to human understanding so we can let autonomous researchers move as fast as possible without loss of oversight.
@@ -84,9 +76,7 @@ I think we need a metascience organization for AI safety research, one that expe
 
 If you are working on this, want to, or think something here is wrong, I'd love to hear from you. I'm especially interested in how we might address these issues, and whether any are already being addressed.
 
-Acknowledgements
-----------------
-
+## Acknowledgements
 Many thanks to Logan Riggs, Austin Morrissey, and Ethan Fantl for feedback on these ideas.
 
 Thanks also to the Cambridge Boston Alignment Initiative (CBAI) for providing funding, guidance, and office space for work and community.

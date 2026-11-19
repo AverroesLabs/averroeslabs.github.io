@@ -12,9 +12,7 @@ I wanted a better idea of AI usage and impact in the research community, so I sp
 
   
 
-Recent AI usage for research
-----------------------------
-
+## Recent AI usage for research
 Anthropic [claims](https://www.anthropic.com/institute/measuring-pace-of-ai-development) that 26% of AI R&D work is now being led by AI (still some human oversight). Only 6 months ago they claim researchers had primarily been "collaborating" with AI and AI led research less than 1% of the time. This is a significant change in a short period of time.
 
 OpenAI [claims](https://openai.com/index/research-acceleration-view-inside-openai/) it has built an "automated research intern", an AI agent capable of accomplishing well-scoped problems with some human steering, helping researchers move at increasing rates and solve more complex tasks. They claim 70% of researchers now run 4 or more agents concurrently, that researchers are running 1.6x more experiments each day compared to 2025, and that agents are successfully performing complex research tasks without any intervention 15 percentage points more often compared to 7 months ago. The longer tasks (4-8 hours) which were successful still require at least one intervention over half of the time.
@@ -25,9 +23,7 @@ All of these claims are reports from AI companies, who are incentivized to promo
 
   
 
-Concerning trends in publishing
--------------------------------
-
+## Concerning trends in publishing
 The journal of *Organization Science*  [found](https://pubsonline.informs.org/doi/10.1287/orsc.2026.ed.v37.n3) that 30% of paper abstracts and 10% of peer reviews were primarily AI written (70%-100% of the total text detected as AI according to Pangram), and only 40% of submitted papers and 65% of peer reviews were primarily human written (0%-15% AI) in early 2026. The quality of submitted papers has been decreasing (by the journal's metrics), and reviews are becoming more homogeneous. They find the submission volume has risen by 42% since 2022, which they primarily trace to AI combined with publish-or-perish incentives. In their own words, "we view the current system as unsustainable".
 
 The volume of papers has increased dramatically across conferences. The 2026 Association for the Advancement of Artificial Intelligence (AAAI) had to [review roughly 23,000 papers, nearly twice as many as the previous year](https://aaai.org/conference/aaai/aaai-26/review-process-update/). Many of the new submissions are traced to China and first-time authors. It is unclear how much is enabled by AI. The 2026 International Conference on Learning Representations (ICLR) [received 19,525 valid submissions](https://blog.iclr.cc/2026/03/31/a-retrospective-on-the-iclr-2026-review-process/), up from [11,603 in 2025](https://arxiv.org/abs/2504.09737), roughly a 68% increase in one year. Abstract registrations for [ICLR 2027 reached roughly 62,000 (estimated from submission IDs), up from 25,649 for 2026](https://reviewer3.com/evidence/iclr-submissions-2027).
@@ -40,9 +36,7 @@ ICML ran a [randomized study to test the impact of restricting LLM usage in peer
 
   
 
-What people are doing about this
---------------------------------
-
+## What people are doing about this
 ### Restricting AI use
 
 Conferences such as Neural Information Processing Systems (NeurIPS) are now [restricting AI usage](https://blog.neurips.cc/2026/06/02/ai-generated-papers-in-the-neurips-2026-position-paper-track/) in position papers and desk-rejecting papers if a substantial portion is detected to be AI. They desk-rejected 18.4% of papers based on Pangram scores, which caused significant backlash focused on false positives and the sensitivity of Pangram settings. ICLR now [desk-rejects papers with hallucinated references](https://blog.iclr.cc/2026/03/31/a-retrospective-on-the-iclr-2026-review-process/), and in 2027 they will [rate-limit submissions](https://blog.iclr.cc/2026/09/02/submission-policies-for-iclr-2027/) to 20 papers per author, and to just 1 if this is the first major publication for all authors on a paper.
@@ -63,9 +57,7 @@ New types of scientific structures are also being proposed and trial-run in resp
 
   
 
-Personal thoughts
------------------
-
+## Personal thoughts
 I expect publication rates will keep increasing, but primarily for lower-quality work. The quality should also increase with model capabilities, but I suspect that to progress at a slower rate. If so, the average quality of submitted research will initially decrease with time, and once the quality from AI catches up to humans, it will increase again.
 
 Journals claim they will not be able to keep up, and are now trying new methods to try and adapt. I expect that more researchers will quickly adopt AI and the number of agents used per researcher will also increase, to the point of breaking the existing review process. I suspect we will need to design a review process whose capacity can scale linearly with the number of agents being used to generate research (volume of submissions), and we will need to do this quickly. This will require incorporating AI into the review process, which introduces its own set of challenges such as: correlated errors, optimizing papers for known reviewers (there are a limited number of models available to use as reviewers), and prompt-injection attacks.
