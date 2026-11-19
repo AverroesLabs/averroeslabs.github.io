@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Jason Fantl, Averroes Labs" />
+  <meta name="dcterms.date" content="2026-10-08" />
+  <title>Reviewing failure modes in science as we prepare for AI researchers</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <style>
+  :root{--fg:#1d1d1f;--muted:#5a5a60;--rule:#e2e2e6;--link:#0b5cad;--bg:#fff;--code:#f4f4f6}
+  html{background:var(--bg)}
+  body{color:var(--fg);background:var(--bg);font:18px/1.6 Charter,"Bitstream Charter","Sitka Text",Cambria,Georgia,serif;max-width:46rem;margin:0 auto;padding:2.5rem 1rem 5rem}
+  header{margin-bottom:2rem;border-bottom:1px solid var(--rule);padding-bottom:1.2rem}
+  h1.title{font-size:2.1rem;line-height:1.2;margin:0 0 .6rem}
+  .author,.date{margin:0;color:var(--muted);font-size:1rem}
+  h2,h3{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;line-height:1.3}
+  h2{font-size:1.45rem;margin-top:2.6rem}
+  h3{font-size:1.15rem;margin-top:2rem}
+  a{color:var(--link)}
+  img{display:block;max-width:100%;height:auto;margin:1.6rem auto .6rem}
+  p:has(>img:only-child){margin:0}
+  table{border-collapse:collapse;font-size:.85rem;line-height:1.4;margin:1.2rem 0;display:block;overflow-x:auto}
+  th,td{border-bottom:1px solid var(--rule);padding:.4rem .6rem;text-align:left;vertical-align:top}
+  code{background:var(--code);padding:.1em .3em;border-radius:3px;font-size:.85em}
+  pre{background:var(--code);padding:1rem;overflow-x:auto;font-size:.8rem;line-height:1.45;border-radius:4px}
+  pre code{background:none;padding:0}
+  blockquote{margin:1rem 0;padding-left:1rem;border-left:3px solid var(--rule);color:var(--muted)}
+  nav#TOC{font-size:.95rem;border:1px solid var(--rule);border-radius:6px;padding:.6rem 1.2rem;margin:1.5rem 0}
+  nav#TOC ul{padding-left:1.1rem;margin:.3rem 0}
+  nav#TOC>ul>li{margin:.15rem 0}
+  .citebox{background:var(--code);padding:1rem;border-radius:6px}
+  @media (max-width:600px){body{font-size:17px;padding-top:1.5rem}h1.title{font-size:1.6rem}}
+  @media print{body{max-width:none;font-size:11pt}nav#TOC{display:none}a{color:inherit}}
+  .formats{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;font-size:.95rem;margin:.4rem 0 0}
+
+  </style>
+  <meta name="description" content="Science has a long list of documented failure modes, such as p-hacking, the File Drawer Problem, shallow peer review, and ignored retractions. This post catalogs about 50 of them with the evidence for each, then predicts how each will change once we have full AI researchers. On our current course, m">
+  <meta name="citation_title" content="Reviewing failure modes in science as we prepare for AI researchers">
+  <meta name="citation_author" content="Fantl, Jason">
+  <meta name="citation_publication_date" content="2026/10/08">
+  <meta name="citation_publisher" content="Averroes Labs">
+  <meta name="citation_pdf_url" content="https://averroeslabs.org/blog/failure-modes-in-science.pdf">
+  <link rel="canonical" href="https://www.lesswrong.com/posts/otoPaykRRAkjfzpHN/reviewing-failure-modes-in-science-as-we-prepare-for-ai">
+  <meta property="og:url" content="https://averroeslabs.org/blog/failure-modes-in-science/">
+  <meta property="og:title" content="Reviewing failure modes in science as we prepare for AI researchers">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://averroeslabs.org/blog/failure-modes-in-science/fig-1.png">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Reviewing failure modes in science as we prepare for
+AI researchers</h1>
+<p class="author">Jason Fantl, Averroes Labs</p>
+<p class="date">8 October 2026</p>
+<p class="formats"><a href="/blog/failure-modes-in-science.pdf">PDF</a> · <a href="/blog/failure-modes-in-science.md">Markdown</a> · <a href="/blog/">Blog</a></p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#statistical-selection"
+id="toc-statistical-selection">Statistical selection</a></li>
+<li><a href="#publish-or-perish" id="toc-publish-or-perish">Publish or
+perish</a></li>
+<li><a href="#misconduct" id="toc-misconduct">Misconduct</a></li>
+<li><a href="#honest-errors" id="toc-honest-errors">Honest
+errors</a></li>
+<li><a href="#experimental-design"
+id="toc-experimental-design">Experimental design</a></li>
+<li><a href="#verification-failure"
+id="toc-verification-failure">Verification failure</a></li>
+<li><a href="#compounding-effects"
+id="toc-compounding-effects">Compounding effects</a></li>
+<li><a href="#read-more" id="toc-read-more">Read more</a></li>
+<li><a href="#acknowledgements"
+id="toc-acknowledgements">Acknowledgements</a>
+<ul>
+<li><a href="#how-to-cite" id="toc-how-to-cite">How to cite</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><em>Originally published on <a
+href="https://www.lesswrong.com/posts/otoPaykRRAkjfzpHN/reviewing-failure-modes-in-science-as-we-prepare-for-ai">LessWrong</a>
+on 8 October 2026.</em></p>
+<p><strong>Summary:</strong> Science has a long list of documented
+failure modes, such as p-hacking, the File Drawer Problem, shallow peer
+review, and ignored retractions. This post catalogs about 50 of them
+with the evidence for each, then predicts how each will change once we
+have full AI researchers. On our current course, most get worse. AI can
+run many more experiments, so more statistically lucky results will pass
+the significance filter. Many AI researchers will be copies of the same
+model, so their methods, errors, and reviews will be correlated. AI
+agents have a tendency to reward hack, so misconduct may occur at a
+greater rate. A few failures should improve since AI makes tedious work
+cheap: reading every citation, hunting for bugs, and working through
+long checklists. Requiring replication before publication would filter
+out much of the statistical noise, but it would still be susceptible to
+poor experimental design and over-generalized conclusions. How well the
+science ecosystem will function depends on how we prepare before the
+volume of AI research arrives.</p>
+<p>As we enter into a new era of research where the primary scientific
+contributors are likely to be AI (I expect 2 years until this occurs,
+given where we are <a
+href="https://www.lesswrong.com/posts/43yxfaejsrZi7cDff/ai-in-research-and-publishing-sep-2026">now</a>
+and the trends in <a href="https://arxiv.org/pdf/2610.06824">AI research
+taste</a>), it is worth looking back at failure modes identified in
+science and predicting whether any of these issues will be amplified.
+The rest of this post relies on this assumption that AI researchers will
+soon replace humans in research, but even if you do not share this
+assumption, it is worth considering what effect AI will have on the
+science ecosystem with these failure modes in mind.</p>
+<p>This post catalogs about 50 failure modes in science, the evidence
+for each, what makes each category worse, and rough predictions on how
+AI researchers will impact that failure mode. This does not include the
+<em>novel</em> failure modes we should expect from AI researchers, and
+only lightly touches on potential solutions. The primary focus here is
+on the failure modes; a different post will discuss mitigations. I group
+the failure modes into seven categories.</p>
+<ol type="1">
+<li><a href="#Statistical_selection">Statistical selection</a></li>
+<li><a href="#Publish_or_perish">Publish or perish</a></li>
+<li><a href="#Misconduct">Misconduct</a></li>
+<li><a href="#Honest_errors">Honest errors</a></li>
+<li><a href="#Experimental_design">Experimental design</a></li>
+<li><a href="#Verification_failure">Verification failure</a></li>
+<li><a href="#Compounding_effects">Compounding effects</a></li>
+</ol>
+<h1 id="statistical-selection">Statistical selection</h1>
+<p>Science is filled with exaggerated effects and false positives,
+mostly unintentionally. The essential issue is that experiments are
+noisy, filtered by significance (p &lt; 0.05), and the base rate of true
+results is low in many fields.</p>
+<p>With noisy experiments and a filter, we only publish the lucky
+results that made it past the filter, which inflates the estimated
+effect of the result (sometimes called the Winner’s Curse), see <a
+href="https://doi.org/10.1097/EDE.0b013e31818131e7">“Why most discovered
+true associations are inflated” Ioannidis (2008)</a>. This is concerning
+since it will make effects look larger than they are.</p>
+<p><img src="/blog/failure-modes-in-science/fig-1.png" /></p>
+<p>Worse than an exaggerated effect is a false positive. Even if a false
+positive is unlikely, the chance that you have at least one will grow as
+you run more experiments, and the average number of false positives will
+increase with increased base rates of false hypotheses. <a
+href="https://doi.org/10.1371/journal.pmed.0020124">“Why Most Published
+Research Findings Are False” Ioannidis (2005)</a> argued with a simple
+model that with low power and low base rates most significant findings
+in a field can be false.</p>
+<p><img src="/blog/failure-modes-in-science/fig-2.png" /></p>
+<p>If only the lucky results get published and all the failures are not
+mentioned (called the File Drawer Problem), it will be very hard to tell
+if a published result is a statistical artifact. This was initially
+named in <a href="https://doi.org/10.1037/0033-2909.86.3.638">“The ‘file
+drawer problem’ and tolerance for null results” Rosenthal (1979)</a>,
+and is consistent with <a
+href="https://doi.org/10.1126/science.aac4716">“Estimating the
+reproducibility of psychological science” Open Science Collaboration
+(2015)</a>, where they found only 36% of 100 psychology experiments
+replicated with a significant result, and replication effect sizes were
+about half the originals.</p>
+<p>There are many dimensions along which a significance filter causes
+issues. The actions of a researcher are sometimes called p-hacking, but
+note that each of these can happen unintentionally.</p>
+<ul>
+<li><strong>File Drawer Problem:</strong> Null results are not shared,
+so the published results look like the only attempts made, rather than
+the lucky subset of many.
+<ul>
+<li><strong>Testing many hypotheses:</strong> Researchers test many
+different hypotheses, publishing only the significant results. As an
+extreme demonstration of this, <a
+href="https://doi.org/10.1016/S1053-8119(09)71202-9">“Neural correlates
+of interspecies perspective taking in the post-mortem Atlantic Salmon:
+an argument for multiple comparisons correction” Bennett et
+al. (2009)</a> scanned a dead salmon in an fMRI while showing it photos
+of people, and found “significant” brain activity by testing thousands
+of voxels (each voxel is essentially one hypothesis). This demonstrated
+how it is possible to find significant results from null data if
+researchers run enough tests and ignore the non-significant
+results.</li>
+<li><strong>Many researchers:</strong> If multiple labs independently
+run an experiment and one lab happens to get a significant result, only
+the significant result is published. This is the File Drawer Problem at
+the level of a field. <a
+href="https://doi.org/10.1126/science.1255484">“Publication bias in the
+social sciences: Unlocking the file drawer” Franco et al. (2014)</a>
+tracked 221 peer-reviewed experimental designs and found that strong
+results were 60 percentage points more likely to be written up and 40
+percentage points more likely to be published compared to null
+results.</li>
+</ul></li>
+<li><strong>Data dredging:</strong> Researchers may look through lots of
+data until they find something significant. Brian Wansink’s Cornell food
+lab publicly pushed students to mine null results until they could find
+something significant, eventually leading to outside scrutiny,
+retractions (<a
+href="https://www.buzzfeednews.com/article/stephaniemlee/brian-wansink-cornell-p-hacking">Lee
+2018, BuzzFeed News</a>), and his resignation.</li>
+<li><strong>Garden of forking paths:</strong> <a
+href="http://www.stat.columbia.edu/~gelman/research/unpublished/p_hacking.pdf">“The
+garden of forking paths” Gelman &amp; Loken (2013)</a> describes how
+researchers make many choices during analysis, and each choice is
+another chance for a result to become significant. This does not require
+consciously trying multiple analyses. If the analysis that was chosen
+depended on the data, the p-value is already wrong.
+<ul>
+<li><strong>Subsets of data:</strong> Researchers check if there is a
+significant result for a subset of their data. The <a
+href="https://jameslindlibrary.org/wp-data/uploads/2014/07/ISIS-2_Collaborative_Group_1988.pdf">ISIS-2
+trial (1988)</a> points out this error, warning in their analysis that
+aspirin appears not to work for patients with the astrological signs
+Gemini or Libra. This can be partially fixed by interaction tests, but
+<a href="https://doi.org/10.1001/jamainternmed.2016.9125">“Evaluation of
+Evidence of Statistical Support and Corroboration of Subgroup Claims in
+Randomized Clinical Trials” Wallach et al. (2017)</a> found only 46 of
+117 subgroup claims made in papers were backed by a significant
+interaction test, and only 5 of those 46 were ever tested again, none of
+which replicated.</li>
+<li><strong>Optional stopping:</strong> Researchers can watch the
+results as they run a trial and stop if the result is significant. <a
+href="https://doi.org/10.1177/0956797611417632">“False-Positive
+Psychology: Undisclosed Flexibility in Data Collection and Analysis
+Allows Presenting Anything as Significant” Simmons et al. (2011)</a>
+showed that checking after every 10 participants and stopping at a
+significant effect will substantially raise the false-positive
+rate.</li>
+<li><strong>Statistical methods:</strong> Researchers can use different
+statistical methods on the same data until one of them produces
+significant results. <a
+href="https://doi.org/10.1038/s41586-020-2314-9">“Variability in the
+analysis of a single neuroimaging dataset by many teams” Botvinik-Nezer
+et al. (2020)</a> gave the same fMRI data and the same 9 hypotheses to
+70 teams. No two teams chose the same workflow, and their conclusions
+varied substantially. <a
+href="https://doi.org/10.1177/2515245917747646">“Many Analysts, One Data
+Set” Silberzahn et al. (2018)</a> found the same pattern with 29 teams
+on a question about referee bias.</li>
+</ul></li>
+<li><strong>Selective reporting of runs:</strong> Researchers repeat an
+experiment multiple times and report only the best run. In ML we see
+this as cherry-picking random seeds. For example, in <a
+href="https://arxiv.org/abs/1709.06560">“Deep Reinforcement Learning
+that Matters” Henderson et al. (2018)</a>, they showed that two runs of
+5 random seeds produced significantly different results (and at the
+time, it was not uncommon to use fewer than 5 seeds). The same failure
+appears in AI researchers. In <a
+href="https://www.lesswrong.com/posts/myAhB5qyAHyXRv6KJ/automated-alignment-runs-are-hard-to-study">“Automated
+alignment runs are hard to study” Aristizabal et al. (2026,
+LessWrong)</a>, Claude agents noticed their LLM judge provided a noisy
+reward, so they began “lottery-farming”, resubmitting the exact same
+work on a loop until it got a high score.</li>
+<li><strong>HARKing:</strong> <a
+href="https://doi.org/10.1207/s15327957pspr0203_4">“HARKing:
+Hypothesizing After the Results are Known” Kerr (1998)</a> coined the
+term HARKing to describe researchers who Hypothesize After Results are
+Known. This is not p-hacking exactly, but it hides the fact that the
+result was exploratory rather than confirmatory, making it impossible to
+account for the statistical differences between the two types of
+findings.</li>
+<li><strong>Outcome switching:</strong> Researchers change which outcome
+is the primary one after seeing the data. <a
+href="https://doi.org/10.1001/jama.291.20.2457">“Empirical evidence for
+selective reporting of outcomes in randomized trials” Chan et
+al. (2004)</a> compared 102 trial protocols to their publications and
+found 62% had at least one primary outcome changed, introduced, or
+omitted.</li>
+<li><strong>Low-powered studies:</strong> Low-power experiments are
+noisy, so the results that pass the filter are more inflated and more
+likely to be false. <a href="https://doi.org/10.1038/nrn3475">“Power
+failure: why small sample size undermines the reliability of
+neuroscience” Button et al. (2013)</a> estimated the median statistical
+power in neuroscience at around 21%.</li>
+</ul>
+<p>All of these mechanisms filter results (intentionally or not) so only
+the lucky ones are seen, causing results to be exaggerated or altogether
+false.</p>
+<p>This gets worse when people use low-power experiments, the base rate
+of tested false hypotheses increases, researchers sample
+hypotheses/experiments/data/subsets/methods more frequently, or we
+accept a higher p threshold.</p>
+<p>As we transition to AI researchers, I expect the File Drawer Problem
+to get much worse. AI can run many more experiments and variations of
+experiments, look through more data, and therefore publish more false
+positives, at least in computational fields such as AI safety. There are
+known solutions to these issues; the challenge is building those
+solutions into infrastructure. Proposals have been made for re-running
+promising results, requiring a lower p value, labeling results as
+confirmatory or exploratory with the number of experiments it took,
+pre-registering experiments, publishing the null results, and/or
+requiring independent replications. It should also become easier to
+count the null results and identify when a researcher made a decision in
+the garden of forking paths, as AI researchers produce logs containing
+their every action and thought, which might be submitted alongside
+research or just used by the researcher to look back and identify null
+results and decisions. While these solutions can and should be
+implemented, their success will depend on whether they are incentivized,
+which we consider next.</p>
+<h1 id="publish-or-perish">Publish or perish</h1>
+<p>Researchers are incentivized to publish as early as possible and
+spend the smallest amount of effort to publish, sometimes going as far
+as fabricating work. Often attributed to the “publish-or-perish”
+incentives in academia, researchers will optimize for the metric they
+are judged on, which is typically citation count and number of
+publications.</p>
+<p>Many of the issues in this document are downstream of incentives, but
+this section is specifically for issues stemming directly from the
+“publish-or-perish” incentives that most researchers operate under.</p>
+<ul>
+<li><strong>Novelty bias:</strong> Newer work generates more attention,
+so replications are under-explored. <a
+href="https://doi.org/10.1177/1745691612460688">“Replications in
+Psychology Research: How Often Do They Really Occur?” Makel et
+al. (2012)</a> searched the full publication history of the top 100
+psychology journals and estimated that 1.07% of publications were
+replications.</li>
+<li><strong>Positive-result bias:</strong> Positive results receive more
+attention, so negative results are not published. This is the incentive
+behind the File Drawer Problem. <a
+href="https://doi.org/10.1056/NEJMsa065779">“Selective Publication of
+Antidepressant Trials and Its Influence on Apparent Efficacy” Turner et
+al. (2008)</a> compared FDA records to the published literature: 94% of
+published antidepressant trials were positive, while the FDA judged only
+51% of the same trials positive. Most negative trials were either never
+published or published in a way that made them look positive. <a
+href="https://doi.org/10.1177/25152459211007467">“An Excess of Positive
+Results” Scheel et al. (2021)</a> found 96% of standard psychology
+papers supported their first hypothesis, compared to 44% of Registered
+Reports, where the journal commits to publish before results are
+known.</li>
+<li><strong>Exaggeration:</strong> The claims in the abstract,
+discussion, or press release are stronger than the results support. <a
+href="https://doi.org/10.1001/jama.2010.651">“Reporting and
+interpretation of randomized controlled trials with statistically
+nonsignificant results for primary outcomes” Boutron et al. (2010)</a>
+found exaggeration in the abstract conclusions of 58% of trials whose
+primary outcome was not significant. <a
+href="https://doi.org/10.1136/bmj.g7015">“The association between
+exaggeration in health related science news and academic press releases”
+Sumner et al. (2014)</a> traced most exaggeration in health news back to
+the universities’ own press releases.</li>
+<li><strong>Not building on existing evidence:</strong> New studies are
+started without checking what is already known, so settled questions are
+studied multiple times. <a
+href="https://doi.org/10.7326/0003-4819-154-1-201101040-00007">“A
+Systematic Examination of the Citation of Prior Research in Reports of
+Randomized, Controlled Trials” Robinson &amp; Goodman (2011)</a>
+examined 1,523 trials across 227 meta-analyses and found the median
+trial cited 21% of the relevant prior trials, and 23% of trials with
+five or more prior trials available cited none. <a
+href="https://doi.org/10.1191/1740774505cn085oa">“Randomized controlled
+trials of aprotinin in cardiac surgery: could clinical equipoise have
+stopped the bleeding?” Fergusson et al. (2005)</a> showed that
+placebo-controlled trials of aprotinin in cardiac surgery continued for
+years after a cumulative meta-analysis would have shown its effect was
+already established.</li>
+<li><strong>Conflicts of interest:</strong> Researchers funded by
+someone with a stake in the result are more likely to report results
+that favor the sponsor. <a
+href="https://doi.org/10.1371/journal.pmed.1001578">“Financial Conflicts
+of Interest and Reporting Bias Regarding the Association between
+Sugar-Sweetened Beverages and Weight Gain” Bes-Rastrollo et
+al. (2013)</a> found reviews with conflicts of interest were five times
+more likely to present a conclusion that favored the sponsor. In
+medicine, <a
+href="https://doi.org/10.1002/14651858.MR000033.pub3">“Industry
+sponsorship and research outcome” Lundh et al. 2017</a> is a review of
+75 meta-research papers covering drug and device studies, finding
+industry-sponsored studies were about a third more likely to reach
+conclusions favorable to the sponsor.</li>
+<li><strong>Short-termism:</strong> It can be easier to generate more
+collective citations and publications if you focus on research questions
+that are expected to take a short amount of time to answer. This can
+leave many important questions in a field unanswered if they are
+expected to take too long to answer.</li>
+</ul>
+<p>The publish-or-perish incentives are primarily driven by universities
+and how they gate career advancement, so it is unclear how this will
+change over time. The incentives could get worse if universities (and
+potential employers) focus on any single metric, such as the publication
+number or citation count, to determine a researcher’s success.</p>
+<p>What incentives AI researchers will have is deeply unclear, so all
+predictions in this section are extremely low confidence. I think this
+also makes it a strong area for future work. I expect the percent of
+replications to moderately decrease, as there are no incentives (other
+than government grants) to do replications, and since the rate of
+publications will increase while the rate of grants will likely stay the
+same, the total percent of publications being replicated will decrease.
+I expect exaggeration to increase modestly, as AI has a tendency to
+overgeneralize people’s work (<a
+href="https://doi.org/10.1098/rsos.241776">Peters &amp; Chin-Yee
+2025</a>). There will be more conflicts of interest as AIs have a
+tendency towards sycophancy and it will be easier for companies to spin
+up their own AI researchers. We should expect short-termism to initially
+increase as AI is better at short-term tasks, but this will improve as
+capabilities improve (<a href="https://metr.org/time-horizons/">METR
+2026</a>). AI should be better at finding existing evidence, as AI is
+faster and more capable of doing literature reviews compared to
+humans.</p>
+<p>In the extreme case these incentives can lead to misconduct, which we
+look at next.</p>
+<h1 id="misconduct">Misconduct</h1>
+<p>Most of this document is about unintentional failures, but some are
+deliberate.</p>
+<ul>
+<li><strong>Fabrication:</strong> Results are sometimes modified to fit
+a claim, or made up altogether. <a
+href="https://doi.org/10.1371/journal.pone.0005738">“How Many Scientists
+Fabricate and Falsify Research?” Fanelli (2009)</a> pooled surveys and
+found about 2% of scientists admitted to fabricating or falsifying data
+at least once, and about 14% reported knowing a colleague who had. The
+Dutch National Survey on Research Integrity (<a
+href="https://doi.org/10.1371/journal.pone.0263023">Gopalakrishna et
+al. 2022</a>) found 4.3% admitted to fabrication.</li>
+<li><strong>Image manipulation:</strong> Figures such as western blots
+or microscopy images are duplicated or edited to show a result that was
+not observed. <a href="https://doi.org/10.1128/mBio.00809-16">“The
+Prevalence of Inappropriate Image Duplication in Biomedical Research
+Publications” Bik, Casadevall &amp; Fang (2016)</a> screened 20,621
+papers and found 3.8% contained problematic images, at least half
+suggestive of deliberate manipulation. The Nature paper <a
+href="https://doi.org/10.1038/nature04533">“A specific amyloid-β protein
+assembly in the brain impairs memory” Lesné et al. (2006)</a> about the
+Alzheimer’s protein Aβ*56, cited thousands of times, was retracted in
+2024 after image manipulation was exposed.</li>
+<li><strong>Paper mills:</strong> Papers are produced in bulk and
+submitted to journals where editors and reviewers are bribed; academics
+can then purchase authorship on papers guaranteed to be published. This
+is primarily motivated by the requirement to have a minimum number of
+publications for career advancement in academia. The publisher Hindawi
+retracted over 8,000 papers, mostly from special issues infiltrated by
+paper mills (<a
+href="https://retractionwatch.com/2023/12/19/hindawi-reveals-process-for-retracting-more-than-8000-paper-mill-articles/">Retraction
+Watch 2023</a>).</li>
+<li><strong>Citation cartels:</strong> Groups of researchers or journals
+cite each other to inflate their citation counts. In 2013 Thomson
+Reuters suspended several journals from its rankings for “citation
+stacking” (<a href="https://doi.org/10.1038/500510a">Van Noorden
+2013</a>).</li>
+</ul>
+<p>These issues get worse with less oversight by the community, or with
+more coordination by those conducting the misconduct. This is also a
+downstream effect of the incentives mentioned above, so we should expect
+misconduct to get worse if those incentives get stronger.</p>
+<p>Assuming we still do not replicate experiments, I suspect AI
+researchers will cause fabricated results to become more common and
+paper mills more prevalent. This is because the ability to create
+credible-looking fraudulent papers will increase, academics will face
+increased competition from the increased number of AI researchers, and
+it will be easier to create citation cartels since new papers and
+authors can be fabricated. This can be mitigated by incentivizing
+replications and quality peer reviews, as long as the replications are
+themselves not also fabricated, which I believe is possible to do
+through a redesign of the ecosystem’s infrastructure, such as randomly
+assigning replications.</p>
+<h1 id="honest-errors">Honest errors</h1>
+<p>Some results are wrong simply because someone made a mistake and no
+one caught it.</p>
+<ul>
+<li><strong>Code bugs:</strong> Analysis code contains a bug that
+changes the result. Geoffrey Chang retracted five papers in 2006,
+including three in Science, because his analysis software flipped two
+columns of data, inverting the protein structures he reported (<a
+href="https://doi.org/10.1126/science.314.5807.1856">Miller
+2006</a>).</li>
+<li><strong>Corrupted data:</strong> Formulas cover the wrong range, or
+the software silently changes the data. <a
+href="https://doi.org/10.1186/s13059-016-1044-7">“Gene name errors are
+widespread in the scientific literature” Ziemann et al. (2016)</a> found
+about 20% of genomics papers with Excel supplementary gene lists had
+gene names converted into dates, such as SEPT2 becoming 2-Sep. Reinhart
+&amp; Rogoff’s influential finding that high government debt slows
+growth was found to partly depend on an Excel formula that left out
+several countries (<a href="https://doi.org/10.1093/cje/bet075">Herndon
+et al. 2014</a>).</li>
+<li><strong>Statistical reporting errors:</strong> Reported numbers are
+inconsistent with each other. <a
+href="https://doi.org/10.3758/s13428-015-0664-2">“The prevalence of
+statistical reporting errors in psychology (1985–2013)” Nuijten et
+al. (2016)</a> found roughly half of psychology papers using
+significance tests contain at least one p-value inconsistent with its
+test statistic.</li>
+<li><strong>Misused tests:</strong> A statistical test is used
+incorrectly. A common one is claiming two effects differ because one is
+significant and the other is not, as described in <a
+href="https://doi.org/10.1198/000313006X152649">“The Difference Between
+‘Significant’ and ‘Not Significant’ is not Itself Statistically
+Significant” Gelman &amp; Stern (2006)</a>. <a
+href="https://doi.org/10.1038/nn.2886">“Erroneous analyses of
+interactions in neuroscience” Nieuwenhuis et al. (2011)</a> found about
+half of neuroscience papers that could have made this error did make
+it.</li>
+</ul>
+<p>Everyone makes mistakes, so these errors only get caught when time is
+dedicated to looking for those mistakes. This means we can expect these
+to get worse if the quality of research goes down or the time spent
+looking for mistakes goes down.</p>
+<p>AI researchers should minimize most of these issues. It does not cost
+an AI much to spend extra time looking for bugs or corrupted data, and
+its ability to avoid these issues in the first place will improve with
+capabilities. This does depend on whether there is an incentive to catch
+bugs, which should be true as long as retractions are treated more
+seriously. However, if AI researchers continue to reward hack, they also
+have an incentive to ignore or intentionally add bugs which support
+their conclusions. This may also compound with the correlated errors we
+consider in <a href="#Verification_failure">Verification
+failure</a>.</p>
+<h1 id="experimental-design">Experimental design</h1>
+<p>Even if something is measured in good faith, the code has no bugs,
+and it replicates, <a
+href="https://www.lesswrong.com/posts/9kNxhKWvixtKW5anS/you-are-not-measuring-what-you-think-you-are-measuring">you
+may not be measuring what you think you are measuring</a>.</p>
+<p>This is a deep topic and essentially the study of experimental
+design, so we only list a few of the known failures here. The failures
+below are organized using the four types of validity from <a
+href="https://books.google.com/books/about/Experimental_and_Quasi_experimental_Desi.html?id=o7jaAAAAMAAJ"><em>Experimental
+and Quasi-Experimental Designs for Generalized Causal Inference</em>
+Shadish, Cook &amp; Campbell (2002)</a>.</p>
+<ul>
+<li><strong>Statistical conclusion validity:</strong> Is the association
+between the variables real? Most failures of this kind are covered in
+the Statistical selection section above.
+<ul>
+<li><strong>Measurement error:</strong> A researcher measures the right
+thing, but with noise. Noise is often assumed to only make effects
+harder to find, but combined with a significance filter it inflates
+them. This is well described in <a
+href="https://doi.org/10.1126/science.aal3618">“Measurement error and
+the replication crisis” Loken &amp; Gelman (2017)</a>.</li>
+<li><strong>Circular analysis:</strong> The same data is used to select
+what to analyze and then to test it. For example, choosing the brain
+regions that respond most to a stimulus and then reporting how strongly
+they respond. <a href="https://doi.org/10.1038/nn.2303">“Circular
+analysis in systems neuroscience: the dangers of double dipping”
+Kriegeskorte et al. (2009)</a> surveyed 134 fMRI papers published in
+2008 across top journals and found 42% contained at least one circular
+analysis.</li>
+</ul></li>
+<li><strong>Internal validity:</strong> Is the association causal?
+<ul>
+<li><strong>Randomization:</strong> Randomized assignment to a control
+group fails when there is no proper control or when researchers can
+predict or influence who receives the treatment. <a
+href="https://doi.org/10.1001/jama.294.2.218">“Contradicted and
+Initially Stronger Effects in Highly Cited Clinical Research” Ioannidis
+(2005)</a> found that of 6 highly cited nonrandomized studies, 5 were
+later contradicted or found to have exaggerated effects, compared to 9
+of 39 randomized trials. Even within randomized trials, <a
+href="https://pubmed.ncbi.nlm.nih.gov/7823387/">“Empirical evidence of
+bias” Schulz et al. (1995)</a> examined 250 trials from 33 meta-analyses
+and found that trials with inadequately concealed allocation exaggerated
+the estimated effect, with odds ratios 41% lower compared to trials with
+adequate concealment.</li>
+<li><strong>Leakage:</strong> The answer is already inside the test, so
+the experiment cannot fail. <a
+href="https://doi.org/10.1016/j.patter.2023.100804">“Leakage and the
+reproducibility crisis in machine-learning-based science” Kapoor &amp;
+Narayanan (2023)</a> found leakage in 294 papers across 17 fields. In
+some examples, the apparent advantage of ML models over logistic
+regression disappeared once leakage was fixed.</li>
+<li><strong>Weak baselines:</strong> A new method is compared against
+poorly tuned or outdated alternatives, so the improvement is inflated.
+<a href="https://doi.org/10.1145/3298689.3347058">“Are We Really Making
+Much Progress? A Worrying Analysis of Recent Neural Recommendation
+Approaches” Dacrema et al. (2019)</a> examined 18 recommendation
+algorithms from top conferences. Only 7 could be reproduced, and 6 of
+those were often beaten by simple, older heuristics. <a
+href="https://arxiv.org/abs/2003.08505">“A Metric Learning Reality
+Check” Musgrave et al. (2020)</a> found the same pattern in metric
+learning.</li>
+</ul></li>
+<li><strong>Construct validity:</strong> Do the measures and
+manipulations capture the concepts they are meant to?
+<ul>
+<li><strong>Invalid measures:</strong> The measurement does not capture
+the thing you care about; it is a proxy. <a
+href="https://arxiv.org/abs/2511.04703">“Measuring what Matters:
+Construct Validity in Large Language Model Benchmarks” Bean et
+al. (2025)</a> reviewed 445 LLM benchmarks and found widespread
+weaknesses in how they defined the phenomenon, the task, the metric, or
+the claims drawn from it. <a
+href="https://doi.org/10.1177/2515245920952393">“Measurement
+Schmeasurement” Flake &amp; Fried (2020)</a> makes the same argument for
+psychology.</li>
+<li><strong>Subject reactivity:</strong> What is being studied behaves
+differently because it can tell it is being measured. People and LLMs
+are known to do this. The <a
+href="https://en.wikipedia.org/wiki/Hawthorne_effect">Hawthorne
+effect</a> is the classic name for people, although a <a
+href="https://doi.org/10.1016/j.jclinepi.2013.08.015">“Systematic review
+of the Hawthorne effect: New concepts are needed to study research
+participation effects” McCambridge et al. (2014)</a> concluded there is
+no single Hawthorne effect and little is known about its size or
+conditions. <a href="https://arxiv.org/abs/2505.23836">“Large Language
+Models Often Know When They Are Being Evaluated” Needham et al. (2025,
+preprint)</a> showed frontier models can often distinguish evaluations
+from real use.</li>
+<li><strong>Experimenter expectancy:</strong> The experimenter’s beliefs
+leak into the result, often because the experiment was not blinded. <a
+href="https://doi.org/10.1136/bmj.e1119">“Observer bias in randomised
+clinical trials with binary outcomes” Hróbjartsson et al. (2012)</a>
+studied trials that had both blinded and non-blinded assessors of the
+same outcome and found non-blinded assessors exaggerated odds ratios by
+36% on average, and a later update found 29% (<a
+href="https://doi.org/10.1016/j.jclinepi.2025.111787">Salazar et
+al. 2025</a>). One funny example is Clever Hans, a horse that appeared
+to do arithmetic but was instead reading unconscious cues from his
+questioners (<a href="https://www.gutenberg.org/ebooks/33936">Pfungst
+1911</a>).</li>
+<li><strong>Unfalsifiable hypotheses:</strong> The hypothesis is
+flexible enough that any result can be read as support, so the
+experiment cannot fail. <a
+href="https://plato.stanford.edu/entries/popper/">Karl Popper</a> used
+psychoanalysis as his example, and <a
+href="https://doi.org/10.1037/0022-006X.46.4.806">“Theoretical Risks and
+Tabular Asterisks” Meehl (1978)</a> argued much of soft psychology had
+the same problem.</li>
+</ul></li>
+<li><strong>External validity:</strong> Does the result generalize
+beyond the people, settings, and conditions studied?
+<ul>
+<li><strong>Unrepresentative samples:</strong> Research is conducted
+with many hidden variables, some of which will influence the result.
+This is common, for example, when subjects in an experiment are all
+college students, but the paper generalizes the result to all people. <a
+href="https://doi.org/10.1017/S0140525X0999152X">“The weirdest people in
+the world?” Henrich et al. (2010)</a> reported that 96% of psychology
+samples came from Western industrialized countries holding 12% of the
+world’s population, and showed that results often differ outside those
+populations.</li>
+</ul></li>
+</ul>
+<p>There are a number of ways in which experimental design can fail, and
+the best way to minimize the failures is to intentionally be as careful
+as possible, checking over known failure modes and following
+well-established methods when possible.</p>
+<p>I suspect AI researchers will make these problems moderately worse.
+We have yet to create AI which follows the “spirit” of a reward rather
+than the reward directly. This means if we rely on checklists for
+improving experimental design, then those items on the checklist will
+improve while anything we forget to include will be reward hacked. The
+fundamental challenge is that experimental design does not have an
+objective measure we can use to quantify its quality. One benefit of AI
+researchers is that they can iterate over a checklist to compare against
+a design, and this checklist can grow over time to catch more and more
+errors, until eventually most designs will not be low-quality. This
+assumes the number of failure modes does not grow as science grows, and
+that errors are caught at some point rather than persisting forever. So
+while experimental design may initially be a problem, I expect in the
+long term it will slowly improve due to a growing checklist and improved
+capabilities.</p>
+<p>A lot of these errors could be caught by review, so we look next at
+some of the failure modes in science around verification.</p>
+<h1 id="verification-failure">Verification failure</h1>
+<p>There is a well-known crisis in academia where most papers are not
+replicated, which allows false claims to spread unchallenged. Even when
+someone does carry out a replication and they find errors that falsify
+the original paper, the field does not update and often even continues
+to cite the original result as if it had never been falsified.</p>
+<ul>
+<li><strong>Won’t replicate:</strong> Most work is never checked. See <a
+href="https://doi.org/10.1177/1745691612460688">Makel et al. (2012)</a>
+under Novelty bias, and <a
+href="https://doi.org/10.1001/jamainternmed.2016.9125">Wallach et
+al. (2017)</a> under Subsets of data.</li>
+<li><strong>Can’t access:</strong> Results often cannot be reproduced
+due to lack of access to the source data or code. <a
+href="https://doi.org/10.1073/pnas.1708290115">“An empirical analysis of
+journal policy effectiveness for computational reproducibility” Stodden
+et al. (2018)</a> requested data and code for 204 Science papers
+published after the journal required authors to share on request. They
+obtained materials for 44% and could reproduce the findings for
+26%.</li>
+<li><strong>Can’t reproduce:</strong> Even when researchers are given
+access, the paper may still not replicate. This is often because papers
+will leave out important details. <a
+href="https://doi.org/10.7554/eLife.67995">“Reproducibility in Cancer
+Biology: Challenges for assessing replicability in preclinical cancer
+biology” Errington et al. (2021)</a> planned to repeat 193 experiments
+from 53 high-impact papers. None were described in enough detail to
+design the replication without contacting the original authors, and the
+project completed only 50.</li>
+<li><strong>Shallow peer review:</strong> Review is costly and not
+incentivized, so it is done quickly and with little effort. This allows
+mistakes in papers to go unchallenged and get published. <a
+href="https://doi.org/10.1001/jama.280.3.237">“Effect on the Quality of
+Peer Review of Blinding Reviewers and Asking Them to Sign Their Reports”
+Godlee et al. (1998)</a> inserted eight weaknesses into an already
+accepted manuscript and sent it to 420 reviewers. The reviewers who
+responded commented on only two weaknesses on average, and none found
+more than five.</li>
+<li><strong>Noisy peer review:</strong> Near the acceptance threshold,
+review outcomes are close to random, which adds another lottery filter
+on top of statistical significance. <a
+href="https://arxiv.org/abs/2306.03262">“Has the Machine Learning Review
+Process Become More Arbitrary as the Field Has Grown?” Beygelzimer et
+al. (2023)</a> had 10% of NeurIPS submissions reviewed by two
+independent committees and found that the committees disagreed on 23% of
+papers, and as in 2014, about half the accepted papers would change if
+review were rerun. <a
+href="https://arxiv.org/abs/2109.09774">“Inconsistency in Conference
+Peer Review: Revisiting the 2014 NeurIPS Experiment” Cortes &amp;
+Lawrence (2021)</a> found that for accepted papers, reviewer quality
+scores did not correlate with later citations.</li>
+<li><strong>Unequal scrutiny:</strong> Results that match expectations
+are checked less carefully than results that do not (confirmation bias).
+<a href="https://doi.org/10.1007/BF01173636">“Publication prejudices: An
+experimental study of confirmatory bias in the peer review system”
+Mahoney (1977)</a> sent 75 reviewers manuscripts with identical methods
+but different results, and reviewers were strongly biased against
+manuscripts whose results contradicted their own theoretical views.</li>
+<li><strong>Prestige bias:</strong> Prestigious authors and institutions
+are not scrutinized as intensely as others. <a
+href="https://doi.org/10.1073/pnas.2205779119">“Nobel and novice: Author
+prominence affects peer review” Huber et al. (2022)</a> sent the same
+finance paper to over 3,300 potential reviewers, randomizing which
+author was shown. Reviewers recommended rejection 23% of the time when a
+Nobel laureate was the named author, 48% when the paper was anonymized,
+and 65% when an unknown early-career researcher was named. <a
+href="https://doi.org/10.1073/pnas.1707323114">“Reviewer bias in single-
+versus double-blind peer review” Tomkins et al. (2017)</a> found the
+same pattern in a controlled experiment.</li>
+<li><strong>Ignored retractions:</strong> A retraction or failed
+replication is mostly ignored. The tools for alerting researchers about
+retractions are opt-in and not frequently used, so false claims continue
+to propagate. Papers will in fact often continue to be cited even after
+they have been retracted. <a
+href="https://doi.org/10.1126/sciadv.abd1705">“Nonreplicable
+publications are cited more than replicable ones” Serra-Garcia &amp;
+Gneezy (2021)</a> looked at 80 papers from three large replication
+projects (psychology, economics, and <em>Nature</em>/<em>Science</em>)
+and found papers that failed to replicate were cited about 153 more
+times than papers that replicated. The gap did not shrink after the
+failed replication was published, and only 12% of later citations
+mentioned it. <a
+href="https://doi.org/10.1177/25152459211040837">“Citation patterns
+following a strongly contradictory replication result” Hardwicke et
+al. (2021)</a> followed four high-profile failed replications in
+psychology, including ego depletion and facial feedback, and found only
+a modest drop in favorable citations. For ego depletion, 79% of
+citations to the original were favorable before the replication and 77%
+after. As an example, <a
+href="https://doi.org/10.1007/s11192-020-03631-1">“Continued
+post-retraction citation of a fraudulent clinical trial report, 11 years
+after it was retracted for falsifying data” Schneider et al. (2020)</a>
+followed one clinical trial retracted in 2008 for falsified data and
+found it was still being cited positively 11 years later, usually
+without mention of the retraction.</li>
+</ul>
+<p>Verification through peer review is one of the most important tools
+we have in the scientific ecosystem, so it is critical that we value it
+and build infrastructure to support it. There are many ways in which
+peer review can (and currently does) fail to serve its purpose. This
+gets worse if we raise the cost of replication, lower the reward for
+review, or avoid costs for poor reviews.</p>
+<p>AI researchers have the potential to alleviate these concerns, but
+under the existing incentives and infrastructure, they will likely
+instead make it worse. There is no incentive to replicate experiments or
+to make work easy to reproduce, or to invest time into peer review.
+Since many AI researchers will be instances of the same models, we can
+expect most of the peer reviews to be highly correlated, and it has even
+been found that different models have highly correlated errors (<a
+href="https://arxiv.org/abs/2506.07962">Kim et al. 2025</a>). Since the
+paper will be written by a model similar to the ones conducting the peer
+review, we should expect the author to have similar blind spots to the
+reviewers. We will need to be careful of results that appear to
+initially improve; we may have just traded noisy errors for correlated
+errors. The one issue that may improve is retractions, as AI researchers
+can cheaply check every citation, so papers are less likely to be built
+on retracted work. The replication and peer review issues can be
+partially solved with requirements set by journals, such as requiring
+replication as a part of the desk-rejection process, but how to fix the
+correlated errors is not clear. It costs very little for AI to write
+documentation and see if a sub-agent can replicate their project, so the
+cost of enabling replications should drop dramatically. AI researchers
+can enable replication and review to be scaled up for minimal cost, if
+it is incentivized in the ecosystem and a solution to correlated errors
+can be found.</p>
+<p>If peer reviews and replications are not functioning well, then the
+scientific ecosystem will become contaminated with false statements.
+This effect gets worse as new work builds on previous unverified work,
+and the issues compound. This is the type of failure we consider
+next.</p>
+<h1 id="compounding-effects">Compounding effects</h1>
+<p>As publications get more citations, they are more likely to be seen
+and cited in the future. This is one example of a feedback loop in
+science, but there are many, and they can have compounding effects which
+can be long-lasting and wide-reaching.</p>
+<ul>
+<li><strong>Attention collapse:</strong> Researchers pay attention to
+whatever others are paying attention to, so the field can over-invest in
+one idea and fail to explore the full space of ideas. <a
+href="https://doi.org/10.1073/pnas.2021636118">“Slowed canonical
+progress in large fields of science” Chu &amp; Evans (2021)</a> analyzed
+1.8 billion citations across 241 subjects and found that as fields grow,
+citations concentrate on already well-cited papers, the most-cited list
+stops changing, and new papers rarely break through.
+<ul>
+<li><strong>Matthew effect:</strong> Work that is already cited is more
+likely to be seen and cited again, whatever its quality, as described in
+<a href="https://doi.org/10.1126/science.159.3810.56">“The Matthew
+Effect in Science” Merton (1968)</a>. <a
+href="https://doi.org/10.1126/science.1121066">“Experimental Study of
+Inequality and Unpredictability in an Artificial Cultural Market”
+Salganik et al. (2006)</a> showed the same mechanism in an artificial
+music market: when people could see download counts, success became more
+unequal and less predictable from quality.</li>
+</ul></li>
+<li><strong>Citation distortion:</strong> A claim gets stronger as it is
+passed along, with supportive papers cited and critical ones ignored. <a
+href="https://doi.org/10.1136/bmj.b2680">“How citation distortions
+create unfounded authority” Greenberg (2009)</a> mapped the citation
+network of 242 papers about one specific claim (β amyloid is produced by
+and injures skeletal muscle of patients with inclusion body myositis).
+They found 94% of citations to primary data went to the four papers
+containing primary data supporting the claim, while only 6% of citations
+went to the six papers with primary data refuting the claim. Review
+papers with no new data on the claim amplified the support for it, and
+in some papers a hypothesis became a fact through citation alone.</li>
+<li><strong>Cited without reading:</strong> Researchers cite papers they
+have not read, often copying the citation from another paper. <a
+href="https://arxiv.org/abs/cond-mat/0212043">“Read before you cite!”
+Simkin &amp; Roychowdhury (2003)</a> used misprints that repeated across
+citations to estimate that only about 20% of citers read the
+original.</li>
+<li><strong>Copy errors:</strong> Experiments are copied (especially
+code) and re-used by other researchers for new experiments, but the
+copied experiment can contain errors that then propagate. <a
+href="https://doi.org/10.1007/978-3-319-15934-8_13">“A Bug in the
+Multiobjective Optimizer IBEA” Brockhoff et al. (2015)</a> found a bug
+in a benchmark algorithm that had been copied into other software
+packages, leading multiple studies to conclude the variant performed
+worse than it does.</li>
+<li><strong>Paradigm lock-in:</strong> Researchers will use the same
+methods that initial papers used, creating a standard, even when those
+methods could be improved. The same dynamic makes fields resist new
+ideas that contradict the standard view. Marshall and Warren’s finding
+that ulcers are caused by the bacterium H. pylori was met with years of
+skepticism before it won the <a
+href="https://www.nobelprize.org/prizes/medicine/2005/press-release/">2005
+Nobel Prize</a>. <a href="https://doi.org/10.1257/aer.20161574">“Does
+Science Advance One Funeral at a Time?” Azoulay et al. (2019)</a> found
+that after star scientists die unexpectedly, outsiders publish more in
+their fields.
+<ul>
+<li><strong>Benchmark overfitting:</strong> Once a benchmark becomes the
+standard in a field, papers optimize for it until it stops reflecting
+real progress (<a
+href="https://en.wikipedia.org/wiki/Goodhart&#39;s_law">Goodhart’s
+law</a>). Machine translation adopted the BLEU metric in the early 2000s
+and it became the field standard. <a
+href="https://aclanthology.org/2021.acl-long.566/">“Scientific
+Credibility of Machine Translation Research: A Meta-Evaluation of 769
+Papers” Marie et al. (2021)</a> found 98.8% of MT papers from 2010 to
+2020 reported BLEU, and 82.1% of papers from 2019 and 2020 relied on
+BLEU alone, despite at least 108 proposed metrics claiming to outperform
+it. <a href="https://arxiv.org/abs/2107.10821">“To Ship or Not to Ship”
+Kocmi et al. (2021)</a> compared metrics against 2.3 million human
+judgments and found BLEU agreed with humans on 74.6% of pairwise system
+rankings, compared to 83.4% for COMET (an alternative), concluding that
+the sole use of BLEU impeded the development of improved models.</li>
+</ul></li>
+<li><strong>Correlated data:</strong> The same datasets, software, and
+experimental designs are used by researchers, so some errors are
+correlated across experiments that are treated as independent. <a
+href="https://doi.org/10.1073/pnas.1602413113">“Cluster failure” Eklund
+et al. (2016)</a> ran 3 million analyses on null fMRI data and found the
+three most common analysis packages could produce false-positive rates
+of up to 70% instead of the nominal 5%, affecting any study that relied
+on them. <a href="https://arxiv.org/abs/2103.14749">“Pervasive Label
+Errors in Test Sets Destabilize Machine Learning Benchmarks” Northcutt
+et al. (2021)</a> estimated label errors averaging at least 3.3% across
+10 widely used ML test sets.</li>
+<li><strong>Biased meta-analysis:</strong> Meta-analyses pool a filtered
+literature, so they inherit its biases while appearing more
+authoritative. <a
+href="https://doi.org/10.1038/s41562-019-0787-z">“Comparing
+meta-analyses and preregistered multiple-laboratory replication
+projects” Kvarven et al. (2020)</a> found meta-analytic effects differed
+significantly from large preregistered replications in 12 of 15 cases
+and were almost three times as large on average. Standard corrections
+for publication bias did not fix the gap. As an example, one
+meta-analysis (<a href="https://doi.org/10.1037/a0019486">Hagger et
+al. 2010</a>) found ego depletion had a medium-to-large effect on
+self-control, but a follow-up replication using preregistered
+experiments across 23 labs (<a
+href="https://doi.org/10.1177/1745691616652873">Hagger et al. 2016</a>)
+found the effect was actually near zero.</li>
+</ul>
+<p>Much of the scientific ecosystem is built on compounding work: papers
+building off papers, ideas being disseminated to inspire new ideas,
+tools open-sourced so other researchers can move faster. But that makes
+the system susceptible to compounding errors too. There are few
+error-correcting mechanisms outside peer review and replications, so the
+impact of compounding errors primarily depends on how often errors are
+introduced (most of the issues mentioned in this document) and how
+strong the error-correcting mechanisms are (peer review and
+replication).</p>
+<p>I expect AI researchers to mitigate some of these issues while
+amplifying others. AI researchers will be able to read every single
+citation in a paper and verify it supports the claim it was cited for.
+But I expect they will have issues with correlated data, since if most
+AIs are the same model, they will all “independently” choose the same
+datasets, methods, and tools. I suspect there will be an increase in
+attention collapse since there will be a larger number of researchers,
+and positive feedback loops tend to grow more unequal as the number of
+participants grows. There will also be an additional novel pressure on
+the Matthew effect through publications being included in model training
+data, which makes models more likely to know about and cite popular
+work. It seems likely that paradigm lock-in will initially get worse as
+models are all the same and inherit perspectives and training data from
+their previous models (people switching to a new model is like a
+funeral, but the new models are not as distinct from model to model as
+people are from funeral to funeral), and then in the long term the
+models should discover new paradigms as capabilities improve. Biased
+meta-analyses will likely not change much, but they could be replaced
+with stronger meta-analyses which replicate every paper they analyze.
+Copy errors could be a real issue if there are more low-quality
+researchers, but this issue will diminish with capabilities, and can
+easily be minimized by dedicating some time to looking for bugs in any
+code the researcher uses.</p>
+<h1 id="read-more">Read more</h1>
+<p>While AI researchers have the potential to accelerate progress in all
+fields, there is also the possibility they break existing
+infrastructure, especially at the weak points considered in this post.
+This was not an exhaustive list, so below are more readings which
+attempt to catalog the failures of science.</p>
+<ol type="1">
+<li><a href="https://www.nature.com/articles/s41562-016-0021">“A
+manifesto for reproducible science” Munafò et al. (2017)</a>: maps
+threats to reproducibility onto stages of the research cycle (design,
+collection and analysis, publication) and proposes fixes in five areas:
+methods, reporting, reproducibility, evaluation, and incentives.</li>
+<li>The Scientific Utopia series: <a
+href="https://doi.org/10.1080/1047840X.2012.692215">“I. Opening
+scientific communication” Nosek &amp; Bar-Anan (2012)</a>, <a
+href="https://doi.org/10.1177/1745691612459058">“II. Restructuring
+incentives and practices to promote truth over publishability” Nosek et
+al. (2012)</a>, and <a
+href="https://doi.org/10.1177/1745691619850561">“III. Crowdsourcing
+science” Uhlmann et al. (2019)</a>. Part II is the most relevant here:
+it argues the core failure is that incentives reward publishability
+rather than truth, and walks through the practices that follow and the
+reforms to counter them.</li>
+<li><a
+href="https://nap.nationalacademies.org/catalog/25303/reproducibility-and-replicability-in-science"><em>Reproducibility
+and Replicability in Science</em> National Academies of Sciences,
+Engineering, and Medicine (2019)</a>: the US consensus report. It
+distinguishes reproducibility (same data, same result) from
+replicability (new data, same result) and reviews the sources of failure
+for each.</li>
+<li><a href="https://en.wikipedia.org/wiki/Science_Fictions"><em>Science
+Fictions</em> Ritchie (2020)</a>: a book organizing the failures of
+science into fraud, bias, negligence, and hype.</li>
+<li><a href="https://www.thelancet.com/series-do/research">“Research:
+increasing value, reducing waste” Lancet series (2014)</a>: five papers
+covering waste at each stage of research, from setting priorities to
+reporting. It builds on <a
+href="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(09)60329-9/fulltext">“Avoidable
+waste in the production and reporting of research evidence” Chalmers
+&amp; Glasziou (2009)</a>.</li>
+<li><a href="https://doi.org/10.3389/fpsyg.2016.01832">“Degrees of
+Freedom in Planning, Running, Analyzing, and Reporting Psychological
+Studies: A Checklist to Avoid p-Hacking” Wicherts et al. (2016)</a>: a
+detailed checklist of researcher degrees of freedom.</li>
+<li><a href="https://catalogofbias.org/">Catalog of Bias</a>: an online
+catalog from the Oxford Centre for Evidence-Based Medicine, with a
+definition, examples, and evidence for each named bias.</li>
+<li><a href="https://doi.org/10.1098/rsos.160384">“The natural selection
+of bad science” Smaldino &amp; McElreath (2016)</a>: a model of how
+rewarding publication count spreads poor methods, even without
+deliberate cheating.</li>
+<li><a href="https://arxiv.org/abs/1807.03341">“Troubling Trends in
+Machine Learning Scholarship” Lipton &amp; Steinhardt (2018)</a>: four
+problems in ML papers: mixing explanation with speculation,
+misattributing the source of empirical gains, “mathiness,” and misuse of
+language.</li>
+</ol>
+<h1 id="acknowledgements">Acknowledgements</h1>
+<p>Thanks to the Cambridge Boston Alignment Initiative (CBAI) for
+providing funding, guidance, and office space for work and
+community.</p>
+<h2 id="how-to-cite">How to cite</h2>
+<p>Jason Fantl. <em>Reviewing failure modes in science as we prepare for
+AI researchers.</em> Averroes Labs, October 2026.
+https://averroeslabs.org/blog/failure-modes-in-science/</p>
+<pre class="bibtex"><code>@misc{failuremodesinscience,
+  title  = {Reviewing failure modes in science as we prepare for AI researchers},
+  author = {Fantl, Jason},
+  year   = {2026},
+  month  = oct,
+  publisher = {Averroes Labs},
+  url    = {https://averroeslabs.org/blog/failure-modes-in-science/}
+}</code></pre>
+</body>
+</html>
