@@ -80,6 +80,8 @@
   }
   .name { font-family: "LM Roman Caps", var(--serif); font-size: 1rem; letter-spacing: 0.12em; }
   .place { font-size: 0.85rem; font-style: italic; color: var(--soft); }
+  header .right { display: flex; align-items: baseline; gap: 1.1rem; }
+  a.nav { font-family: "LM Roman Caps", var(--serif); font-size: 0.9rem; letter-spacing: 0.1em; text-decoration: underline; text-decoration-color: var(--rubric); text-decoration-thickness: 1px; text-underline-offset: 3px; }
   .hatch {
     height: 9px;
     margin-top: 1rem;
@@ -242,7 +244,7 @@
     <header>
       <div class="inner">
         <span class="name">Averroes Labs</span>
-        <span class="place">Cambridge, Massachusetts</span>
+        <span class="right"><a class="nav" href="/blog/">Blog</a><span class="place">Cambridge, Massachusetts</span></span>
       </div>
       <div class="hatch" aria-hidden="true"></div>
     </header>
@@ -280,7 +282,7 @@
         </div>
         <div class="pilot">
           <h3>Coordination</h3>
-          <p>Do copies of a model all pick the same AI safety research direction? In our first pilot, copies of one model behaved as if choosing from only 3 to 11 projects, and changing the model, harness, or prompt spread them only a little (<a href="https://github.com/AverroesLabs/direction-diversity-preview">results so far</a>). Next we test whether a shared registry of active work spreads them out without lowering the quality of their picks.</p>
+          <p>Do copies of a model all pick the same AI safety research direction? Agents of four frontier models, across harnesses and launch prompts, behaved as if choosing from about 60 projects, against thousands for people. A shared registry of earlier projects, or random draws weighted by each agent’s own judgement, spread them out widely (<a href="/blog/many-agents-few-projects/">write-up</a>).</p>
         </div>
         <div class="pilot">
           <h3>Audit incentives</h3>
@@ -300,7 +302,7 @@
         <dt>Seeking</dt>
         <dd>A cofounder to lead adoption with journals, funders, and labs (remote is fine). Also collaborators, advisors, feedback, and funding. We are not funded yet.</dd>
         <dt>Progress</dt>
-        <dd>Pilot code, data, and write-ups on <a href="https://github.com/AverroesLabs">GitHub</a>, for the <a href="https://github.com/AverroesLabs/legibility-quiz-pilot">legibility audit</a> and <a href="https://github.com/AverroesLabs/direction-diversity-preview">coordination</a> pilots. Five <a href="https://www.lesswrong.com/users/jason-fantl">LessWrong posts</a> on how automated researchers will change science, starting with <a class="ref" href="#ref3">[3]</a>.</dd>
+        <dd>Pilot code, data, and write-ups on <a href="https://github.com/AverroesLabs">GitHub</a>, for the <a href="https://github.com/AverroesLabs/legibility-quiz-pilot">legibility audit</a> and <a href="https://github.com/AverroesLabs/ai-research-agent-diversity">coordination</a> pilots. Five <a href="https://www.lesswrong.com/users/jason-fantl">LessWrong posts</a> on how automated researchers will change science, starting with <a class="ref" href="#ref3">[3]</a>.</dd>
         <dt>Contact</dt>
         <dd><a class="tt" href="mailto:contact@averroeslabs.org">contact@averroeslabs.org</a></dd>
       </dl>
