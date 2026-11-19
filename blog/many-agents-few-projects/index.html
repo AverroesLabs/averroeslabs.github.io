@@ -218,7 +218,7 @@
 Convergence in AI Research Agents' Choice of Safety Research</h1>
 <p class="author">Jason Fantl, Averroes Labs</p>
 <p class="date">18 November 2026</p>
-<p class="formats"><a href="../many-agents-few-projects.pdf">PDF</a> · <a href="../many-agents-few-projects.md">Markdown</a> · <a href="https://github.com/AverroesLabs/ai-research-agent-diversity">Data and code</a></p>
+<p class="formats"><a href="/blog/many-agents-few-projects.pdf">PDF</a> · <a href="/blog/many-agents-few-projects.md">Markdown</a> · <a href="https://github.com/AverroesLabs/ai-research-agent-diversity">Data and code</a></p>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
@@ -307,7 +307,7 @@ our guess is that the question and the measure carry over, and that the
 interventions do as long as models keep agreeing on what is best.</p>
 <h2 id="how-we-measured-it">How we measured it</h2>
 <p>We call a group of agents each choosing a project a field.</p>
-<p><img src="fig-01-design.png"
+<p><img src="/blog/many-agents-few-projects/fig-01-design.png"
 alt="The experiment: four frontier models, eleven launch prompts and four harnesses make an agent, which may use a search tool and a registry before naming a research project, and a judge turns the projects into one number" /></p>
 <p><strong>Figure 1.</strong> The experiment, read left to right. An
 agent is a model, given instructions, running in a harness. It may
@@ -387,7 +387,7 @@ also misses some duplicates, which makes every group look more spread
 than it is, people most of all. Allowing for its misses, people still
 stay well above agents choosing on their own (<a
 href="#appendix-the-judge-and-how-far-to-trust-it">the judge</a>).</p>
-<p><img src="fig-02-effective-number.png"
+<p><img src="/blog/many-agents-few-projects/fig-02-effective-number.png"
 alt="What the effective number of projects measures, for one model, a mix of models and people: agents spread over projects, distinct projects as agents are added, and how a distribution becomes one number" /></p>
 <p><strong>Figure 2.</strong> How the effective number of projects
 works, for three groups. One model is 120 agents of GPT-6 Astra
@@ -420,7 +420,7 @@ randomness already present between agents, in their model, instructions,
 harness and reading, and in how each samples its answer. In Figure 3 the
 shaded range around each project shows how much agents’ judgements of it
 vary, and agents disagree more about some projects than others.</p>
-<p><img src="fig-00-three-ways.png"
+<p><img src="/blog/many-agents-few-projects/fig-00-three-ways.png"
 alt="An illustration with simulated numbers: projects ranked by promise, each with a band for how agents’ judgements vary, and where 40 agents land under three rules" /></p>
 <p><strong>Figure 3.</strong> A sketch with made-up numbers. Nothing in
 it is measured. (a) 50 projects, one bar each, from most to least
@@ -472,7 +472,7 @@ which choices matter on a simple, cheap setup, in which one open model
 answers our brief from memory, without a search tool. Most of those
 results agree with the ones here, and we say where they differ. They are
 in the <a href="#appendix-the-simple-setup">appendix</a>.</p>
-<p><img src="fig-00c-two-setups.png"
+<p><img src="/blog/many-agents-few-projects/fig-00c-two-setups.png"
 alt="The effective number of projects for Max, Max with registry, weighted random and people" /></p>
 <p><strong>Figure 4.</strong> Figure 3’s three rules measured on the
 frontier setup, one column per rule, with two groups of people on the
@@ -517,7 +517,7 @@ once.</p>
 <h3
 id="result-1-a-field-of-frontier-agents-behaves-like-about-60-projects">Result
 1: a field of frontier agents behaves like about 60 projects</h3>
-<p><img src="fig-part1-setup.png"
+<p><img src="/blog/many-agents-few-projects/fig-part1-setup.png"
 alt="Result 1’s setup: agents of Figure 1 with no search or with search" /></p>
 <p><strong>Figure 5.</strong> The setup for Result 1, drawn as Figure 1.
 Agents answer with no search or after searching our copy of the
@@ -530,7 +530,7 @@ use web search. Every launch prompt is in the <a
 href="https://github.com/AverroesLabs/ai-research-agent-diversity/blob/main/prompts/README.md">prompts
 appendix</a>: word for word where the text is ours, and as a link to the
 source with our changes where it reuses someone else’s prompt.</p>
-<p><img src="fig-field-search.png"
+<p><img src="/blog/many-agents-few-projects/fig-field-search.png"
 alt="Effective number of projects for the field without search and with search" /></p>
 <p><strong>Figure 6.</strong> The frontier setup without and with
 search, on the same 120 combinations of model, launch prompt and
@@ -573,7 +573,7 @@ therefore test Figure 3’s other two rules.</p>
 registry</h2>
 <h3 id="result-2-a-registry-of-earlier-projects-stops-repeats">Result 2:
 a registry of earlier projects stops repeats</h3>
-<p><img src="fig-part2-setup.png"
+<p><img src="/blog/many-agents-few-projects/fig-part2-setup.png"
 alt="Result 2’s setup: agents of Figure 1 with search and one of three registries, or none" /></p>
 <p><strong>Figure 7.</strong> The setup for Result 2, drawn as Figure 1.
 Agents search, with no registry or with one of three. Each registry was
@@ -595,7 +595,8 @@ how many agents work in each agenda. This tells agents how crowded each
 area is, much like the signal tested in the closest earlier study, <a
 href="https://arxiv.org/abs/2611.03424">IdeaTaste</a>. Every agent read
 the registry without being reminded.</p>
-<p><img src="fig-08-registry-frontier.png"
+<p><img
+src="/blog/many-agents-few-projects/fig-08-registry-frontier.png"
 alt="Distinct projects as agents choose in sequence, for the registry of earlier projects, agenda counts, the placebo list and no registry, in populations of 100 frontier agents" /></p>
 <p><strong>Figure 8.</strong> Drawn as Figure 2(b), distinct projects
 among the first agents to choose as a population of 100 fills up, in the
@@ -607,7 +608,7 @@ under the registry line, is every agent choosing a new project. Each of
 the three lists averages three populations in choice order, all run the
 same day. Bands are 95% intervals, from resampling populations for the
 lists and agents for no registry.</p>
-<p><img src="fig-13-registry-arms.png"
+<p><img src="/blog/many-agents-few-projects/fig-13-registry-arms.png"
 alt="Effective number of projects for each registry, the placebo list and no registry" /></p>
 <p><strong>Figure 9.</strong> Drawn as Figure 4, one column per
 registry, headed by what it returned. The no-registry cell is Figure 4’s
@@ -709,7 +710,7 @@ number of projects an agent could reach multiplies with each level and
 is not limited to what fits in one list. And because the weights are the
 model’s own, a model that judges promise well spreads agents in
 proportion to its judgement.</p>
-<p><img src="fig-tree-diagram.png"
+<p><img src="/blog/many-agents-few-projects/fig-tree-diagram.png"
 alt="One agent’s walk down the tree: at each draw the options it listed with their weights, the drawn option highlighted and expanded at the next level, ending in one project" /></p>
 <p><strong>Figure 10.</strong> One frontier agent’s walk down the tree
 (Opus 5.5 in Codex CLI), from its tool calls. Read top to bottom. From
@@ -720,7 +721,7 @@ the random draw returned is in the draw colour and splits into the next
 row of options, and the branches not drawn are grey. The chance of
 reaching the final project is the product of the percentages along its
 path. Labels are shortened.</p>
-<p><img src="fig-part3-setup.png"
+<p><img src="/blog/many-agents-few-projects/fig-part3-setup.png"
 alt="Result 3’s setup: agents of Figure 1 with search, with and without the tree protocol and the random-draw tool" /></p>
 <p><strong>Figure 11.</strong> The setup for Result 3, drawn as Figure
 1. Searching agents get their default instructions, a sentence asking
@@ -730,7 +731,7 @@ with the agent taking the option it judges best at each level, or the
 tree protocol with each option drawn at random by the random-draw tool.
 Only the last comes with the tool, which is bold because it contains
 randomness.</p>
-<p><img src="fig-15-protocol-pilot.png"
+<p><img src="/blog/many-agents-few-projects/fig-15-protocol-pilot.png"
 alt="Effective number of projects without and with the tree protocol" /></p>
 <p><strong>Figure 12.</strong> Drawn as Figure 4, on the same 120
 combinations of model, launch prompt and harness as Figure 4’s Max:
@@ -1168,7 +1169,7 @@ repeat a project</h2>
 2025 and 2026, mentor proposals from the <a
 href="https://sparai.org">SPAR</a> research program, and team projects
 from six <a href="https://apartresearch.com">Apart</a> hackathons.</p>
-<p><img src="fig-02-people.png"
+<p><img src="/blog/many-agents-few-projects/fig-02-people.png"
 alt="Effective number of projects for people’s papers, posts, project proposals and hackathon teams" /></p>
 <p><strong>Figure A1.</strong> One column per source of people’s work,
 drawn as Figure 4. Each circle is the effective number of projects,
@@ -1199,7 +1200,7 @@ frontier setup</h2>
 <p>These sections look inside the frontier setup’s runs, in the order of
 the post’s Parts.</p>
 <h3 id="each-model-on-its-own">Each model on its own</h3>
-<p><img src="fig-field-models.png"
+<p><img src="/blog/many-agents-few-projects/fig-field-models.png"
 alt="Effective number of projects for each frontier model’s agents within the frontier setup, and for all four together" /></p>
 <p><strong>Figure A2.</strong> Drawn as Figure 6, one column per model.
 Each of the first four columns is one model’s agents within the frontier
@@ -1209,7 +1210,7 @@ The last column is all 120 agents, the Max cell of Figure 4. Every pair
 of agents is judged, and intervals are 95%, from resampling agents.</p>
 <h3 id="do-different-models-choose-the-same-projects">Do different
 models choose the same projects?</h3>
-<p><img src="fig-A-field-triangles.png"
+<p><img src="/blog/many-agents-few-projects/fig-A-field-triangles.png"
 alt="Two shaded triangles of model-to-model similarity in the frontier setup, on projects and on agendas" /></p>
 <p><strong>Figure A3.</strong> How alike two models’ choices are in the
 frontier setup’s Max run, about 30 agents per model, each with its own
@@ -1235,7 +1236,7 @@ different models, such as “Does Evading One Monitor Mean Evading Both?
 Cross-Monitor Transfer of Obfuscation in RL-Trained Reward Hackers”.</p>
 <h3 id="do-launch-prompts-or-harnesses-make-agents-alike">Do launch
 prompts or harnesses make agents alike?</h3>
-<p><img src="fig-A-field-sharing.png"
+<p><img src="/blog/many-agents-few-projects/fig-A-field-sharing.png"
 alt="How much more often two agents in the frontier setup duplicate each other when they share a model, a launch prompt or a harness" /></p>
 <p><strong>Figure A4.</strong> For every pair of the Max run’s 120
 agents, the share judged duplicates among pairs that share a model, a
@@ -1251,7 +1252,7 @@ run in Claude Code. In this field, which model an agent runs on matters
 most.</p>
 <h3 id="what-do-searching-agents-read">What do searching agents
 read?</h3>
-<p><img src="fig-A-reading.png"
+<p><img src="/blog/many-agents-few-projects/fig-A-reading.png"
 alt="The ten documents the most frontier agents opened before choosing, with the share who opened each first" /></p>
 <p><strong>Figure A5.</strong> The ten documents the most agents in the
 frontier setup’s Max run opened with the search tool, as a share of the
@@ -1284,7 +1285,7 @@ interests, and an off-topic paper. So what agents read first does steer
 what they pick, as long as it fits what they were already inclined to
 do.</p>
 <h3 id="where-do-agents-crowd">Where do agents crowd?</h3>
-<p><img src="fig-A1-agendas.png"
+<p><img src="/blog/many-agents-few-projects/fig-A1-agendas.png"
 alt="Share of projects in four agendas, for human papers and proposals and for each model" /></p>
 <p><strong>Figure A6.</strong> Share of each group’s projects in four of
 45 agendas from the <a
@@ -1294,7 +1295,7 @@ are people and slate rows are each model’s group of 40 answering from
 memory on our brief in the minimal loop, the model rows of Figure A11.
 The same chart on the earlier, pilot version of the brief, with five
 models and Sonnet and Opus in Claude Code, is <a
-href="fig-A1-agendas-pilot-brief.png">here</a>.</p>
+href="/blog/many-agents-few-projects/fig-A1-agendas-pilot-brief.png">here</a>.</p>
 <p>Between about half and nine tenths of each of these seven models’
 picks (55% for GPT-6 Astra to 88% for Opus) fall in four agendas:
 chain-of-thought monitoring, lie detection, AI control and
@@ -1303,7 +1304,7 @@ theirs in one, AI control (55% and 75%). People work on these too, but
 they take about a fifth of mentor proposals (17% and 23% in the two
 rounds) and far less of published papers (6%). The directions are
 reasonable, but they are the same few.</p>
-<p><img src="fig-A-field-agendas.png"
+<p><img src="/blog/many-agents-few-projects/fig-A-field-agendas.png"
 alt="Share of the frontier setup’s picks in four agendas under each rule" /></p>
 <p><strong>Figure A7.</strong> Drawn as Figure A6, for the frontier
 setup under each rule, every arm on the same 120 combinations of model,
@@ -1495,7 +1496,7 @@ groups of agents that discuss research ideas converge on fewer of them
 (<a href="https://arxiv.org/abs/2604.18005">Chen et al., 2026</a>). A
 registry shows agents what earlier agents chose, so it could have made
 them crowd together.</p>
-<p><img src="fig-A-herding.png"
+<p><img src="/blog/many-agents-few-projects/fig-A-herding.png"
 alt="Share of picks that share an agenda with an earlier pick, and share in the field’s two largest agendas, for the placebo list and the two registries" /></p>
 <p><strong>Figure A8.</strong> The frontier setup’s registry stage,
 every pick after the first in its population of 20, coloured as Figure
@@ -1536,7 +1537,7 @@ the project measure counts those as new duplicates.</p>
 <p>The tree’s projects are written about a quarter shorter than other
 agents’, which makes our judge find more duplicates among them, so if
 anything the tree’s number is too low.</p>
-<p><img src="fig-A-tree-weights.png"
+<p><img src="/blog/many-agents-few-projects/fig-A-tree-weights.png"
 alt="How flat agents’ weights were at the first draw, for each model in the simple setup and in the frontier setup" /></p>
 <p><strong>Figure A9.</strong> Each dot is one agent’s first draw: the
 weight it gave its top option, divided by the weight every option would
@@ -1603,13 +1604,13 @@ Randomness in sampling changes how an agent reasons and writes, but
 rarely which project it chooses.</p>
 <h3 id="model-instructions-and-harness">Model, instructions and
 harness</h3>
-<p><img src="fig-A-setup-mix.png"
+<p><img src="/blog/many-agents-few-projects/fig-A-setup-mix.png"
 alt="The setup for varying model, instructions and harness" /></p>
 <p><strong>Figure A10.</strong> The setup for Figure A11, drawn as
 Figure 1. Each part varies over these options, one part at a time from
 the simple setup, and in the last row of Figure A11 every agent drew all
 three at random.</p>
-<p><img src="fig-06-agent-setup.png"
+<p><img src="/blog/many-agents-few-projects/fig-06-agent-setup.png"
 alt="Effective number of projects for every setting of model, instructions and harness, each part mixed, and every part mixed at once" /></p>
 <p><strong>Figure A11.</strong> Each panel changes one part of the agent
 and holds the other two at GLM-5.3-flash, our brief and the minimal
@@ -1667,7 +1668,7 @@ Opus’s by about 5 times, from 3 to 16, and lowered two. The sentence is
 the likeliest cause, but we have not separated it, so we compare numbers
 only within one setup.</p>
 <h3 id="what-agents-read">What agents read</h3>
-<p><img src="fig-A-setup-read.png"
+<p><img src="/blog/many-agents-few-projects/fig-A-setup-read.png"
 alt="The setup for every model under each kind of reading" /></p>
 <p><strong>Figure A12.</strong> The setup for Figure A13, drawn as
 Figure 1: seven models, with our brief or with the brief narrowed to
@@ -1676,7 +1677,7 @@ assigned list of 88 papers and posts shared by a group, skewed or
 uniform across topics, or search with no, moderate or high randomness in
 its results. Search with random results is a source of randomness, so
 those boxes are bold.</p>
-<p><img src="fig-08-reading-models.png"
+<p><img src="/blog/many-agents-few-projects/fig-08-reading-models.png"
 alt="Effective number of projects for every model and reading condition, with the interpretability brief and the frontier setup’s earlier groups" /></p>
 <p><strong>Figure A13.</strong> One row per model and brief, one column
 per reading condition, each circle drawn as in Figure 4. Every pair of
@@ -1753,14 +1754,14 @@ brief, with more than half working on validating interpretability
 methods. The same field judged on every pair, with 120 agents, gives
 about 63 (Figure 6).</p>
 <h3 id="interventions">Interventions</h3>
-<p><img src="fig-A-setup-int.png"
+<p><img src="/blog/many-agents-few-projects/fig-A-setup-int.png"
 alt="The setup for the interventions in the simple setup" /></p>
 <p><strong>Figure A14.</strong> The setup for Figure A15, drawn as
 Figure 1: the simple setup with no registry or one of three, or with the
 tree protocol and the random-draw tool. Claude Sonnet 5.5 repeated only
 the tree test. The random-draw tool is bold because it contains
 randomness; the protocol’s text does not.</p>
-<p><img src="fig-A-interventions.png"
+<p><img src="/blog/many-agents-few-projects/fig-A-interventions.png"
 alt="Effective number of projects for every intervention in the simple setup, by model and judging rule" /></p>
 <p><strong>Figure A15.</strong> One column per intervention and one row
 per model and judging rule, each circle drawn as in Figure 4. Every pair
@@ -1787,7 +1788,7 @@ the protocol tripled the number of agendas agents spread over, and moved
 picks apart in a small text-embedding model’s space.</p>
 <h3 id="the-gpt-models-under-the-pilot-brief">The GPT models under the
 pilot brief</h3>
-<p><img src="fig-A2-gpt-setup.png"
+<p><img src="/blog/many-agents-few-projects/fig-A2-gpt-setup.png"
 alt="GPT-6 Astra and GPT-6.1 Sol under each instruction and in two harnesses" /></p>
 <p><strong>Figure A16.</strong> The two GPT models on the pilot version
 of the brief, one column per model and one row per setting: four
