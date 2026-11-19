@@ -581,19 +581,22 @@ meaning one of the 45 research areas in the <a
 href="https://www.greaterwrong.com/posts/Wti4Wr7Cf5ma3FGWa/shallow-review-of-technical-ai-safety-2025-2">2025
 Shallow Review</a>, agents who search are about half as spread as agents
 who do not.</p>
-<p>Mixing models helps, but not much, and a real fleet running many
-copies of one configuration would likely be even more crowded. Each
-model alone behaves like 23 to 45 projects, and four models together
-like about 60, so mixing models adds little. With about 30 agents per
-model, these intervals are wide (appendix Figure A2). Half of the
-field’s duplicate pairs are between different models, but few are
-between an Anthropic and an OpenAI model, so most of the overlap stays
-within a lab. The field also crowds onto two problems, with 59% of
+<p>Each model alone behaves like 23 to 45 projects, and four models
+together like about 60. With about 30 agents per model, these intervals
+are wide (appendix Figure A2). Nearly all of the field’s spread comes
+from having two labs. An Anthropic agent and an OpenAI agent rarely
+chose the same project, while two agents from one lab often did, even
+with different models and launch prompts, so the field acts like two
+crowded groups, one per lab (appendix Figure A4). More labs would spread
+a field further only if their models differ from the rest as much, and a
+real fleet running many copies of one configuration would be more
+crowded still. The field also crowds onto two problems, with 59% of
 agents choosing AI control (38% without search) and another 26%
 chain-of-thought monitoring.</p>
-<p>So AI agents’ judgements vary little, in the sense of Figure 3. In
-the simple setup, changing models, instructions or harnesses one at a
-time added only a little variety (<a
+<p>So AI agents’ judgements vary little, in the sense of Figure 3.
+Agents from different labs judge differently, but within a lab they vary
+little, and there are few labs. In the simple setup, changing models,
+instructions or harnesses one at a time added only a little variety (<a
 href="#appendix-the-simple-setup">appendix</a>). The next two parts
 therefore test Figure 3’s other two rules.</p>
 <h2 id="part-2-taking-turns-with-a-registry">Part 2: taking turns with a
@@ -828,21 +831,23 @@ agreed with experienced researchers’ judgements 60% of the time, against
 an estimated 77% for the researchers themselves (<a
 href="https://alignment.anthropic.com/2026/taste/">Baig et al.,
 2026</a>).</p>
-<p>We tested seven models from four families and no Google models. No
-group of people answered our exact brief. SPAR mentors answer the same
-question implicitly, what a researcher should work on next in AI safety,
-but they wrote for a program, and we do not know whether it screens
-proposals for overlap, which would raise their number. Teams at four
-broad-theme hackathons, whom no one screens, still behave like about 530
-projects, far above agents choosing on their own. Search used our own
-frozen copy of the literature, and temperature stayed at the provider
-default. Our registries held at most 100 entries, and we do not know how
-a registry behaves beyond 100 entries. It could become less effective,
-for example if agents read less of a long list, or agents could start
-copying each other more as more of the field is visible to them. We have
-not tested this. The arms without search, with the novelty sentence, and
-with agents taking the best option at each level ran a day after the
-arms they are compared with.</p>
+<p>We tested seven models from four families and no Google models. The
+frontier field had only two labs, so we cannot tell how much more labs
+would add (appendix Figure A4). No group of people answered our exact
+brief. SPAR mentors answer the same question implicitly, what a
+researcher should work on next in AI safety, but they wrote for a
+program, and we do not know whether it screens proposals for overlap,
+which would raise their number. Teams at four broad-theme hackathons,
+whom no one screens, still behave like about 530 projects, far above
+agents choosing on their own. Search used our own frozen copy of the
+literature, and temperature stayed at the provider default. Our
+registries held at most 100 entries, and we do not know how a registry
+behaves beyond 100 entries. It could become less effective, for example
+if agents read less of a long list, or agents could start copying each
+other more as more of the field is visible to them. We have not tested
+this. The arms without search, with the novelty sentence, and with
+agents taking the best option at each level ran a day after the arms
+they are compared with.</p>
 <h2 id="related-work">Related work</h2>
 <p>Language models give similar answers to open-ended questions, across
 runs and across model families (<a
@@ -875,8 +880,9 @@ releases (<a href="https://arxiv.org/abs/2611.01549">Qiu et al.,
 and pooling vendors and prompts came close to people (<a
 href="https://arxiv.org/abs/2607.27553">Terwiesch et al., 2026</a>).
 Choosing a research project after searching the literature, the task we
-study, is a different setting, and there mixing models and prompts
-helped little.</p>
+study, is a different setting. There, models from different labs rarely
+chose the same project, but launch prompts and models from one lab did
+little to separate agents (appendix Figure A4).</p>
 <p>Systems that carry out research from idea to paper now exist (<a
 href="https://arxiv.org/abs/2408.06292">Lu et al., 2024</a>; <a
 href="https://arxiv.org/abs/2504.08066">Yamada et al., 2025</a>), and
@@ -1101,7 +1107,7 @@ times as many (15 to 170)</td>
 <td>120 per arm</td>
 </tr>
 <tr>
-<td>6</td>
+<td>6, A4</td>
 <td>The frontier setup’s same 120 combinations of model, launch prompt
 and harness with no search tools (run 17 November)</td>
 <td>120</td>
@@ -1261,22 +1267,42 @@ closely related distributions and the GPT models almost never share a
 project with any other family. A few projects there are chosen by five
 different models, such as “Does Evading One Monitor Mean Evading Both?
 Cross-Monitor Transfer of Obfuscation in RL-Trained Reward Hackers”.</p>
-<h3 id="do-launch-prompts-or-harnesses-make-agents-alike">Do launch
-prompts or harnesses make agents alike?</h3>
-<p><img src="/blog/many-agents-few-projects/fig-A-field-sharing.png"
-alt="How much more often two agents in the frontier setup duplicate each other when they share a model, a launch prompt or a harness" /></p>
-<p><strong>Figure A4.</strong> For every pair of the no-tool run’s 120
-agents, the share judged duplicates among pairs that share a model, a
-launch prompt or a harness, divided by the share among pairs that do
-not. A circle is that ratio and its line the 95% interval, from
-resampling agents; the dashed line at 1 means sharing makes no
-difference. Our brief and its short variant count as one prompt.</p>
-<p>Sharing a model triples the chance that two agents choose the same
-project (3.1 times, 1.6 to 6.4). Sharing a launch prompt or a harness
-raised it up to about twofold, but both intervals include no effect, and
-the harness partly stands in for the model, since the GPT models never
-run in Claude Code. In this field, which model an agent runs on matters
-most.</p>
+<h3 id="where-does-the-spread-come-from">Where does the spread come
+from?</h3>
+<p><img src="/blog/many-agents-few-projects/fig-sources.png"
+alt="Effective number of projects among pairs of agents from different labs, from one lab with different models, from one model with different launch prompts, and from one model and launch prompt" /></p>
+<p><strong>Figure A4.</strong> Each row takes one kind of pair of agents
+and gives the effective number of projects among those pairs alone. The
+top row uses only pairs with one Anthropic agent and one OpenAI agent;
+pairs of two agents from the same lab are split over the next three
+rows, by whether the two share a model and a launch prompt. The last row
+is every pair together, the field’s number. The agents are Figure 4’s
+120 searching agents choosing alone.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+is the number of pairs, and intervals are 95%, from resampling
+agents.</p>
+<p>Almost all of the field’s spread comes from having two labs. Two
+agents from different labs, Anthropic and OpenAI, rarely chose the same
+project: their pairs behave like about 300 projects. Two agents from the
+same lab behave like 41 projects or fewer, however else they differ.</p>
+<p>Within a lab, the launch prompt helps a little and the harness not at
+all. Two agents of one model with different launch prompts behave like
+35 projects, against 16 with the same prompt. Using different models
+from the same lab adds little more (41). Two agents of one model in the
+same harness duplicate each other about as often as two in different
+harnesses (1.2 times as often, 0.4 to 2.0). Without search the pattern
+is the same: about 1,800 projects for pairs from different labs and 23
+or fewer within a lab.</p>
+<p>So the field’s 63 is roughly two labs times about 35 projects per
+lab. More labs would raise it only if their models differ as much as
+Anthropic’s and OpenAI’s do. In the simple setup, with seven models from
+four labs, agents from different labs also rarely chose the same
+project. The mix there still reached only about 37 projects, because
+some models crowd heavily on their own (GPT-6 Astra behaves like 4). And
+on the pilot brief, Claude, GLM and DeepSeek agents overlapped more, so
+not every pair of labs is this distinct. <a
+href="https://github.com/AverroesLabs/ai-research-agent-diversity/blob/main/analysis/sources_of_diversity.py">analysis/sources_of_diversity.py</a>
+recomputes these numbers from the released data.</p>
 <h3 id="what-do-searching-agents-read">What do searching agents
 read?</h3>
 <p><img src="/blog/many-agents-few-projects/fig-A-reading.png"
