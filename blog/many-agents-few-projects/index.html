@@ -196,10 +196,10 @@
   .citebox{background:var(--code);padding:1rem;border-radius:6px}
   @media (max-width:600px){body{font-size:17px;padding-top:1.5rem}h1.title{font-size:1.6rem}}
   @media print{body{max-width:none;font-size:11pt}nav#TOC{display:none}a{color:inherit}}
-
   .formats{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;font-size:.95rem;margin:.4rem 0 0}
+
   </style>
-  <meta name="description" content="As AI agents start choosing their own research, many copies of a few models will decide what gets studied. Using today's models as stand-ins, we asked many agents to each choose an AI safety project and measured how spread out their choices were. Even when agents differ in frontier model, launch pro">
+  <meta name="description" content="As AI agents start choosing their own research, many copies of a few models will decide what gets studied. Using today&#39;s models as stand-ins, we asked many agents to each choose an AI safety project and measured how spread out their choices were. Even when agents differ in frontier model, launch pro">
   <meta name="citation_title" content="Many Agents, Few Projects: Measuring and Reducing Convergence in AI Research Agents&#39; Choice of Safety Research">
   <meta name="citation_author" content="Fantl, Jason">
   <meta name="citation_publication_date" content="2026/11/18">
@@ -207,12 +207,12 @@
   <meta name="citation_pdf_url" content="https://averroeslabs.org/blog/many-agents-few-projects.pdf">
   <link rel="canonical" href="https://averroeslabs.org/blog/many-agents-few-projects/">
   <meta property="og:url" content="https://averroeslabs.org/blog/many-agents-few-projects/">
-  <meta property="og:image" content="https://averroeslabs.org/blog/many-agents-few-projects/fig-00c-two-setups.png">
   <meta property="og:title" content="Many Agents, Few Projects: Measuring and Reducing Convergence in AI Research Agents&#39; Choice of Safety Research">
   <meta property="og:type" content="article">
+  <meta property="og:image" content="https://averroeslabs.org/blog/many-agents-few-projects/fig-00c-two-setups.png">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
 </head>
 <body>
-
 <header id="title-block-header">
 <h1 class="title">Many Agents, Few Projects: Measuring and Reducing
 Convergence in AI Research Agents' Choice of Safety Research</h1>
@@ -285,7 +285,9 @@ pursue their own ideas. As this scales, many copies of a few models will
 decide what gets studied. Human research spreads out because people
 differ in training, taste and information. If agents all reach for the
 same few ideas, a field run by agents could narrow even while its output
-grows.</p>
+grows. Some overlap is useful for replication, but two teams answering
+the same question independently mostly spend twice the effort for one
+answer.</p>
 <p>There are early signs of the problem. Anthropic’s automated
 researchers, given identical prompts, collapsed onto a few method
 families, and giving each a different starting direction helped (<a
@@ -370,8 +372,10 @@ then in a field of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
 agents each agent shares its project with
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>N</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mi>E</mi></mrow><annotation encoding="application/x-tex">(N-1)/E</annotation></semantics></math>
-others on average, whatever shape the distribution has. So one number
-says how crowded a field of any size would be. At
+others on average, whatever shape the distribution has. A group with an
+effective number of 60 has as many duplicate pairs as a group split
+evenly over 60 projects. So one number says how crowded a field of any
+size would be. At
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo>=</mo><mn>63</mn></mrow><annotation encoding="application/x-tex">E = 63</annotation></semantics></math>,
 the frontier setup’s value, a field of 10,000 agents puts about 160
 others on each agent’s project, assuming more agents are drawn from the
@@ -392,7 +396,7 @@ alt="What the effective number of projects measures, for one model, a mix of mod
 <p><strong>Figure 2.</strong> How the effective number of projects
 works, for three groups. One model is 120 agents of GPT-6 Astra
 answering from memory, with no search tool. Mix of models is the
-frontier setup’s 120 agents choosing on their own (Max in Figure 4).
+frontier setup’s 120 agents choosing alone after searching (Figure 4).
 People are SPAR mentors’ project proposals (Figure A1), one random group
 of 40 in (a) and (b). (a) The share of agents on each project, most
 chosen first. (b) Distinct projects among the first
@@ -406,11 +410,10 @@ calculated. Each grid stands for 100 pairs of agents picked at random,
 and filled cells are pairs the judge calls the same project. If 22 of
 every 100 pairs match, agents behave as if choosing among
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>100</mn><mi>/</mi><mn>22</mn><mo>≈</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">100/22 \approx 5</annotation></semantics></math>
-equally popular projects. That number is drawn as the circle used in
-every later figure, whose width grows with its logarithm. Infinity, or
-10,000 and above, is drawn at the size of 10,000 with a dashed outline.
-People’s number in (c) pools all 16 random groups of 40, because a
-single group of 40 often has no repeat.</p>
+equally popular projects. That number is drawn as a circle in every
+later figure, whose width grows with its logarithm. People’s number in
+(c) pools all 16 random groups of 40, because a single group of 40 often
+has no repeat.</p>
 <h2 id="three-ways-a-field-can-choose">Three ways a field can
 choose</h2>
 <p>Figure 3 sketches the idea with made-up numbers. Picture every
@@ -428,13 +431,13 @@ promising. The dark line is how promising agents judge each project on
 average, and the darker band is one standard deviation of a single
 agent’s judgement either side. (b) Where 40 simulated agents land under
 three rules, one square per agent stacked in its project’s column, in
-the colour of its rule as in Figure 4. Under Max, each agent takes the
-project it judges best. Under Max with registry, agents choose one at a
-time, each taking the best project no earlier agent took. Under Weighted
-random, each agent draws a project at random, weighted by how promising
-it judges each. On the right, each rule’s effective number of projects
-is drawn as in Figure 2 and written as a word, because the numbers are
-made up. The registry never repeats a project, so its number is
+the colour its rule has in the result figures. Under take the best, each
+agent takes the project it judges best. Under registry, agents choose
+one at a time, each taking the best project no earlier agent took. Under
+random draw, each agent draws a project at random, weighted by how
+promising it judges each. On the right, each rule’s effective number of
+projects is drawn as a circle and written as a word, because the numbers
+are made up. The registry never repeats a project, so its number is
 infinite.</p>
 <p>If every agent takes the project it judges best, agents end up on the
 few top projects whose ranges overlap. How many depends on how much
@@ -473,32 +476,32 @@ answers our brief from memory, without a search tool. Most of those
 results agree with the ones here, and we say where they differ. They are
 in the <a href="#appendix-the-simple-setup">appendix</a>.</p>
 <p><img src="/blog/many-agents-few-projects/fig-00c-two-setups.png"
-alt="The effective number of projects for Max, Max with registry, weighted random and people" /></p>
-<p><strong>Figure 4.</strong> Figure 3’s three rules measured on the
-frontier setup, one column per rule, with two groups of people on the
-left. Max is agents choosing on their own, with search but no added
-tool. Max with registry adds a registry of earlier projects (Part 2),
-and Weighted random adds the random-draw procedure of Part 3. Each
-circle is the effective number of projects, sized as in Figure 2, with
-the ends of its 95% interval either side and
+alt="Every main result as an effective number of projects on a log axis: people, agents choosing alone, shared lists and prompt interventions" /></p>
+<p><strong>Figure 4.</strong> Every main result, one row per condition.
+Each circle sits at its effective number of projects on a logarithmic
+axis, grows with it, and has the number inside. The line through it is
+the 95% interval, with an arrow where the interval has no upper end, and
+the columns on the right give the interval’s ends and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>.
+Box colours follow Figure 1: brown is search, purple the lists, green
+text added to the prompt and olive the random draw, and a bold outline
+marks a part that adds randomness. People are mentor project proposals
+from the <a href="https://sparai.org">SPAR</a> research program, pooled
+over 16 random groups of 40, and four broad-theme hackathons, whose
+submissions no one screens, though each event scopes its teams to a
+theme (Figure A1). Their
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
-below. An infinity sign at an interval’s end means no upper end.
-Registry agents chose in populations of 100, each sharing one registry
-(Part 2). That cell counts only pairs within a population, and its
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
-is populations
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>×</mi><annotation encoding="application/x-tex">\times</annotation></semantics></math>
-agents per population. It ran on 17 November, a day after the other
-agent cells. The other agent cells count every pair among 120 agents who
-never saw each other. People are mentor project proposals from the <a
-href="https://sparai.org">SPAR</a> research program, pooled over 16
-random groups of 40 (appendix Figure A1). Their interval is the middle
-95% of the 16 groups’ own values. Allowing for the duplicates our judge
-misses, people’s number could be as low as about 380, still far above
-agents choosing on their own. We do not know whether SPAR screens
-proposals for overlap. The second people column pools four broad-theme
-hackathons, whose submissions no one screens, though each event scopes
-its teams to a theme (Figure A1).</p>
+is groups of 40 times 40, and their interval is the middle 95% of the
+groups’ own values. Allowing for the duplicates our judge misses, SPAR’s
+number could be as low as about 380, still far above agents choosing
+alone. We do not know whether SPAR screens proposals for overlap. Agents
+choosing alone are the frontier setup’s 120 combinations of model,
+launch prompt and harness without and with search, every pair judged.
+The shared lists were read by three populations of 100 agents choosing
+one at a time (Part 2), and those rows count only pairs within a
+population. They ran on 17 November, a day after the other agent rows.
+The prompt interventions add text to the searching agents’ prompt (Part
+3), on the same 120 combinations.</p>
 <p>With random draws, the field behaves like about 890 projects, against
 about 60 with no added tool. The registry spread it further still, but
 only among the 100 agents sharing each list. Its circle counts pairs
@@ -534,10 +537,8 @@ source with our changes where it reuses someone else’s prompt.</p>
 alt="Effective number of projects for the field without search and with search" /></p>
 <p><strong>Figure 6.</strong> The frontier setup without and with
 search, on the same 120 combinations of model, launch prompt and
-harness. Without search, agents keep their model, launch prompt and
-harness but have no tools. Circles, intervals and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
-are drawn as in Figure 4, and every pair is judged.</p>
+harness, drawn as Figure 4. Without search, agents keep their model,
+launch prompt and harness but have no tools. Every pair is judged.</p>
 <p>Each agent here had one of many launch prompts and harnesses,
 searched the literature, and wrote thousands of tokens before settling
 on a project. Even so, the field behaves like about 60 projects. Mentors
@@ -556,14 +557,16 @@ meaning one of the 45 research areas in the <a
 href="https://www.greaterwrong.com/posts/Wti4Wr7Cf5ma3FGWa/shallow-review-of-technical-ai-safety-2025-2">2025
 Shallow Review</a>, agents who search are about half as spread as agents
 who do not.</p>
-<p>Mixing models helps, but not much. Each model alone behaves like 23
-to 45 projects, and four models together like about 60, so mixing models
-adds little. With about 30 agents per model, these intervals are wide
-(appendix Figure A2). Half of the field’s duplicate pairs are between
-different models, but few are between an Anthropic and an OpenAI model,
-so most of the overlap stays within a lab. The field also crowds onto
-two problems, with 59% of agents choosing AI control (38% without
-search) and another 26% chain-of-thought monitoring.</p>
+<p>Mixing models helps, but not much, and a real fleet running many
+copies of one configuration would likely be even more crowded. Each
+model alone behaves like 23 to 45 projects, and four models together
+like about 60, so mixing models adds little. With about 30 agents per
+model, these intervals are wide (appendix Figure A2). Half of the
+field’s duplicate pairs are between different models, but few are
+between an Anthropic and an OpenAI model, so most of the overlap stays
+within a lab. The field also crowds onto two problems, with 59% of
+agents choosing AI control (38% without search) and another 26%
+chain-of-thought monitoring.</p>
 <p>So AI agents’ judgements vary little, in the sense of Figure 3. In
 the simple setup, changing models, instructions or harnesses one at a
 time added only a little variety (<a
@@ -600,41 +603,42 @@ src="/blog/many-agents-few-projects/fig-08-registry-frontier.png"
 alt="Distinct projects as agents choose in sequence, for the registry of earlier projects, agenda counts, the placebo list and no registry, in populations of 100 frontier agents" /></p>
 <p><strong>Figure 8.</strong> Drawn as Figure 2(b), distinct projects
 among the first agents to choose as a population of 100 fills up, in the
-frontier setup. Line colours match Figures 7 and 9: solid for the
-registry of earlier projects, dash-dot for agenda counts, dotted for the
-placebo list, and dashed grey for no registry, which is Figure 4’s Max
-agents resampled into populations of 100. The grey diagonal, hidden
-under the registry line, is every agent choosing a new project. Each of
-the three lists averages three populations in choice order, all run the
-same day. Bands are 95% intervals, from resampling populations for the
-lists and agents for no registry.</p>
+frontier setup. A project counts as distinct when the judge marked it a
+duplicate of no earlier one. Line colours match Figures 7 and 9: solid
+for the registry of earlier projects, dash-dot for agenda counts, dotted
+for the placebo list, and dashed grey for no registry, which is Figure
+4’s searching agents choosing alone, resampled into populations of 100.
+The grey diagonal, hidden under the registry line, is every agent
+choosing a new project. Each of the three lists averages three
+populations in choice order, all run the same day. Bands are 95%
+intervals, from resampling populations for the lists and agents for no
+registry.</p>
 <p><img src="/blog/many-agents-few-projects/fig-13-registry-arms.png"
 alt="Effective number of projects for each registry, the placebo list and no registry" /></p>
-<p><strong>Figure 9.</strong> Drawn as Figure 4, one column per
-registry, headed by what it returned. The no-registry cell is Figure 4’s
-Max, and the earlier-projects cell is its Max with registry. The three
-list cells are Figure 8’s populations of 100, run on 17 November, a day
-after the no-registry cell. They count only pairs within a population,
-and
+<p><strong>Figure 9.</strong> Drawn as Figure 4, one row per list. No
+registry is Figure 4’s searching agents choosing alone, and counts every
+pair among its 120 agents. The three lists are Figure 8’s populations of
+100, run on 17 November, a day after the no-registry row. They count
+only pairs within a population, and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
 reads populations
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>×</mi><annotation encoding="application/x-tex">\times</annotation></semantics></math>
-agents per population. The no-registry cell counts every pair among its
-120 agents. An infinity sign at an interval’s end means no upper
-end.</p>
+agents per population.</p>
 <p>Seeing earlier projects stops agents from repeating them. In three
 populations of 100 frontier agents per arm (Figures 8 and 9), the
 registry nearly removed duplicates, with 4 duplicate pairs against 292
-under the placebo list. With the placebo list, 100 agents chose under 60
-distinct projects, no more than agents with no registry. With the
-registry nearly every agent, up to the hundredth, chose a new project,
-and the list kept working as it grew past 20,000 characters. Three of
-the four duplicates that remained came from agents who never saw the
-project they repeated, because Codex CLI cuts long tool results for
-Anthropic models. Our first test, in six populations of 20, found the
-same. Placebo agents repeated each other 23 times and registry agents
-never did. With six populations per arm, an exact permutation test
-cannot give a smaller p-value than this
+under the placebo list. Four pairs are too few to size the registry’s
+number precisely, but its 95% interval starts at about 1,100 projects,
+against about 50 for the placebo. With the placebo list, 100 agents
+chose under 60 distinct projects, no more than agents with no registry.
+With the registry nearly every agent, up to the hundredth, chose a new
+project, and the list kept working as it grew past 20,000 characters.
+Three of the four duplicates that remained came from agents who never
+saw the project they repeated, because Codex CLI cuts long tool results
+for Anthropic models. Our first test, in six populations of 20, found
+the same. Placebo agents repeated each other 23 times and registry
+agents never did. With six populations per arm, an exact permutation
+test cannot give a smaller p-value than this
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0.002</mn></mrow><annotation encoding="application/x-tex">p = 0.002</annotation></semantics></math>).</p>
 <p>Blind raters from two model families compared 52 registry picks with
 the most similar earlier pick each agent was shown and judged none to be
@@ -734,14 +738,12 @@ randomness.</p>
 <p><img src="/blog/many-agents-few-projects/fig-15-protocol-pilot.png"
 alt="Effective number of projects without and with the tree protocol" /></p>
 <p><strong>Figure 12.</strong> Drawn as Figure 4, on the same 120
-combinations of model, launch prompt and harness as Figure 4’s Max:
-default instructions with no tool, the sentence quoted in Figure 11’s
-caption, the tree with the agent taking the best option at each level,
-and the tree with each option drawn at random. The left cell is Figure
-4’s Max, and the right cell is its Weighted random. The bold heading
-marks the one arm that draws at random. An infinity sign at an
-interval’s end means too few duplicate pairs remain to set an upper
-end.</p>
+combinations of model, launch prompt and harness, all searching: no
+added tool, the sentence quoted in Figure 11’s caption, the tree with
+the agent taking the best option at each level, and the tree with each
+option drawn at random. The first row is Figure 4’s searching agents
+choosing alone. The bold outline marks the one arm that draws at
+random.</p>
 <p>Every agent called the random-draw tool without being reminded,
 drawing 2 to 6 times. With the protocol the field behaves like about 890
 projects, against about 60 for the same combinations of model, launch
@@ -1056,9 +1058,9 @@ per arm</td>
 </tr>
 <tr>
 <td>2, 4, 6, 8, 9, 12, A2-A5, A7</td>
-<td>The frontier setup’s Max: the same 120 combinations of model, launch
-prompt and harness as the frontier registry test, with no added tool
-(run 16 November)</td>
+<td>The frontier setup with no added tool: the same 120 combinations of
+model, launch prompt and harness as the frontier registry test, with no
+added tool (run 16 November)</td>
 <td>120</td>
 </tr>
 <tr>
@@ -1171,19 +1173,19 @@ href="https://sparai.org">SPAR</a> research program, and team projects
 from six <a href="https://apartresearch.com">Apart</a> hackathons.</p>
 <p><img src="/blog/many-agents-few-projects/fig-02-people.png"
 alt="Effective number of projects for people’s papers, posts, project proposals and hackathon teams" /></p>
-<p><strong>Figure A1.</strong> One column per source of people’s work,
+<p><strong>Figure A1.</strong> One row per source of people’s work,
 drawn as Figure 4. Each circle is the effective number of projects,
-pooled over 16 random groups of 40, with the ends of the middle 95% of
-the groups’ own values left and right of it. Circles are sized as in
-Figure 2, and an infinity sign means some groups had no repeats at all.
-The broad-theme column pools four hackathons whose teams chose freely
-within a wide theme (Global South AI Safety 2026, def/acc 2025, AI
-Manipulation 2026 and Digital Minds 2026), each event weighted equally
-and its interval taken over all 64 groups. The other two hackathons
-fixed more: one gave every team one theme, the other also gave every
-team the same models to audit. To save cost, people’s pairs were
-screened before judging, skipping pairs whose texts are far apart; on
-people this missed no duplicate that judging every pair found.</p>
+pooled over 16 random groups of 40, and its interval is the middle 95%
+of the groups’ own values. An arrow means some groups had no repeats at
+all, so the interval has no upper end. The broad-theme row pools four
+hackathons whose teams chose freely within a wide theme (Global South AI
+Safety 2026, def/acc 2025, AI Manipulation 2026 and Digital Minds 2026),
+each event weighted equally and its interval taken over all 64 groups.
+The other two hackathons fixed more: one gave every team one theme, the
+other also gave every team the same models to audit. To save cost,
+people’s pairs were screened before judging, skipping pairs whose texts
+are far apart; on people this missed no duplicate that judging every
+pair found.</p>
 <p>People almost never repeat each other. Mentor proposals and published
 work behave like thousands of projects, and hackathon teams, whom no one
 screens for overlap, like several hundred. Teams across four broad-theme
@@ -1202,19 +1204,20 @@ the post’s Parts.</p>
 <h3 id="each-model-on-its-own">Each model on its own</h3>
 <p><img src="/blog/many-agents-few-projects/fig-field-models.png"
 alt="Effective number of projects for each frontier model’s agents within the frontier setup, and for all four together" /></p>
-<p><strong>Figure A2.</strong> Drawn as Figure 6, one column per model.
-Each of the first four columns is one model’s agents within the frontier
-setup’s Max run, still with the launch prompts and harnesses that model
-got, and searching, counting only pairs between agents of that model.
-The last column is all 120 agents, the Max cell of Figure 4. Every pair
-of agents is judged, and intervals are 95%, from resampling agents.</p>
+<p><strong>Figure A2.</strong> Drawn as Figure 4, one row per model.
+Each of the first four rows is one model’s agents within the frontier
+setup’s no-tool run, still with the launch prompts and harnesses that
+model got, and searching, counting only pairs between agents of that
+model. The last row is all 120 agents, Figure 4’s searching agents
+choosing alone. Every pair of agents is judged, and intervals are 95%,
+from resampling agents.</p>
 <h3 id="do-different-models-choose-the-same-projects">Do different
 models choose the same projects?</h3>
 <p><img src="/blog/many-agents-few-projects/fig-A-field-triangles.png"
 alt="Two shaded triangles of model-to-model similarity in the frontier setup, on projects and on agendas" /></p>
 <p><strong>Figure A3.</strong> How alike two models’ choices are in the
-frontier setup’s Max run, about 30 agents per model, each with its own
-launch prompts and harnesses, and searching. Each cell is the chance
+frontier setup’s no-tool run, about 30 agents per model, each with its
+own launch prompts and harnesses, and searching. Each cell is the chance
 that an agent of one model and an agent of the other match, divided by
 the geometric mean of the chance that two agents of each model match
 each other. That is the similarity of the two models’ choice
@@ -1238,7 +1241,7 @@ Cross-Monitor Transfer of Obfuscation in RL-Trained Reward Hackers”.</p>
 prompts or harnesses make agents alike?</h3>
 <p><img src="/blog/many-agents-few-projects/fig-A-field-sharing.png"
 alt="How much more often two agents in the frontier setup duplicate each other when they share a model, a launch prompt or a harness" /></p>
-<p><strong>Figure A4.</strong> For every pair of the Max run’s 120
+<p><strong>Figure A4.</strong> For every pair of the no-tool run’s 120
 agents, the share judged duplicates among pairs that share a model, a
 launch prompt or a harness, divided by the share among pairs that do
 not. A circle is that ratio and its line the 95% interval, from
@@ -1255,8 +1258,8 @@ read?</h3>
 <p><img src="/blog/many-agents-few-projects/fig-A-reading.png"
 alt="The ten documents the most frontier agents opened before choosing, with the share who opened each first" /></p>
 <p><strong>Figure A5.</strong> The ten documents the most agents in the
-frontier setup’s Max run opened with the search tool, as a share of the
-120 agents. The darker, hatched part of each bar is the agents who
+frontier setup’s no-tool run opened with the search tool, as a share of
+the 120 agents. The darker, hatched part of each bar is the agents who
 opened that document first. Titles are cut at the first colon or after
 about 40 characters. Counts come from the search tool’s own logs.</p>
 <p>Frontier agents searched about ten times and opened about six
@@ -1295,7 +1298,7 @@ are people and slate rows are each model’s group of 40 answering from
 memory on our brief in the minimal loop, the model rows of Figure A11.
 The same chart on the earlier, pilot version of the brief, with five
 models and Sonnet and Opus in Claude Code, is <a
-href="/blog/many-agents-few-projects/fig-A1-agendas-pilot-brief.png">here</a>.</p>
+href="https://github.com/AverroesLabs/ai-research-agent-diversity/blob/main/figures/fig-A1-agendas-pilot-brief.png">here</a>.</p>
 <p>Between about half and nine tenths of each of these seven models’
 picks (55% for GPT-6 Astra to 88% for Opus) fall in four agendas:
 chain-of-thought monitoring, lie detection, AI control and
@@ -1321,9 +1324,9 @@ out of the crowded agendas most of all. But they still repeated each
 other’s projects in the less crowded agendas they moved to, as often as
 placebo agents in populations of 20 and half as often in populations of
 100 (Result 2).</p>
-<p>The projects most repeated in the Max run, with the number of agents
-the judge counted as choosing each and the models they ran on, and a
-random sample of projects chosen with the tree protocol:</p>
+<p>The projects most repeated in the no-tool run, with the number of
+agents the judge counted as choosing each and the models they ran on,
+and a random sample of projects chosen with the tree protocol:</p>
 <table>
 <colgroup>
 <col style="width: 33%" />
@@ -1334,7 +1337,7 @@ random sample of projects chosen with the tree protocol:</p>
 <tr>
 <th>Agents</th>
 <th>Models</th>
-<th>Project (Max)</th>
+<th>Project (no added tool)</th>
 </tr>
 </thead>
 <tbody>
@@ -1382,7 +1385,7 @@ Research</td>
 <thead>
 <tr>
 <th>Model</th>
-<th>Project (weighted random)</th>
+<th>Project (random draw)</th>
 </tr>
 </thead>
 <tbody>
@@ -1616,14 +1619,16 @@ alt="Effective number of projects for every setting of model, instructions and h
 and holds the other two at GLM-5.3-flash, our brief and the minimal
 loop, as written under each title, so the first row of each of the first
 three panels is the same starting group, drawn unshaded. Shaded boxes
-are settings that differ from it. Each circle is drawn as in Figure 4,
-with 40 agents per setting. The last row of each panel, “mixed”, pools
-that panel’s settings, as if each lab used a different one. The right
-panel is a separate group of 120 in which every agent drew all three
-parts at random. Model boxes are bold because every model samples its
-answer. The baseline uses the first 40 of step one’s 120 agents, which
-read 26 where all 120 read 21. Every pair of agents is counted, with
-screening, and intervals are 95%, from resampling agents.</p>
+are settings that differ from it. Each circle is an effective number of
+projects, with the ends of its 95% interval either side and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+below, with 40 agents per setting. The last row of each panel, “mixed”,
+pools that panel’s settings, as if each lab used a different one. The
+right panel is a separate group of 120 in which every agent drew all
+three parts at random. Model boxes are bold because every model samples
+its answer. The baseline uses the first 40 of step one’s 120 agents,
+which read 26 where all 120 read 21. Every pair of agents is counted,
+with screening, and intervals are 95%, from resampling agents.</p>
 <p>Every model behaves like 32 projects or fewer, from 4 for GPT-6
 Astra, 7 for DeepSeek and 9 for GPT-6.1 Sol to 15 and 16 for the Claude
 models and 26 and 32 for the two GLM models. Using different models does
@@ -1680,10 +1685,12 @@ those boxes are bold.</p>
 <p><img src="/blog/many-agents-few-projects/fig-08-reading-models.png"
 alt="Effective number of projects for every model and reading condition, with the interpretability brief and the frontier setup’s earlier groups" /></p>
 <p><strong>Figure A13.</strong> One row per model and brief, one column
-per reading condition, each circle drawn as in Figure 4. Every pair of
-agents that shared a setting is counted, with screening. In an
-assigned-reading column, agents in different groups read different
-lists, so only pairs that read the same list count, and
+per reading condition, each circle an effective number of projects with
+the ends of its 95% interval either side and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+below. Every pair of agents that shared a setting is counted, with
+screening. In an assigned-reading column, agents in different groups
+read different lists, so only pairs that read the same list count, and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
 is written as lists
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>×</mi><annotation encoding="application/x-tex">\times</annotation></semantics></math>
@@ -1764,14 +1771,17 @@ randomness; the protocol’s text does not.</p>
 <p><img src="/blog/many-agents-few-projects/fig-A-interventions.png"
 alt="Effective number of projects for every intervention in the simple setup, by model and judging rule" /></p>
 <p><strong>Figure A15.</strong> One column per intervention and one row
-per model and judging rule, each circle drawn as in Figure 4. Every pair
-means the judge read all pairs; screened means pairs far apart by a
-small embedding model were counted as different without asking it, the
-rule we used for the registry’s first stage. Registry agents chose in
-four populations of 100, so only pairs within a population count;
-placebo agents chose independently, 200 in all; the other cells are
-groups of 120. “Not judged this way” marks a cell judged only under the
-other rule, and “not run” an arm that model did not run.</p>
+per model and judging rule, each circle an effective number of projects
+with the ends of its 95% interval either side and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+below. Every pair means the judge read all pairs; screened means pairs
+far apart by a small embedding model were counted as different without
+asking it, the rule we used for the registry’s first stage. Registry
+agents chose in four populations of 100, so only pairs within a
+population count; placebo agents chose independently, 200 in all; the
+other cells are groups of 120. “Not judged this way” marks a cell judged
+only under the other rule, and “not run” an arm that model did not
+run.</p>
 <p>This was the registry’s first stage. Its curves over 100 agents look
 like Figure 8’s. A registry of earlier projects left 2 duplicate pairs
 among 19,800, so few duplicates that neither judging rule can put an
@@ -1794,8 +1804,11 @@ alt="GPT-6 Astra and GPT-6.1 Sol under each instruction and in two harnesses" />
 of the brief, one column per model and one row per setting: four
 instructions in the minimal loop, and our brief in Codex CLI. A shaded
 box is the setting that differs from our brief in the minimal loop. Each
-circle is drawn as in Figure 4, with 40 agents per cell. The model
-headings are bold because every model samples its answer.</p>
+circle is an effective number of projects, with the ends of its 95%
+interval either side and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+below, with 40 agents per cell. The model headings are bold because
+every model samples its answer.</p>
 <p>The novelty sentence did nothing for the GPT models, and AI
 Scientist’s prompt narrowed them, because most GPT agents already
 propose one theme, how an agent’s stored memory can make untrusted
@@ -1840,6 +1853,10 @@ lists all 99,464 documents in the literature corpus the search tool
 used, and <a
 href="https://github.com/AverroesLabs/ai-research-agent-diversity/blob/main/data/judge_checks/README.md"><code>data/judge_checks/</code></a>
 holds the blind labels behind the judge appendix.</li>
+<li><a
+href="https://github.com/AverroesLabs/ai-research-agent-diversity/blob/main/paper/README.md"><code>paper/</code></a>
+holds this text as a PDF, a web page and Markdown, with its LaTeX
+source.</li>
 <li><a
 href="https://github.com/AverroesLabs/ai-research-agent-diversity/blob/main/prompts/README.md"><code>prompts/</code></a>
 gives every prompt we used, <a
