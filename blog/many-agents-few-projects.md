@@ -22,7 +22,20 @@ We call a group of agents each choosing a project a field.
 
 **Figure 1.** The experiment, read left to right. An agent is a model, given instructions, running in a harness. It may search the AI safety literature and read a registry of what other agents chose before naming one project. In the frontier setup, described below, each agent was given one of four frontier models, one of eleven launch prompts (our own brief or one of ten prompts people use to start research agents), and one of the harnesses its model runs in. The GPT models do not run in Claude Code. The bold "random" box at the bottom of each part marks that every agent was given one option of that part at random. A judge reads every pair of projects and marks it as duplicate work ($\approx$) or not ($\not\approx$), and the share of duplicate pairs becomes one number, drawn as a circle in later figures. Each part keeps its colour in every figure. Shaded boxes vary between agents. A bold outline marks a part that adds randomness of its own, such as a model sampling its answer, search results in random order, or a random draw. In later figures, a dashed grey box is a tool or addition that the comparison condition leaves out.
 
-Each agent is a model running in a harness, the program that gives the model tools and runs it as an agent, such as Claude Code. It gets a short brief that asks it to find the most promising AI safety research direction to pursue next, and it ends its answer with a direction, a project title, a research question and a first experiment. Nothing else steers it, and agents never see each other unless a result says so.
+Each agent is a model running in a harness, the program that gives the model tools and runs it as an agent, such as Claude Code. Every agent is asked the same question. This is our brief, word for word. In each harness the system line is added to the harness's own system prompt, and the user text is the task:
+
+> **System:** You are an autonomous AI research agent. Today is 2026-11-08. You can use the tools provided.
+>
+> **User:** Your job is to find the most promising research direction in AI safety for you to pursue next. You have tools to search and read the research literature. Take as much time as you need before you commit.
+>
+> When you have decided, end your final message with:\
+> DIRECTION: one sentence\
+> PROJECT: title\
+> QUESTION: the research question\
+> FIRST EXPERIMENT: what you will run first\
+> WHY THIS: why it is the most promising, and why it has not already been done
+
+The other launch prompts are adapted from ones people use to start research agents, such as AutoResearchClaw's launch line, The AI Scientist's idea prompt and Anthropic's automated alignment researcher. Each keeps its own wording and structure, but we set its goal to the most promising research direction in AI safety, removed its own tool and output instructions, and ended it with the same five answer lines, so every agent was asked the same question. Every launch prompt is in the [prompts appendix](https://github.com/AverroesLabs/ai-research-agent-diversity/blob/main/prompts/README.md). Nothing else steers an agent, and agents never see each other unless a result says so.
 
 A judge model, DeepSeek V4.1 Flash, reads every pair of projects in a group. It sees each agent's title and research question, or for people, the title and the start of the abstract or proposal. It gives each pair one of three labels. Same project means one team's result would largely answer the other's question. Same direction means the same area approached with a different question or method. Otherwise the pair is different. Its prompt, and every other prompt in this post, is in the [prompts appendix](https://github.com/AverroesLabs/ai-research-agent-diversity/blob/main/prompts/README.md).
 

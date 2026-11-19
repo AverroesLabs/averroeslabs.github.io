@@ -333,11 +333,36 @@ results in random order, or a random draw. In later figures, a dashed
 grey box is a tool or addition that the comparison condition leaves
 out.</p>
 <p>Each agent is a model running in a harness, the program that gives
-the model tools and runs it as an agent, such as Claude Code. It gets a
-short brief that asks it to find the most promising AI safety research
-direction to pursue next, and it ends its answer with a direction, a
-project title, a research question and a first experiment. Nothing else
-steers it, and agents never see each other unless a result says so.</p>
+the model tools and runs it as an agent, such as Claude Code. Every
+agent is asked the same question. This is our brief, word for word. In
+each harness the system line is added to the harness’s own system
+prompt, and the user text is the task:</p>
+<blockquote>
+<p><strong>System:</strong> You are an autonomous AI research agent.
+Today is 2026-11-08. You can use the tools provided.</p>
+<p><strong>User:</strong> Your job is to find the most promising
+research direction in AI safety for you to pursue next. You have tools
+to search and read the research literature. Take as much time as you
+need before you commit.</p>
+<p>When you have decided, end your final message with:<br />
+DIRECTION: one sentence<br />
+PROJECT: title<br />
+QUESTION: the research question<br />
+FIRST EXPERIMENT: what you will run first<br />
+WHY THIS: why it is the most promising, and why it has not already been
+done</p>
+</blockquote>
+<p>The other launch prompts are adapted from ones people use to start
+research agents, such as AutoResearchClaw’s launch line, The AI
+Scientist’s idea prompt and Anthropic’s automated alignment researcher.
+Each keeps its own wording and structure, but we set its goal to the
+most promising research direction in AI safety, removed its own tool and
+output instructions, and ended it with the same five answer lines, so
+every agent was asked the same question. Every launch prompt is in the
+<a
+href="https://github.com/AverroesLabs/ai-research-agent-diversity/blob/main/prompts/README.md">prompts
+appendix</a>. Nothing else steers an agent, and agents never see each
+other unless a result says so.</p>
 <p>A judge model, DeepSeek V4.1 Flash, reads every pair of projects in a
 group. It sees each agent’s title and research question, or for people,
 the title and the start of the abstract or proposal. It gives each pair
