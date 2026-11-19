@@ -1,6 +1,6 @@
 # Can Planted Errors Test Whether a Paper Is Legible to Humans?
 
-Jason Fantl, Averroes Labs · 18 November 2026
+Jason Fantl, Averroes Labs · 17 November 2026
 
 [PDF](https://averroeslabs.org/blog/legibility-planted-errors.pdf) · [Web page](https://averroeslabs.org/blog/legibility-planted-errors/) · [Data and code](https://github.com/AverroesLabs/legibility-quiz-pilot)
 
