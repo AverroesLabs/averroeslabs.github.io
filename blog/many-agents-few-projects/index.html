@@ -199,7 +199,7 @@
   .formats{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;font-size:.95rem;margin:.4rem 0 0}
 
   </style>
-  <meta name="description" content="As AI agents start choosing their own research, many copies of a few models will decide what gets studied. Using today&#39;s models as stand-ins, we asked many agents to each choose an AI safety project and measured how spread out their choices were. Even when agents differ in frontier model, launch pro">
+  <meta name="description" content="As AI agents start choosing their own research, many copies of a few models will decide what gets studied. Using today&#39;s models as stand-ins, we find that without careful design, agents choosing AI safety projects concentrate on a small number of them. Two agents picked at random chose the same proj">
   <meta name="citation_title" content="Many Agents, Few Projects: Measuring and Reducing Convergence in AI Research Agents&#39; Choice of Safety Research">
   <meta name="citation_author" content="Fantl, Jason">
   <meta name="citation_publication_date" content="2026/11/18">
@@ -225,21 +225,21 @@ Convergence in AI Research Agents' Choice of Safety Research</h1>
 <li><a href="#why-we-care" id="toc-why-we-care">Why we care</a></li>
 <li><a href="#how-we-measured-it" id="toc-how-we-measured-it">How we
 measured it</a></li>
-<li><a href="#three-ways-a-field-can-choose"
-id="toc-three-ways-a-field-can-choose">Three ways a field can
+<li><a href="#three-ways-a-group-can-choose"
+id="toc-three-ways-a-group-can-choose">Three ways a group can
 choose</a></li>
 <li><a
-href="#agents-choosing-alone-crowd-onto-a-few-projects-and-a-registry-or-random-draws-spread-them-out"
-id="toc-agents-choosing-alone-crowd-onto-a-few-projects-and-a-registry-or-random-draws-spread-them-out">Agents
-choosing alone crowd onto a few projects, and a registry or random draws
-spread them out</a></li>
+href="#agents-choosing-alone-crowd-onto-a-few-projects-and-a-registry-or-weighted-sampling-spreads-them-out"
+id="toc-agents-choosing-alone-crowd-onto-a-few-projects-and-a-registry-or-weighted-sampling-spreads-them-out">Agents
+choosing alone crowd onto a few projects, and a registry or weighted
+sampling spreads them out</a></li>
 <li><a href="#part-1-picking-the-best"
 id="toc-part-1-picking-the-best">Part 1: picking the best</a></li>
 <li><a href="#part-2-taking-turns-with-a-registry"
 id="toc-part-2-taking-turns-with-a-registry">Part 2: taking turns with a
 registry</a></li>
-<li><a href="#part-3-drawing-at-random"
-id="toc-part-3-drawing-at-random">Part 3: drawing at random</a></li>
+<li><a href="#part-3-weighted-sampling"
+id="toc-part-3-weighted-sampling">Part 3: weighted sampling</a></li>
 <li><a href="#limits" id="toc-limits">Limits</a></li>
 <li><a href="#related-work" id="toc-related-work">Related work</a></li>
 <li><a href="#appendix-what-we-ran"
@@ -262,19 +262,25 @@ code</a></li>
 </nav>
 <p><strong>TL;DR.</strong> As AI agents start choosing their own
 research, many copies of a few models will decide what gets studied.
-Using today’s models as stand-ins, we asked many agents to each choose
-an AI safety project and measured how spread out their choices were.
-Even when agents differ in frontier model, launch prompt and harness,
-and each searches the literature first, they crowd onto a few projects,
-far fewer than people choose among when they pick their own. Asking
-agents for more novel ideas moved them to new projects, but they still
-crowded together. Two changes did spread them out. A shared registry of
-what earlier agents chose stopped agents from repeating each other’s
-projects. Where agents cannot share a list, having each draw its project
-at random, weighted by its own judgement of each project, spread their
-choices many times wider. Both send some agents to projects they judge
-less promising, and we could not measure that cost well. Letting people
-point agents at directions should also help, but we did not test it.</p>
+Using today’s models as stand-ins, we find that without careful design,
+agents choosing AI safety projects concentrate on a small number of
+them. Two agents picked at random chose the same project about 1 time in
+60, against about 1 in 530 for people at AI safety hackathons, so agents
+duplicate each other about 8 times as often as people do. Agents from
+different labs mostly choose different projects (about 1 time in 300),
+but agents from the same lab often choose the same ones, even with
+different models (about 1 time in 35). Varying instructions helps only a
+little and varying harnesses not at all. Letting agents search the
+literature doubles the effective number of projects but crowds agents
+onto one research area, and asking for more novel ideas moves them to
+new projects together. Two changes spread them out. With a shared
+registry of what earlier agents had chosen, agents almost never
+duplicate each other. Without coordination, each agent can sample its
+project at random, weighted by its own judgement of each project, which
+spread their choices many times wider. Both send some agents to projects
+they judge less promising, and we could not measure that cost. Letting
+people point agents at directions should also help, but we did not test
+it.</p>
 <h2 id="why-we-care">Why we care</h2>
 <p>AI agents are starting to run research with little human direction.
 Anthropic’s <a
@@ -285,9 +291,12 @@ pursue their own ideas. As this scales, many copies of a few models will
 decide what gets studied. Human research spreads out because people
 differ in training, taste and information. If agents all reach for the
 same few ideas, a field run by agents could narrow even while its output
-grows. Some overlap is useful for replication, but two teams answering
-the same question independently mostly spend twice the effort for one
-answer.</p>
+grows. One challenge of AI safety is that much of its community is
+decentralized, spread across dozens of agendas and organizations (<a
+href="https://www.lesswrong.com/posts/Wti4Wr7Cf5ma3FGWa/shallow-review-of-technical-ai-safety-2025-2">Gavenčiak
+et al., 2025</a>), and so there is minimal coordination, which can lead
+to duplicated work and wasted time. While some replication is important,
+it should be intentional and controlled.</p>
 <p>There are early signs of the problem. Anthropic’s automated
 researchers, given identical prompts, collapsed onto a few method
 families, and giving each a different starting direction helped (<a
@@ -308,34 +317,32 @@ field we work in. The projects and numbers belong to today’s models, but
 our guess is that the question and the measure carry over, and that the
 interventions do as long as models keep agreeing on what is best.</p>
 <h2 id="how-we-measured-it">How we measured it</h2>
-<p>We call a group of agents each choosing a project a field.</p>
-<p><img src="/blog/many-agents-few-projects/fig-01-design.png"
-alt="The experiment: four frontier models, eleven launch prompts and four harnesses make an agent, which may use a search tool and a registry before naming a research project, and a judge turns the projects into one number" /></p>
-<p><strong>Figure 1.</strong> The experiment, read left to right. An
-agent is a model, given instructions, running in a harness. It may
-search the AI safety literature and read a registry of what other agents
-chose before naming one project. In the frontier setup, described below,
-each agent was given one of four frontier models, one of eleven launch
-prompts (our own brief or one of ten prompts people use to start
-research agents), and one of the harnesses its model runs in. The GPT
-models do not run in Claude Code. “Drawn per agent” under a column means
-each agent was given one of its options at random. A judge reads every
-pair of projects and marks it as duplicate work
+<p>Each agent is a random combination of a model, instructions and a
+harness such as Claude Code (Figure 1). Every agent is asked to choose
+the most promising research direction in AI safety. Depending on the
+experiment, it may first search the literature or read a registry of
+what other agents chose. A judge then reads every pair of projects, and
+we turn the share that duplicate each other into one number.</p>
+<p><img src="/blog/many-agents-few-projects/fig-01-design-lw.png"
+alt="The experiment: four frontier models, eleven sets of instructions and four harnesses make an agent, which may use a search tool and a registry before naming a research project, and a judge turns the projects into one number" /></p>
+<p><strong>Figure 1.</strong> The experiment, read top to bottom. Each
+agent was given, at random, one of four frontier models, one of eleven
+sets of instructions (our own brief or one of ten that people use to
+start research agents), and one of the harnesses its model runs in. The
+GPT models do not run in Claude Code. An agent may search the AI safety
+literature and read a registry of what other agents chose before naming
+one project. A judge reads every pair of projects and marks it as
+duplicate work
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≈</mo><annotation encoding="application/x-tex">\approx</annotation></semantics></math>)
 or not
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≉</mo><annotation encoding="application/x-tex">\not\approx</annotation></semantics></math>),
-and the share of duplicate pairs becomes one number, drawn as a circle
-in later figures. Each part keeps its colour in every figure. Shaded
-boxes vary between agents. A bold outline marks a part that adds
-randomness of its own, such as a model sampling its answer, search
-results in random order, or a random draw. In later figures, a dashed
-grey box is a tool or addition that the comparison condition leaves
-out.</p>
-<p>Each agent is a model running in a harness, the program that gives
-the model tools and runs it as an agent, such as Claude Code. Every
-agent is asked the same question. This is our brief, word for word. In
-each harness the system line is added to the harness’s own system
-prompt, and the user text is the task:</p>
+and the share of duplicate pairs becomes one number. A bold outline
+marks a part that adds randomness of its own, such as the randomness in
+a model’s output, search results in random order, or weighted
+sampling.</p>
+<p>Every agent is asked the same question. This is our brief, word for
+word. In each harness the system line is added to the harness’s own
+system prompt, and the user prompt is the same:</p>
 <blockquote>
 <p><strong>System:</strong> You are an autonomous AI research agent.
 Today is 2026-11-08. You can use the tools provided.</p>
@@ -351,24 +358,19 @@ FIRST EXPERIMENT: what you will run first<br />
 WHY THIS: why it is the most promising, and why it has not already been
 done</p>
 </blockquote>
-<p>The other launch prompts are adapted from ones people use to start
+<p>The other instructions are adapted from ones people use to start
 research agents, such as AutoResearchClaw’s launch line, The AI
 Scientist’s idea prompt and Anthropic’s automated alignment researcher.
 Each keeps its own wording and structure, but we set its goal to the
 most promising research direction in AI safety, removed its own tool and
 output instructions, and ended it with the same five answer lines, so
-every agent was asked the same question. Every launch prompt is in the
-<a
-href="https://github.com/AverroesLabs/ai-research-agent-diversity/blob/main/prompts/README.md">prompts
-appendix</a>. Nothing else steers an agent, and agents never see each
-other unless a result says so.</p>
-<p>A judge model, DeepSeek V4.1 Flash, reads every pair of projects in a
-group. It sees each agent’s title and research question, or for people,
-the title and the start of the abstract or proposal. It gives each pair
-one of three labels. Same project means one team’s result would largely
-answer the other’s question. Same direction means the same area
-approached with a different question or method. Otherwise the pair is
-different. Its prompt, and every other prompt in this post, is in the <a
+every agent was asked the same question.</p>
+<p>A judge model, DeepSeek V4.1 Flash, reads every pair of projects in
+an experiment and determines whether they are the same project or not.
+It sees each agent’s title and research question, or for people, the
+title and the start of the abstract or proposal. Two projects are the
+same when one team’s result would largely answer the other’s question.
+Its prompt, and every other prompt in this post, is in the <a
 href="https://github.com/AverroesLabs/ai-research-agent-diversity/blob/main/prompts/README.md">prompts
 appendix</a>.</p>
 <p>Our measure is the <strong>effective number of projects</strong>, one
@@ -380,50 +382,46 @@ agents, if the judge marks
 of the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mfrac linethickness="0"><mi>n</mi><mn>2</mn></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\binom{n}{2}</annotation></semantics></math>
 pairs as the same project,
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo>=</mo><mfrac><mn>1</mn><mi>q</mi></mfrac><mo>,</mo><mspace width="2.0em"></mspace><mi>q</mi><mo>=</mo><mfrac><mi>D</mi><mrow><mo stretchy="true" form="prefix">(</mo><mfrac linethickness="0"><mi>n</mi><mn>2</mn></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">E = \frac{1}{q}, \qquad q = \frac{D}{\binom{n}{2}}.</annotation></semantics></math>
-When projects fall into distinct groups with shares
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mi>i</mi></msub><annotation encoding="application/x-tex">p_i</annotation></semantics></math>,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mo>=</mo><msub><mo>∑</mo><mi>i</mi></msub><msubsup><mi>p</mi><mi>i</mi><mn>2</mn></msubsup></mrow><annotation encoding="application/x-tex">q = \sum_i p_i^2</annotation></semantics></math>,
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
-is the inverse of Simpson’s index (<a
-href="https://doi.org/10.1038/163688a0">Simpson, 1949</a>), also called
-Hill’s diversity of order 2 (<a
-href="https://doi.org/10.2307/1934352">Hill, 1973</a>). If a setup has
-effective number
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>,
-then in a field of
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo>=</mo><mfrac><mrow><mo stretchy="true" form="prefix">(</mo><mfrac linethickness="0"><mi>n</mi><mn>2</mn></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>D</mi></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">E = \frac{\binom{n}{2}}{D}.</annotation></semantics></math>
+If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo>=</mo><mn>60</mn></mrow><annotation encoding="application/x-tex">E = 60</annotation></semantics></math>,
+two agents picked at random chose the same project 1 time in 60, as
+often as if the agents had split evenly over 60 projects. Figure 2 shows
+how the number is calculated for three example groups. Ecologists use
+the same number for the diversity of species (<a
+href="https://doi.org/10.1038/163688a0">Simpson, 1949</a>; <a
+href="https://doi.org/10.2307/1934352">Hill, 1973</a>; <a
+href="https://doi.org/10.1111/j.2006.0030-1299.14714.x">Jost,
+2006</a>).</p>
+<p>We rely on two properties of this number. It does not depend on how
+many agents we ran, so a group of 40 and a group of 800 can be compared
+directly. And it says how crowded a much larger group from the same
+setup would be: among
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
-agents each agent shares its project with
+agents, each shares its project with
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>N</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mi>E</mi></mrow><annotation encoding="application/x-tex">(N-1)/E</annotation></semantics></math>
-others on average, whatever shape the distribution has. A group with an
-effective number of 60 has as many duplicate pairs as a group split
-evenly over 60 projects. So one number says how crowded a field of any
-size would be. At
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo>=</mo><mn>63</mn></mrow><annotation encoding="application/x-tex">E = 63</annotation></semantics></math>,
-the frontier setup’s value, a field of 10,000 agents puts about 160
-others on each agent’s project, assuming more agents are drawn from the
-same setup. At 4,200, our value for people’s project proposals (Figure
-4), it puts about 2. Because the number does not depend on how many
-agents we ran, groups of 40 and of 800 can be compared directly.
-Ecologists call it an <a
-href="https://doi.org/10.1111/j.2006.0030-1299.14714.x">effective number
-of species</a> (Jost, 2006). Because the judge asks whether two picks
-would duplicate each other’s work, it counts distinct projects, and
-agents can score high while still clustering on a few topics. The judge
-also misses some duplicates, which makes every group look more spread
-than it is, people most of all. Allowing for its misses, people still
-stay well above agents choosing on their own (<a
-href="#appendix-the-judge-and-how-far-to-trust-it">the judge</a>).</p>
+others on average. At 63, the value for our agents after searching
+(Figure 4), each of 10,000 agents would share its project with about 160
+others. At 4,200, the value for people’s project proposals, each would
+share it with about 2.</p>
+<p>Two cautions apply. The judge asks whether two projects would
+duplicate each other’s work, not whether they share a research area, so
+agents who all choose different projects in AI control would still score
+high, even though the field as a whole would be neglecting every other
+area. And the judge misses some duplicates, which makes every group look
+more spread than it is, people most of all. Allowing for its misses,
+people still stay well above agents choosing alone (see the <a
+href="#appendix-the-judge-and-how-far-to-trust-it">appendix on the
+judge</a>).</p>
 <p><img src="/blog/many-agents-few-projects/fig-02-effective-number.png"
 alt="What the effective number of projects measures, for one model, a mix of models and people: agents spread over projects, distinct projects as agents are added, and how a distribution becomes one number" /></p>
 <p><strong>Figure 2.</strong> How the effective number of projects
 works, for three groups. One model is 120 agents of GPT-6 Astra
-answering from memory, with no search tool. Mix of models is the
-frontier setup’s 120 agents choosing alone after searching (Figure 4).
-People are SPAR mentors’ project proposals (Figure A1), one random group
-of 40 in (a) and (b). (a) The share of agents on each project, most
-chosen first. (b) Distinct projects among the first
+answering from memory, with no search tool. Mix of models is the 120
+agents of Figure 1 choosing alone after searching (Figure 4). People are
+SPAR mentors’ project proposals (Figure A1), one random group of 40 in
+(a) and (b). (a) The share of agents on each project, most chosen first.
+(b) Distinct projects among the first
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
 agents, averaged over random orders. People’s faded line continues past
 their 40 at the rate seen up to 40, and the grey diagonal, under
@@ -438,67 +436,91 @@ equally popular projects. That number is drawn as a circle in every
 later figure, whose width grows with its logarithm. People’s number in
 (c) pools all 16 random groups of 40, because a single group of 40 often
 has no repeat.</p>
-<h2 id="three-ways-a-field-can-choose">Three ways a field can
+<h2 id="three-ways-a-group-can-choose">Three ways a group can
 choose</h2>
-<p>Figure 3 sketches the idea with made-up numbers. Picture every
-project in a field as having some promise, and every agent as judging
-that promise a little differently. The differences come from the
-randomness already present between agents, in their model, instructions,
-harness and reading, and in how each samples its answer. In Figure 3 the
-shaded range around each project shows how much agents’ judgements of it
-vary, and agents disagree more about some projects than others.</p>
+<p>This section uses a simple model to explain why agents might crowd
+onto the same projects, and how three rules for choosing would change
+that:</p>
+<ol type="1">
+<li><strong>Take the best.</strong> Each agent takes the project it
+thinks is most promising.</li>
+<li><strong>Registry.</strong> Agents choose one at a time, and each
+takes the best project no one has taken yet.</li>
+<li><strong>Weighted sampling.</strong> Each agent picks a project at
+random, giving more promising projects a higher chance.</li>
+</ol>
+<p>Figure 3 shows the three rules with made-up numbers.</p>
+<p>Imagine that each agent gives every possible project a score for how
+promising it is. Agents score the same project a little differently,
+because they differ in model, instructions, harness and what they read,
+and because each model’s output is random. In Figure 3(a), the line on
+each project’s bar is its average score, and the dark band shows how
+much agents’ scores vary. Agents might disagree more about some projects
+than others.</p>
 <p><img src="/blog/many-agents-few-projects/fig-00-three-ways.png"
 alt="An illustration with simulated numbers: projects ranked by promise, each with a band for how agents’ judgements vary, and where 40 agents land under three rules" /></p>
-<p><strong>Figure 3.</strong> A sketch with made-up numbers. Nothing in
-it is measured. (a) 50 projects, one bar each, from most to least
-promising. The dark line is how promising agents judge each project on
-average, and the darker band is one standard deviation of a single
-agent’s judgement either side. (b) Where 40 simulated agents land under
-three rules, one square per agent stacked in its project’s column, in
-the colour its rule has in the result figures. Under take the best, each
-agent takes the project it judges best. Under registry, agents choose
-one at a time, each taking the best project no earlier agent took. Under
-random draw, each agent draws a project at random, weighted by how
-promising it judges each. On the right, each rule’s effective number of
-projects is drawn as a circle and written as a word, because the numbers
-are made up. The registry never repeats a project, so its number is
+<p><strong>Figure 3.</strong> A sketch, with made-up numbers, of how
+often similar agents would choose the same project under each of the
+three rules. (a) How promising similar agents score each of 50 projects,
+from most to least promising. The line is the average score, and the
+dark band shows how much each project’s score varies across agents (one
+standard deviation either side). (b) Where 40 agents land under each
+rule, one square per agent. Taking the best piles agents onto a few top
+projects. The registry gives each agent its own project, working down
+the ranking. Weighted sampling spreads agents across most projects, with
+more on the promising ones. On the right is each rule’s effective number
+of projects. The registry never repeats a project, so its number is
 infinite.</p>
-<p>If every agent takes the project it judges best, agents end up on the
-few top projects whose ranges overlap. How many depends on how much
-judgements vary compared with how fast promise drops from one project to
-the next. If agents’ judgements varied as much as people’s do, that
-alone would spread them out. If they vary little, agents duplicate each
-other’s work. Part 1 shows that AI agents do crowd onto a few projects,
-as small variation predicts.</p>
-<p>When judgements vary little, the simplest fix is to let people
-choose. An agent given a direction by a person inherits that person’s
-taste, and people differ far more than models do (Figure 4). We did not
-test this, but where a person is available to direct each agent, it is
-the cheapest way to make agents differ. Where no one is, Figure 3’s
-other two rules are left. A registry needs every agent to read the same
-list, and agents can still crowd onto closely related projects. Random
-draws need no shared list, but a few agents still repeat each other and
-some end up on weaker projects. Parts 2 and 3 test each.</p>
+<p>In the sketch, agents who take the best all land on a few projects at
+the top, because their scores differ too little to rank different
+projects first. The registry puts every agent on a different project,
+working down the ranking. Weighted sampling spreads agents over most
+projects, with more on the projects scored highest, though a few agents
+still land on the same project.</p>
+<p>If agents’ scores varied much more, as people’s judgements do, taking
+the best would already spread them out, because different agents would
+rank different projects first. So how much agents crowd when they take
+the best depends on how much their scores vary compared with how fast
+the average score drops from one project to the next. Part 1 shows that
+AI agents do crowd onto a few projects, so their scores vary little.</p>
+<p>If we want agents to duplicate each other less when their scores vary
+little, the simplest fix is to let people choose. An agent given a
+direction by a person inherits that person’s taste, and people differ
+far more than models do (Figure 4). We did not test this, but where a
+person is available to direct each agent, it is the cheapest way to make
+agents differ. Where no one is, Figure 3’s other two rules are left. A
+registry needs every agent to read the same list, and agents can still
+crowd onto closely related projects. Weighted sampling needs no shared
+list, but a few agents still repeat each other and some end up on weaker
+projects. Parts 2 and 3 test each.</p>
 <p>Both rules move some agents off the project they judge best. Under a
-registry these are later agents whose favourite is taken. Under random
-draws it is any agent whose draw lands elsewhere. If agents judge
-promise at all well, both rules cost some quality, and random draws cost
-more. How much depends on how good that judgement is, and today’s models
-judge promise weakly and inconsistently.</p>
+registry these are later agents whose favourite is taken. Under weighted
+sampling it is any agent whose sample lands elsewhere. If agents judge
+promise at all well, both rules cost some quality, and weighted sampling
+costs more. How much depends on how good that judgement is, and today’s
+models judge promise weakly and inconsistently.</p>
+<p>Real agents do not exactly follow this model. They are not perfectly
+consistent between rounds of scoring, their research taste still trails
+that of experienced researchers (<a
+href="https://alignment.anthropic.com/2026/taste/">Baig et al.,
+2026</a>), they are not functionally prevented from repeating a project
+they see on the registry, and they sample projects recursively instead
+of listing every possible project. We still find this sketch useful as a
+guiding principle when designing experiments and analyzing data.</p>
 <h2
-id="agents-choosing-alone-crowd-onto-a-few-projects-and-a-registry-or-random-draws-spread-them-out">Agents
-choosing alone crowd onto a few projects, and a registry or random draws
-spread them out</h2>
-<p>We measured Figure 3’s three rules on one field of agents set up the
-way people run them, which we call the frontier setup (Figure 1). Agents
-of four frontier models (Claude Opus 5.5, Claude Sonnet 5.5, GPT-6 Astra
-and GPT-6.1 Sol) run in the harnesses those models support, each started
-with our brief or one of ten launch prompts that people use, and each
-searches our copy of the literature before choosing. We first tested
-which choices matter on a simple, cheap setup, in which one open model
-answers our brief from memory, without a search tool. Most of those
-results agree with the ones here, and we say where they differ. They are
-in the <a href="#appendix-the-simple-setup">appendix</a>.</p>
+id="agents-choosing-alone-crowd-onto-a-few-projects-and-a-registry-or-weighted-sampling-spreads-them-out">Agents
+choosing alone crowd onto a few projects, and a registry or weighted
+sampling spreads them out</h2>
+<p>We measured Figure 3’s three rules on the agents of Figure 1, set up
+the way people run them: four frontier models (Claude Opus 5.5, Claude
+Sonnet 5.5, GPT-6 Astra and GPT-6.1 Sol) in the harnesses those models
+support, each started with our brief or one of ten sets of instructions
+that people use, and each searching our copy of the literature before
+choosing. We first tested which choices matter on a simple, cheap setup,
+in which one open model answers our brief from memory, without a search
+tool. Most of those results agree with the ones here, and we say where
+they differ. They are in the <a
+href="#appendix-the-simple-setup">appendix</a>.</p>
 <p><img src="/blog/many-agents-few-projects/fig-00c-two-setups.png"
 alt="Every main result as an effective number of projects on a log axis: people, agents choosing alone, shared lists and prompt interventions" /></p>
 <p><strong>Figure 4.</strong> Every main result, one row per condition.
@@ -508,7 +530,7 @@ the 95% interval, with an arrow where the interval has no upper end, and
 the columns on the right give the interval’s ends and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>.
 Box colours follow Figure 1: brown is search, purple the lists, green
-text added to the prompt and olive the random draw, and a bold outline
+text added to the prompt and olive weighted sampling, and a bold outline
 marks a part that adds randomness. People are mentor project proposals
 from the <a href="https://sparai.org">SPAR</a> research program, pooled
 over 16 random groups of 40, and four broad-theme hackathons, whose
@@ -519,31 +541,29 @@ is groups of 40 times 40, and their interval is the middle 95% of the
 groups’ own values. Allowing for the duplicates our judge misses, SPAR’s
 number could be as low as about 380, still far above agents choosing
 alone. We do not know whether SPAR screens proposals for overlap. Agents
-choosing alone are the frontier setup’s 120 combinations of model,
-launch prompt and harness without and with search, every pair judged.
-The shared lists were read by three populations of 100 agents choosing
-one at a time (Part 2), and those rows count only pairs within a
-population. They ran on 17 November, a day after the other agent rows.
-The prompt interventions add text to the searching agents’ prompt (Part
-3), on the same 120 combinations.</p>
-<p>With random draws, the field behaves like about 890 projects, against
-about 60 with no added tool. The registry spread it further still, but
-only among the 100 agents sharing each list. Its circle counts pairs
-within a population, while the others count every pair among 120 agents.
-Agents reading different registries still repeated each other. On a
-measure that needs no judge, the distance between projects’ meanings in
-a text-embedding model, random draws also put projects further apart
-than the registry did (Part 2).</p>
+choosing alone are 120 combinations of model, instructions and harness,
+without and with search, every pair judged. The shared lists were read
+by three groups of 100 agents choosing one at a time (Part 2), and those
+rows count only pairs within a group. They ran on 17 November, a day
+after the other agent rows. The prompt interventions add text to the
+searching agents’ prompt (Part 3), on the same 120 combinations.</p>
+<p>With weighted sampling, the group behaves like about 890 projects,
+against about 60 with no added tool. The registry spread it further
+still, but only among the 100 agents sharing each list. Its circle
+counts pairs within a group, while the others count every pair among 120
+agents. Agents reading different registries still repeated each other.
+On a measure that needs no judge, the distance between projects’
+meanings in a text-embedding model, weighted sampling also put projects
+further apart than the registry did (Part 2).</p>
 <h2 id="part-1-picking-the-best">Part 1: picking the best</h2>
-<p>Copies of one model given the same task differ only in how each
-samples its answer. A field of agents run by different groups also
-differs in which model, launch prompt and harness each agent has, and in
-what it reads before choosing. Each of these could make agents’
-judgements vary more, and the frontier setup varies all of them at
-once.</p>
+<p>Copies of one model given the same task differ only in the randomness
+of each one’s output. A group of agents run by different organizations
+also differs in which model, instructions and harness each agent has,
+and in what it reads before choosing. Each of these could make agents’
+judgements vary more, and our agents vary all of them at once.</p>
 <h3
-id="result-1-a-field-of-frontier-agents-behaves-like-about-60-projects">Result
-1: a field of frontier agents behaves like about 60 projects</h3>
+id="result-1-a-group-of-agents-behaves-like-about-60-projects">Result 1:
+a group of agents behaves like about 60 projects</h3>
 <p><img src="/blog/many-agents-few-projects/fig-part1-setup.png"
 alt="Result 1’s setup: agents of Figure 1 with no search or with search" /></p>
 <p><strong>Figure 5.</strong> The setup for Result 1, drawn as Figure 1.
@@ -553,19 +573,19 @@ randomness.</p>
 <p>Live web search changes from day to day, so we built our own search
 engine over a frozen copy of the AI safety literature, about 100,000
 papers, posts and overviews, and checked that agents use it the way they
-use web search. Every launch prompt is in the <a
+use web search. All instructions are in the <a
 href="https://github.com/AverroesLabs/ai-research-agent-diversity/blob/main/prompts/README.md">prompts
 appendix</a>: word for word where the text is ours, and as a link to the
 source with our changes where it reuses someone else’s prompt.</p>
 <p><img src="/blog/many-agents-few-projects/fig-field-search.png"
-alt="Effective number of projects for the field without search and with search" /></p>
-<p><strong>Figure 6.</strong> The frontier setup without and with
-search, on the same 120 combinations of model, launch prompt and
-harness, drawn as Figure 4. Without search, agents keep their model,
-launch prompt and harness but have no tools. Every pair is judged.</p>
-<p>Each agent here had one of many launch prompts and harnesses,
+alt="Effective number of projects for agents without search and with search" /></p>
+<p><strong>Figure 6.</strong> Agents without and with search, on the
+same 120 combinations of model, instructions and harness, drawn as
+Figure 4. Without search, agents keep their model, instructions and
+harness but have no tools. Every pair is judged.</p>
+<p>Each agent here had one of many sets of instructions and harnesses,
 searched the literature, and wrote thousands of tokens before settling
-on a project. Even so, the field behaves like about 60 projects. Mentors
+on a project. Even so, the group behaves like about 60 projects. Mentors
 proposing their own projects behave like about 4,200, and teams at
 broad-theme hackathons like about 530. The hackathons are lower partly
 because each limits its teams to a theme. Among people, only hackathon
@@ -580,127 +600,149 @@ one broad problem, AI control, and differ within it. Measured by agenda,
 meaning one of the 45 research areas in the <a
 href="https://www.greaterwrong.com/posts/Wti4Wr7Cf5ma3FGWa/shallow-review-of-technical-ai-safety-2025-2">2025
 Shallow Review</a>, agents who search are about half as spread as agents
-who do not.</p>
+who do not. Our reading is that agents bring the area with them, asking
+about monitoring and control before they see any result, and search then
+gives each a different handful of recent papers in it to build on (see
+the <a href="#how-search-shaped-the-choices">appendix</a>).</p>
 <p>Each model alone behaves like 23 to 45 projects, and four models
 together like about 60. With about 30 agents per model, these intervals
-are wide (appendix Figure A2). Nearly all of the field’s spread comes
-from having two labs. An Anthropic agent and an OpenAI agent rarely
-chose the same project, while two agents from one lab often did, even
-with different models and launch prompts, so the field acts like two
-crowded groups, one per lab (appendix Figure A4). More labs would spread
-a field further only if their models differ from the rest as much, and a
-real fleet running many copies of one configuration would be more
-crowded still. The field also crowds onto two problems, with 59% of
-agents choosing AI control (38% without search) and another 26%
-chain-of-thought monitoring.</p>
+are wide (appendix Figure A2). To see which differences between agents
+spread them out, we compared pairs of agents that share each part of an
+agent with pairs that differ in it, an analysis we chose after seeing
+the results (Figure 7).</p>
+<p><img src="/blog/many-agents-few-projects/fig-sources.png"
+alt="For each part of an agent (lab, model, instructions, harness), the effective number of projects among pairs of agents that share it and pairs that differ in it" /></p>
+<p><strong>Figure 7.</strong> For each part of an agent, the effective
+number of projects among pairs of agents that share it and among pairs
+that differ in it (bold). Each part is compared where nothing larger
+differs: lab over all pairs, model within a lab, instructions and
+harness within a model. Agents from different labs always run different
+models, so the lab rows include the model. The last row is every pair
+together, the group’s number. The agents are Figure 4’s 120 searching
+agents choosing alone.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+is the number of agents in a row’s pairs, and intervals are 95%, from
+resampling agents.</p>
+<p>Nearly all of the group’s spread comes from having two labs. Two
+agents from different labs, Anthropic and OpenAI, behave like about 300
+projects, against 35 for two from the same lab. Different instructions
+help a little (35 against 16 for one model), and different models and
+harnesses help little or not at all. So the group acts like two crowded
+clusters, one per lab. More labs would spread a group further only if
+their models differ from the rest as much, and a real fleet running many
+copies of one configuration would be more crowded still. The group also
+crowds onto two problems, with 59% of agents choosing AI control (38%
+without search) and another 26% chain-of-thought monitoring.</p>
 <p>So AI agents’ judgements vary little, in the sense of Figure 3.
 Agents from different labs judge differently, but within a lab they vary
 little, and there are few labs. In the simple setup, changing models,
-instructions or harnesses one at a time added only a little variety (<a
-href="#appendix-the-simple-setup">appendix</a>). The next two parts
-therefore test Figure 3’s other two rules.</p>
+instructions or harnesses one at a time added only a little variety (see
+the <a href="#appendix-the-simple-setup">appendix</a>). The next two
+parts therefore test Figure 3’s other two rules.</p>
 <h2 id="part-2-taking-turns-with-a-registry">Part 2: taking turns with a
 registry</h2>
 <h3 id="result-2-a-registry-of-earlier-projects-stops-repeats">Result 2:
 a registry of earlier projects stops repeats</h3>
 <p><img src="/blog/many-agents-few-projects/fig-part2-setup.png"
 alt="Result 2’s setup: agents of Figure 1 with search and one of three registries, or none" /></p>
-<p><strong>Figure 7.</strong> The setup for Result 2, drawn as Figure 1.
+<p><strong>Figure 8.</strong> The setup for Result 2, drawn as Figure 1.
 Agents search, with no registry or with one of three. Each registry was
-run in three populations of 100 agents (Figures 8 and 9), after a first
-test in six populations of 20.</p>
+run in three groups of 100 agents (Figures 9 and 10), after a first test
+in six groups of 20.</p>
 <p>In Part 1 agents never see each other. Here each agent gets a tool
-that reads a shared registry, and one sentence added to the launch
-prompt, after its sentence about tools:</p>
+that reads a shared registry, and one sentence added to the
+instructions, after their sentence about tools:</p>
 <blockquote>
 <p>Before considering a direction, check the shared registry of what
 other agents are already working on.</p>
 </blockquote>
-<p>Agents choose one at a time within a population, and each pick joins
-its population’s registry before the next agent starts. The registry
-lists the earlier agents’ projects. In a placebo arm the tool returns a
-list of unrelated entries. Agents in every arm therefore call a tool and
-read a list, and only the list’s content differs. A third arm shows only
-how many agents work in each agenda. This tells agents how crowded each
-area is, much like the signal tested in the closest earlier study, <a
+<p>Each registry belongs to one group of agents, who choose one at a
+time, and each pick joins the group’s registry before the next agent
+starts. The registry lists the earlier agents’ projects. In a placebo
+arm the tool returns a list of unrelated entries. Agents in every arm
+therefore call a tool and read a list, and only the list’s content
+differs. A third arm shows only how many agents work in each agenda.
+This tells agents how crowded each area is, much like the signal tested
+in the closest earlier study, <a
 href="https://arxiv.org/abs/2611.03424">IdeaTaste</a>. Every agent read
-the registry without being reminded.</p>
+the registry without being reminded, before its first search, and a
+registry of earlier projects sent agents’ searches in different
+directions from the start (appendix Figure A5).</p>
 <p><img
 src="/blog/many-agents-few-projects/fig-08-registry-frontier.png"
-alt="Distinct projects as agents choose in sequence, for the registry of earlier projects, agenda counts, the placebo list and no registry, in populations of 100 frontier agents" /></p>
-<p><strong>Figure 8.</strong> Drawn as Figure 2(b), distinct projects
-among the first agents to choose as a population of 100 fills up, in the
-frontier setup. A project counts as distinct when the judge marked it a
-duplicate of no earlier one. Line colours match Figures 7 and 9: solid
-for the registry of earlier projects, dash-dot for agenda counts, dotted
-for the placebo list, and dashed grey for no registry, which is Figure
-4’s searching agents choosing alone, resampled into populations of 100.
-The grey diagonal, hidden under the registry line, is every agent
-choosing a new project. Each of the three lists averages three
-populations in choice order, all run the same day. Bands are 95%
-intervals, from resampling populations for the lists and agents for no
-registry.</p>
+alt="Distinct projects as agents choose in sequence, for the registry of earlier projects, agenda counts, the placebo list and no registry, in groups of 100 agents" /></p>
+<p><strong>Figure 9.</strong> Drawn as Figure 2(b), distinct projects
+among the first agents to choose as a group of 100 fills up. A project
+counts as distinct when the judge marked it a duplicate of no earlier
+one. Line colours match Figures 8 and 10: solid for the registry of
+earlier projects, dash-dot for agenda counts, dotted for the placebo
+list, and dashed grey for no registry, which is Figure 4’s searching
+agents choosing alone, resampled into groups of 100. The grey diagonal,
+hidden under the registry line, is every agent choosing a new project.
+Each of the three lists averages three groups in choice order, all run
+the same day. Bands are 95% intervals, from resampling groups for the
+lists and agents for no registry.</p>
 <p><img src="/blog/many-agents-few-projects/fig-13-registry-arms.png"
 alt="Effective number of projects for each registry, the placebo list and no registry" /></p>
-<p><strong>Figure 9.</strong> Drawn as Figure 4, one row per list. No
+<p><strong>Figure 10.</strong> Drawn as Figure 4, one row per list. No
 registry is Figure 4’s searching agents choosing alone, and counts every
-pair among its 120 agents. The three lists are Figure 8’s populations of
-100, run on 17 November, a day after the no-registry row. They count
-only pairs within a population, and
+pair among its 120 agents. The three lists are Figure 9’s groups of 100,
+run on 17 November, a day after the no-registry row. They count only
+pairs within a group, and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
-reads populations
+reads groups
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>×</mi><annotation encoding="application/x-tex">\times</annotation></semantics></math>
-agents per population.</p>
+agents per group.</p>
 <p>Seeing earlier projects stops agents from repeating them. In three
-populations of 100 frontier agents per arm (Figures 8 and 9), the
-registry nearly removed duplicates, with 4 duplicate pairs against 292
-under the placebo list. Four pairs are too few to size the registry’s
-number precisely, but its 95% interval starts at about 1,100 projects,
-against about 50 for the placebo. With the placebo list, 100 agents
-chose under 60 distinct projects, no more than agents with no registry.
-With the registry nearly every agent, up to the hundredth, chose a new
-project, and the list kept working as it grew past 20,000 characters.
-Three of the four duplicates that remained came from agents who never
-saw the project they repeated, because Codex CLI cuts long tool results
-for Anthropic models. Our first test, in six populations of 20, found
-the same. Placebo agents repeated each other 23 times and registry
-agents never did. With six populations per arm, an exact permutation
-test cannot give a smaller p-value than this
+groups of 100 agents per arm (Figures 9 and 10), the registry nearly
+removed duplicates, with 4 duplicate pairs against 292 under the placebo
+list. Four pairs are too few to size the registry’s number precisely,
+but its 95% interval starts at about 1,100 projects, against about 50
+for the placebo. With the placebo list, 100 agents chose under 60
+distinct projects, no more than agents with no registry. With the
+registry nearly every agent, up to the hundredth, chose a new project,
+and the list kept working as it grew past 20,000 characters. Three of
+the four duplicates that remained came from agents who never saw the
+project they repeated, because Codex CLI cuts long tool results for
+Anthropic models. Our first test, in six groups of 20, found the same.
+Placebo agents repeated each other 23 times and registry agents never
+did. With six groups per arm, an exact permutation test cannot give a
+smaller p-value than this
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0.002</mn></mrow><annotation encoding="application/x-tex">p = 0.002</annotation></semantics></math>).</p>
 <p>Blind raters from two model families compared 52 registry picks with
 the most similar earlier pick each agent was shown and judged none to be
 largely the same work, so agents were not rewording what they saw.</p>
 <p>Showing only how many agents work in each agenda helped much less. In
-populations of 20 it did not detectably reduce repeats, and in
-populations of 100 it halved them, reaching about 77 distinct projects
-by the hundredth agent against 99 with the registry (Figure 8). Agents
-read the counts and mostly chose an agenda not yet listed. But one
-project can fit several agendas, so the counts hid repeats that a list
-of projects would have shown. Most of the remaining repeats were Claude
-Opus agents who all built on one paper their searches found.</p>
+groups of 20 it did not detectably reduce repeats, and in groups of 100
+it halved them, reaching about 77 distinct projects by the hundredth
+agent against 99 with the registry (Figure 9). Agents read the counts
+and mostly chose an agenda not yet listed. But one project can fit
+several agendas, so the counts hid repeats that a list of projects would
+have shown. Most of the remaining repeats were Claude Opus agents who
+all built on one paper their searches found.</p>
 <p>The registry has two limits. It prevents only the repeats its agents
-can see, so agents in different populations of 20, reading different
+can see, so agents in different groups of 20, reading different
 registries, still repeated each other, about a fifth as often as placebo
 agents did. And although registry agents spread over more than twice as
 many agendas as placebo agents, by the same effective-number measure
 applied to agendas, many chose a new project close to one already taken.
 Half of registry picks shared an agenda with an earlier pick the agent
-could see, against three quarters under the placebo, and random draws
-put projects much further apart in meaning, as measured by a
-text-embedding model. In populations of 100 the registry worked as well
-for the last agents as for the first, but we have not tested longer
+could see, against three quarters under the placebo, and weighted
+sampling put projects much further apart in meaning, as measured by a
+text-embedding model. In groups of 100 the registry worked as well for
+the last agents as for the first, but we have not tested longer
 lists.</p>
-<h2 id="part-3-drawing-at-random">Part 3: drawing at random</h2>
-<h3 id="result-3-random-draws-spread-agents-out-widely">Result 3: random
-draws spread agents out widely</h3>
+<h2 id="part-3-weighted-sampling">Part 3: weighted sampling</h2>
+<h3 id="result-3-weighted-sampling-spreads-agents-out-widely">Result 3:
+weighted sampling spreads agents out widely</h3>
 <p>A registry needs every agent to reach the same shared service. The
-third rule of Figure 3 needs nothing shared. Each agent draws its
+third rule of Figure 3 needs nothing shared. Each agent samples its
 project at random, weighted by its own judgement of how promising each
 is, so a random number generator adds the randomness and the model
 supplies the judgement. We call our version the tree protocol. It adds
-the text below after the launch prompt’s sentence about tools, and gives
-the agent a tool that returns a random draw, standing in for a random
-number generator the agent could run in its own shell.</p>
+the text below after the instructions’ sentence about tools, and gives
+the agent a sampling tool, standing in for a random number generator the
+agent could run in its own shell.</p>
 <blockquote>
 <p>There are many copies of you, possibly hundreds of thousands,
 choosing research directions from the same starting point. If every copy
@@ -731,77 +773,79 @@ this procedure.</li>
 </ol>
 </blockquote>
 <p>Ideally each agent would list every project worth doing, weight each
-by its promise, and draw one. Drawing down the tree gives every project
-the same chance as that single draw. A project’s chance is the product
-of the weights along its path, which equals its weight in the full list
-when each branch carries the total promise under it. But the agent
-writes out only the branch it drew. That branch went 3.6 levels deep on
-average, with 6 to 9 options at the top and mostly 3 to 6 below. So the
-number of projects an agent could reach multiplies with each level and
-is not limited to what fits in one list. And because the weights are the
+by its promise, and sample one. In principle, sampling down the tree is
+mathematically equivalent to that single sample, as long as the options
+at each level split the field without overlap and the agent weights each
+one correctly. A project’s chance is the product of the weights along
+its path, which equals its weight in the full list when each branch
+carries the total promise under it. But the agent writes out only the
+branch it sampled. That branch went 3.6 levels deep on average, with 6
+to 9 options at the top and mostly 3 to 6 below. So the number of
+projects an agent could reach multiplies with each level and is not
+limited to what fits in one list. And because the weights are the
 model’s own, a model that judges promise well spreads agents in
 proportion to its judgement.</p>
-<p><img src="/blog/many-agents-few-projects/fig-tree-diagram.png"
-alt="One agent’s walk down the tree: at each draw the options it listed with their weights, the drawn option highlighted and expanded at the next level, ending in one project" /></p>
-<p><strong>Figure 10.</strong> One frontier agent’s walk down the tree
-(Opus 5.5 in Codex CLI), from its tool calls. Read top to bottom. From
-AI safety, a branch runs to each option the agent listed at its first
-draw, labelled with the weight the agent gave it, and each row is
-ordered from the highest weight on the left to the lowest. The branch
-the random draw returned is in the draw colour and splits into the next
-row of options, and the branches not drawn are grey. The chance of
-reaching the final project is the product of the percentages along its
-path. Labels are shortened.</p>
+<p><img src="/blog/many-agents-few-projects/fig-tree-diagram-lw.png"
+alt="One agent’s walk down the tree: at each level the options it listed with their weights, the sampled option highlighted and expanded at the next level, ending in one project" /></p>
+<p><strong>Figure 11.</strong> One frontier agent’s walk down the tree
+(Opus 5.5 in Codex CLI), from its tool calls. Read left to right. From
+AI safety, a branch runs to each option the agent listed at the first
+level, labelled with the weight the agent gave it, and each column is
+ordered from the highest weight at the top to the lowest. The branch the
+sampling tool returned is in the sampling colour and splits into the
+next column of options, and the branches not sampled are grey. The box
+below gives the final project and the chance of reaching it, the product
+of the percentages along its path. Labels are shortened.</p>
 <p><img src="/blog/many-agents-few-projects/fig-part3-setup.png"
-alt="Result 3’s setup: agents of Figure 1 with search, with and without the tree protocol and the random-draw tool" /></p>
-<p><strong>Figure 11.</strong> The setup for Result 3, drawn as Figure
+alt="Result 3’s setup: agents of Figure 1 with search, with and without the tree protocol and the sampling tool" /></p>
+<p><strong>Figure 12.</strong> The setup for Result 3, drawn as Figure
 1. Searching agents get their default instructions, a sentence asking
 for the most novel direction (“Choose the most novel direction you can
 find, one that few other researchers would pick.”), the tree protocol
 with the agent taking the option it judges best at each level, or the
-tree protocol with each option drawn at random by the random-draw tool.
+tree protocol with each option sampled at random by the sampling tool.
 Only the last comes with the tool, which is bold because it contains
 randomness.</p>
 <p><img src="/blog/many-agents-few-projects/fig-15-protocol-pilot.png"
 alt="Effective number of projects without and with the tree protocol" /></p>
-<p><strong>Figure 12.</strong> Drawn as Figure 4, on the same 120
-combinations of model, launch prompt and harness, all searching: no
-added tool, the sentence quoted in Figure 11’s caption, the tree with
-the agent taking the best option at each level, and the tree with each
-option drawn at random. The first row is Figure 4’s searching agents
-choosing alone. The bold outline marks the one arm that draws at
+<p><strong>Figure 13.</strong> Drawn as Figure 4, on the same 120
+combinations of model, instructions and harness, all searching: no added
+tool, the sentence quoted in Figure 12’s caption, the tree with the
+agent taking the best option at each level, and the tree with each
+option sampled at random. The first row is Figure 4’s searching agents
+choosing alone. The bold outline marks the one arm that samples at
 random.</p>
-<p>Every agent called the random-draw tool without being reminded,
-drawing 2 to 6 times. With the protocol the field behaves like about 890
-projects, against about 60 for the same combinations of model, launch
-prompt and harness with no added tool, run the same day. The tree also
-tripled the number of agendas the field spread over and cut AI control
-from 59% of picks with no added tool to 31%. It spread agents in the
-simple setup too, for an open model and for Claude Sonnet 5.5 answering
-from memory (<a href="#appendix-the-simple-setup">appendix</a>).</p>
+<p>Every agent called the sampling tool without being reminded, 2 to 6
+times each. With the protocol the group behaves like about 890 projects,
+against about 60 for the same combinations of model, instructions and
+harness with no added tool, run the same day. The tree also tripled the
+number of agendas the group spread over and cut AI control from 59% of
+picks with no added tool to 31%. It spread agents in the simple setup
+too, for an open model and for Claude Sonnet 5.5 answering from memory
+(see the <a href="#appendix-the-simple-setup">appendix</a>).</p>
 <p>Two more arms test which part of the protocol spreads agents (Figure
-12). In one, agents got the same tree protocol but took the option they
-judged best at each level instead of drawing, and the field was not
-clearly more spread than with no tool. So the draws do most of the work.
-One sentence asking for the most novel direction did not spread projects
-either. Agents moved away from AI control but went to the same new
-places. Twelve of 29 Claude Sonnet 5.5 agents, in all four harnesses,
-proposed the same project, on whether the date tells a model it is
-deployed or tested (<a
+13). In one, agents got the same tree protocol but took the option they
+judged best at each level instead of sampling, and the group was not
+clearly more spread than with no tool. So the sampling does most of the
+work. One sentence asking for the most novel direction did not spread
+projects either. Agents moved away from AI control but went to the same
+new places. Twelve of 29 Claude Sonnet 5.5 agents, in all four
+harnesses, proposed the same project, on whether the date tells a model
+it is deployed or tested (see the <a
 href="#where-did-agents-go-when-asked-for-novelty">appendix</a>).</p>
-<p>The agents’ own preferences played little role here. The frontier
-agents weighted their options nearly evenly, giving the top option 1.3
-to 1.5 times an equal share, as both models did from memory in the
-simple setup. So each agent’s draw was close to an even choice among its
-own options. Our guess, which we have not tested, is that future models
-will weight their options more sharply. Their draws would then
-concentrate on the projects they rate highly, which would spread agents
-somewhat less.</p>
-<p>The protocol can be adjusted for this. It calls the random-draw tool
-at temperature 1, which draws each option in proportion to its weight.
-If models that weight their options more sharply still produced too many
-duplicates, a higher temperature would make the draw more even, and a
-lower one would move it toward each agent’s favourite. We expect a
+<p>The agents’ own preferences played little role here. The agents
+weighted their options nearly evenly, giving the top option 1.3 to 1.5
+times an equal share, as both models did from memory in the simple
+setup. So each agent’s sample was close to an even choice among its own
+options. Our guess, which we have not tested, is that future models will
+weight their options more sharply. Their samples would then concentrate
+on the projects they rate highly, which would spread agents somewhat
+less.</p>
+<p>The protocol can be adjusted for this. It calls the sampling tool at
+temperature 1, which samples each option in proportion to its weight. If
+models that weight their options more sharply still produced too many
+duplicates, a higher temperature would make the sampling more even, and
+a lower one would move it toward each agent’s favourite. We expect a
 higher temperature to lower the average quality of picks in exchange for
 fewer duplicates, but we did not measure that.</p>
 <p>The tree spreads agents because its picks are often not the model’s
@@ -820,10 +864,11 @@ one is the most promising next step.</p>
 <p>Every number depends on one language-model judge. Every label comes
 from language models, checked against other models but not against
 people. Most findings hold under every correction for the judge’s misses
-that we tried, and the few that do not are flagged in the appendix (<a
-href="#appendix-the-judge-and-how-far-to-trust-it">the judge</a>).</p>
-<p>Spreading a field is only worth it if the projects agents move to are
-still good. We collected quality ratings from language models, but
+that we tried, and the few that do not are flagged in the <a
+href="#appendix-the-judge-and-how-far-to-trust-it">appendix on the
+judge</a>.</p>
+<p>Spreading agents out is only worth it if the projects agents move to
+are still good. We collected quality ratings from language models, but
 today’s models judge promise too weakly and inconsistently for these
 ratings to say much, and no experts rated the picks, so we do not report
 them. On pairs of AI safety proposals, the best model in a recent test
@@ -831,23 +876,22 @@ agreed with experienced researchers’ judgements 60% of the time, against
 an estimated 77% for the researchers themselves (<a
 href="https://alignment.anthropic.com/2026/taste/">Baig et al.,
 2026</a>).</p>
-<p>We tested seven models from four families and no Google models. The
-frontier field had only two labs, so we cannot tell how much more labs
-would add (appendix Figure A4). No group of people answered our exact
-brief. SPAR mentors answer the same question implicitly, what a
-researcher should work on next in AI safety, but they wrote for a
-program, and we do not know whether it screens proposals for overlap,
-which would raise their number. Teams at four broad-theme hackathons,
-whom no one screens, still behave like about 530 projects, far above
-agents choosing on their own. Search used our own frozen copy of the
-literature, and temperature stayed at the provider default. Our
-registries held at most 100 entries, and we do not know how a registry
-behaves beyond 100 entries. It could become less effective, for example
-if agents read less of a long list, or agents could start copying each
-other more as more of the field is visible to them. We have not tested
-this. The arms without search, with the novelty sentence, and with
-agents taking the best option at each level ran a day after the arms
-they are compared with.</p>
+<p>We tested seven models from four families and no Google models. Our
+agents came from only two labs, so we cannot tell how much more labs
+would add (Figure 7). No group of people answered our exact brief. SPAR
+mentors answer the same question implicitly, what a researcher should
+work on next in AI safety, but they wrote for a program, and we do not
+know whether it screens proposals for overlap, which would raise their
+number. Teams at four broad-theme hackathons, whom no one screens, still
+behave like about 530 projects, far above agents choosing on their own.
+Search used our own frozen copy of the literature, and temperature
+stayed at the provider default. Our registries held at most 100 entries,
+and we do not know how a registry behaves beyond 100 entries. It could
+become less effective, for example if agents read less of a long list,
+or agents could start copying each other more as more of the group is
+visible to them. We have not tested this. The arms without search, with
+the novelty sentence, and with agents taking the best option at each
+level ran a day after the arms they are compared with.</p>
 <h2 id="related-work">Related work</h2>
 <p>Language models give similar answers to open-ended questions, across
 runs and across model families (<a
@@ -881,8 +925,8 @@ and pooling vendors and prompts came close to people (<a
 href="https://arxiv.org/abs/2607.27553">Terwiesch et al., 2026</a>).
 Choosing a research project after searching the literature, the task we
 study, is a different setting. There, models from different labs rarely
-chose the same project, but launch prompts and models from one lab did
-little to separate agents (appendix Figure A4).</p>
+chose the same project, but instructions and models from one lab did
+little to separate agents (Figure 7).</p>
 <p>Systems that carry out research from idea to paper now exist (<a
 href="https://arxiv.org/abs/2408.06292">Lu et al., 2024</a>; <a
 href="https://arxiv.org/abs/2504.08066">Yamada et al., 2025</a>), and
@@ -971,7 +1015,7 @@ href="https://doi.org/10.1177/0003122415601618">Foster et al., 2015</a>;
 <a href="https://doi.org/10.1073/pnas.1509757112">Rzhetsky et al.,
 2015</a>). Agents choosing a project have no such incentive, which is
 one reason to expect them to crowd more than people do.</p>
-<p>Drawing at random among options that are good enough is already used
+<p>Choosing at random among options that are good enough is already used
 to fund research (<a href="https://doi.org/10.1128/mBio.00422-16">Fang
 and Casadevall, 2016</a>; <a
 href="https://doi.org/10.1016/j.shpsa.2018.11.006">Avin, 2019</a>; <a
@@ -979,7 +1023,7 @@ href="https://doi.org/10.1080/2330443X.2022.2086190">Heyard et al.,
 2022</a>), and randomness has been proposed as a guard against one
 arbitrary decision rule applied everywhere (<a
 href="https://doi.org/10.1017/can.2022.3">Creel and Hellman, 2022</a>).
-Drawing each option with the probability one assigns to it is
+Sampling each option with the probability one assigns to it is
 probability matching, the rule behind Thompson sampling (<a
 href="https://doi.org/10.1093/biomet/25.3-4.285">Thompson, 1933</a>; <a
 href="https://arxiv.org/abs/1707.02038">Russo et al., 2018</a>). For
@@ -990,28 +1034,28 @@ options and then picking one makes copies of a model agree with each
 other less (<a href="https://arxiv.org/abs/2604.09502">Ballestero et
 al., 2026</a>), and planning a spread of directions in one call works
 well (<a href="https://arxiv.org/abs/2605.30150">Ibrahim et al.,
-2026</a>). Models cannot do the drawing themselves, because they fail
+2026</a>). Models cannot do the sampling themselves, because they fail
 tests of random sampling (<a
 href="https://arxiv.org/abs/2601.05414">Zhao et al., 2026</a>) and
 repeat human biases when asked to flip coins (<a
 href="https://arxiv.org/abs/2406.00092">Van Koevering and Kleinberg,
-2024</a>). The tree protocol therefore hands the draw to a tool and
+2024</a>). The tree protocol therefore hands the sampling to a tool and
 repeats it level by level, so each agent keeps its own weights and no
 shared service is needed. In one simulation, adding randomness helped a
 community only when its problems could be split into parts (<a
 href="https://arxiv.org/abs/2608.19390">Fazelpour et al., 2026</a>).</p>
 <p>Within one field and with one measure, we compare the setup choices
-that differ between labs, such as model, launch prompt and harness, with
+that differ between labs, such as model, instructions and harness, with
 each other and with people choosing projects in the same field. As far
 as we know, two results are new. Searching the literature spreads
-frontier agents’ projects but crowds them onto fewer problems, and a
-sentence asking for novelty, which spread an open model answering from
-memory, moved frontier agents together onto new projects instead of
+agents’ projects but crowds them onto fewer problems, and a sentence
+asking for novelty, which spread an open model answering from memory,
+moved agents of frontier models together onto new projects instead of
 spreading them, a pattern also seen for one-word answers (<a
 href="https://arxiv.org/abs/2607.12796">Parikh, 2026</a>). In another
-study, an instruction to differ from the rest of the population did help
-(<a href="https://arxiv.org/abs/2605.30150">Ibrahim et al., 2026</a>).
-The tree protocol needs no shared service and leaves the choice with the
+study, an instruction to differ from the other agents did help (<a
+href="https://arxiv.org/abs/2605.30150">Ibrahim et al., 2026</a>). The
+tree protocol needs no shared service and leaves the choice with the
 agent. Assigning topics, the other intervention shown to work, takes
 that choice away.</p>
 <h2 id="appendix-what-we-ran">Appendix: what we ran</h2>
@@ -1045,8 +1089,8 @@ search with three levels of randomness</td>
 <tr>
 <td>A11</td>
 <td>One change at a time from step one’s memory cell: seven models; our
-loop, Codex CLI, opencode; four launch prompts; and every change at
-once</td>
+loop, Codex CLI, opencode; four sets of instructions; and every change
+at once</td>
 <td>40 per group, 120 for every change at once</td>
 </tr>
 <tr>
@@ -1057,8 +1101,8 @@ once</td>
 <tr>
 <td>A13</td>
 <td>The frontier setup: four frontier models, each in the harnesses it
-runs in, eleven launch prompts (our brief, counting its two slightly
-different lengths as one, and ten others), search</td>
+runs in, eleven sets of instructions (our brief, counting its two
+slightly different lengths as one, and ten others), search</td>
 <td>80, plus 80 with the interpretability brief (appendix)</td>
 </tr>
 <tr>
@@ -1075,7 +1119,7 @@ pair</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>×</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">4 \times 100</annotation></semantics></math></td>
 </tr>
 <tr>
-<td>A8, text</td>
+<td>A9, text</td>
 <td>Registry, first frontier test: registry of earlier projects against
 placebo</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>6</mn><mo>×</mo><mn>20</mn></mrow><annotation encoding="application/x-tex">6 \times 20</annotation></semantics></math>
@@ -1087,9 +1131,9 @@ per arm</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>6</mn><mo>×</mo><mn>20</mn></mrow><annotation encoding="application/x-tex">6 \times 20</annotation></semantics></math></td>
 </tr>
 <tr>
-<td>2, 4, 6, 8, 9, 12, A2-A5, A7</td>
+<td>2, 4, 6, 7, 9, 10, 13, A2-A5, A7</td>
 <td>The frontier setup with no added tool: the same 120 combinations of
-model, launch prompt and harness as the frontier registry test, with no
+model, instructions and harness as the frontier registry test, with no
 added tool (run 16 November)</td>
 <td>120</td>
 </tr>
@@ -1107,35 +1151,35 @@ times as many (15 to 170)</td>
 <td>120 per arm</td>
 </tr>
 <tr>
-<td>6, A4</td>
-<td>The frontier setup’s same 120 combinations of model, launch prompt
+<td>6, 7</td>
+<td>The frontier setup’s same 120 combinations of model, instructions
 and harness with no search tools (run 17 November)</td>
 <td>120</td>
 </tr>
 <tr>
-<td>12</td>
-<td>The frontier setup’s same 120 combinations of model, launch prompt
+<td>13</td>
+<td>The frontier setup’s same 120 combinations of model, instructions
 and harness with the novelty sentence, and with the tree protocol but
-the agent taking the best option at each level instead of drawing (run
+the agent taking the best option at each level instead of sampling (run
 17 November)</td>
 <td>120 per arm</td>
 </tr>
 <tr>
-<td>4, 8, 9</td>
-<td>Registry in the frontier setup, populations of 100: registry of
-earlier projects, agenda counts and placebo (run 17 November)</td>
+<td>4, 9, 10, A5</td>
+<td>Registry in the frontier setup, groups of 100: registry of earlier
+projects, agenda counts and placebo (run 17 November)</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">3 \times 100</annotation></semantics></math>
 per arm</td>
 </tr>
 <tr>
 <td>A5 text</td>
 <td>Assigned first document: the frontier setup’s same 120 combinations
-of model, launch prompt and harness plus 40 more, each handed one of
-four papers as the top result of its first search (run 18 November)</td>
+of model, instructions and harness plus 40 more, each handed one of four
+papers as the top result of its first search (run 18 November)</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>×</mo><mn>40</mn></mrow><annotation encoding="application/x-tex">4 \times 40</annotation></semantics></math></td>
 </tr>
 <tr>
-<td>4, 10, 12</td>
+<td>4, 11, 13</td>
 <td>Tree protocol in the frontier setup (run 16 November), against the
 placebo arm of the first frontier registry test (run 14 November)</td>
 <td>120 per arm</td>
@@ -1159,8 +1203,8 @@ small embedding model are counted as different without asking the judge.
 The main post judged every pair of agents, which catches more
 duplicates. In the simple setup, Figures A11 and A13 and one row of
 Figure A15 use the screened judging. Shorter texts look more alike to
-the judge, so drawn projects, which are written more briefly, are if
-anything counted as duplicates more often.</p>
+the judge, so projects from the tree protocol, which are written more
+briefly, are if anything counted as duplicates more often.</p>
 <p>Against blind labels from a Claude model, the judge agrees on
 duplicates with a Cohen’s
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>κ</mi><annotation encoding="application/x-tex">\kappa</annotation></semantics></math>
@@ -1197,8 +1241,8 @@ directly.</p>
 <h2 id="appendix-people-rarely-repeat-a-project">Appendix: people rarely
 repeat a project</h2>
 <p>To know whether an agent number is high or low, we measured groups of
-40 drawn from people’s work: AI safety papers and LessWrong posts from
-2025 and 2026, mentor proposals from the <a
+40 from people’s work: AI safety papers and LessWrong posts from 2025
+and 2026, mentor proposals from the <a
 href="https://sparai.org">SPAR</a> research program, and team projects
 from six <a href="https://apartresearch.com">Apart</a> hackathons.</p>
 <p><img src="/blog/many-agents-few-projects/fig-02-people.png"
@@ -1236,7 +1280,7 @@ the post’s Parts.</p>
 alt="Effective number of projects for each frontier model’s agents within the frontier setup, and for all four together" /></p>
 <p><strong>Figure A2.</strong> Drawn as Figure 4, one row per model.
 Each of the first four rows is one model’s agents within the frontier
-setup’s no-tool run, still with the launch prompts and harnesses that
+setup’s no-tool run, still with the instructions and harnesses that
 model got, and searching, counting only pairs between agents of that
 model. The last row is all 120 agents, Figure 4’s searching agents
 choosing alone. Every pair of agents is judged, and intervals are 95%,
@@ -1247,7 +1291,7 @@ models choose the same projects?</h3>
 alt="Two shaded triangles of model-to-model similarity in the frontier setup, on projects and on agendas" /></p>
 <p><strong>Figure A3.</strong> How alike two models’ choices are in the
 frontier setup’s no-tool run, about 30 agents per model, each with its
-own launch prompts and harnesses, and searching. Each cell is the chance
+own instructions and harness, and searching. Each cell is the chance
 that an agent of one model and an agent of the other match, divided by
 the geometric mean of the chance that two agents of each model match
 each other. That is the similarity of the two models’ choice
@@ -1269,31 +1313,16 @@ different models, such as “Does Evading One Monitor Mean Evading Both?
 Cross-Monitor Transfer of Obfuscation in RL-Trained Reward Hackers”.</p>
 <h3 id="where-does-the-spread-come-from">Where does the spread come
 from?</h3>
-<p><img src="/blog/many-agents-few-projects/fig-sources.png"
-alt="Effective number of projects among pairs of agents from different labs, from one lab with different models, from one model with different launch prompts, and from one model and launch prompt" /></p>
-<p><strong>Figure A4.</strong> Each row takes one kind of pair of agents
-and gives the effective number of projects among those pairs alone. The
-top row uses only pairs with one Anthropic agent and one OpenAI agent;
-pairs of two agents from the same lab are split over the next three
-rows, by whether the two share a model and a launch prompt. The last row
-is every pair together, the field’s number. The agents are Figure 4’s
-120 searching agents choosing alone.
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
-is the number of pairs, and intervals are 95%, from resampling
-agents.</p>
-<p>Almost all of the field’s spread comes from having two labs. Two
-agents from different labs, Anthropic and OpenAI, rarely chose the same
-project: their pairs behave like about 300 projects. Two agents from the
-same lab behave like 41 projects or fewer, however else they differ.</p>
-<p>Within a lab, the launch prompt helps a little and the harness not at
-all. Two agents of one model with different launch prompts behave like
-35 projects, against 16 with the same prompt. Using different models
-from the same lab adds little more (41). Two agents of one model in the
-same harness duplicate each other about as often as two in different
-harnesses (1.2 times as often, 0.4 to 2.0). Without search the pattern
-is the same: about 1,800 projects for pairs from different labs and 23
-or fewer within a lab.</p>
-<p>So the field’s 63 is roughly two labs times about 35 projects per
+<p>Figure 7 in Result 1 shows the comparison. In more detail, two agents
+of one lab with different models behave like 41 projects, against 31
+with the same model, and two agents of one model in different harnesses
+like 34, against 26 in the same harness, with widely overlapping
+intervals. Identical agents, with the same model, instructions and
+harness, are not shown, because only 2 of their 61 pairs chose the same
+project, too few to measure. Without search the pattern is the same:
+about 1,800 projects for pairs from different labs against 17 within a
+lab, and identical agents behave like about 6 projects (3 to 28).</p>
+<p>So the group’s 63 is roughly two labs times about 35 projects per
 lab. More labs would raise it only if their models differ as much as
 Anthropic’s and OpenAI’s do. In the simple setup, with seven models from
 four labs, agents from different labs also rarely chose the same
@@ -1303,11 +1332,30 @@ on the pilot brief, Claude, GLM and DeepSeek agents overlapped more, so
 not every pair of labs is this distinct. <a
 href="https://github.com/AverroesLabs/ai-research-agent-diversity/blob/main/analysis/sources_of_diversity.py">analysis/sources_of_diversity.py</a>
 recomputes these numbers from the released data.</p>
-<h3 id="what-do-searching-agents-read">What do searching agents
-read?</h3>
+<h3 id="how-search-shaped-the-choices">How search shaped the
+choices</h3>
+<p>Search changed agents’ choices in three steps: what they asked for,
+what the search engine gave back, and what they built on. The numbers in
+this section come from the released transcripts (<a
+href="https://github.com/AverroesLabs/ai-research-agent-diversity/blob/main/analysis/search_dynamics.py">analysis/search_dynamics.py</a>).</p>
+<p>Agents arrived with a topic in mind. Before seeing any result, 77% of
+the no-tool run’s first queries were about monitoring or control, and
+71% asked for work from 2026. Two agents’ first queries shared 17% of
+their words on average, against 3% for two of their queries picked at
+random.</p>
+<p>The engine then sent them to the same few papers, by two routes. The
+most-read paper, on training models to keep their chain of thought
+monitorable, came up for 78 agents, and 56 opened it. The queries that
+found it were near copies of each other, such as “chain-of-thought
+monitorability 2026”, and shared 57% of their words. Papers on AI
+control came up through varied queries instead. One benchmark of
+sabotage and monitoring in automated AI research came up for 65 agents
+through 154 different queries, sharing 30% of their words, because the
+literature on AI control has a handful of recent papers that match
+almost any query in the area.</p>
 <p><img src="/blog/many-agents-few-projects/fig-A-reading.png"
 alt="The ten documents the most frontier agents opened before choosing, with the share who opened each first" /></p>
-<p><strong>Figure A5.</strong> The ten documents the most agents in the
+<p><strong>Figure A4.</strong> The ten documents the most agents in the
 frontier setup’s no-tool run opened with the search tool, as a share of
 the 120 agents. The darker, hatched part of each bar is the agents who
 opened that document first. Titles are cut at the first colon or after
@@ -1337,6 +1385,43 @@ almost always ignored an on-topic theory paper outside their usual
 interests, and an off-topic paper. So what agents read first does steer
 what they pick, as long as it fits what they were already inclined to
 do.</p>
+<p>Search doubled the effective number of projects but halved the spread
+over agendas (Part 1). Our reading, which we have not tested, is that
+agents bring the area with them, and search then gives each agent a
+different handful of recent papers in it to build on. Agents opened 257
+different documents, 146 of them opened by only one agent, so their
+projects differ while their agendas narrow. Without search, each lab’s
+agents fall back on a few favourite projects, spread over more agendas
+but repeated more often. The literature alone does not explain the
+narrowing. Titles about monitoring or control make up 4% of the 2026
+documents in our copy of the literature, up from 1 to 2% in earlier
+years, far below the 59% of searching agents who chose AI control.</p>
+<p><img src="/blog/many-agents-few-projects/fig-A-first-queries.png"
+alt="What agents first searched for, with no registry and with each list of 100" /></p>
+<p><strong>Figure A5.</strong> The first search query of every agent,
+with no registry (Figure 4’s searching agents choosing alone) and in
+each list’s three groups of 100 (Figures 9 and 10). Left, the share of
+first queries about monitoring or control. Right, the average share of
+words two agents’ first queries have in common, leaving out words almost
+every query uses, such as “AI”, “safety” and “2026”. Bars are the value
+and lines the 95% interval, from resampling agents.</p>
+<p>A list changes where agents start searching. Every agent in the
+registry and placebo groups of 100 read its list as its first tool call,
+before searching. With the placebo list, agents started from the same
+place as agents with no registry. With the registry of earlier projects,
+30% of first queries were about monitoring or control, against 71% with
+the placebo list, and two agents’ first queries shared 3% of their
+words, against 16% (Figure A5). The registry acts before an agent has
+any idea, by sending its search somewhere else.</p>
+<p>Agenda counts sent agents’ searches away from the crowded agendas,
+but into a new shared place. Only 15% of first queries were about
+monitoring or control. But Claude Opus agents, searching instead around
+reward hacking and training, often reached one paper on “generalization
+hacking”: it came up for 42 of 81 Opus agents, against 27 with the
+placebo list and 17 with the registry. In the first test, with groups of
+20, all 13 agents who chose a project on it were Opus agents who had
+opened it, and most of the repeats left under agenda counts in groups of
+100 came from Opus agents building on it (Result 2).</p>
 <h3 id="where-do-agents-crowd">Where do agents crowd?</h3>
 <p><img src="/blog/many-agents-few-projects/fig-A1-agendas.png"
 alt="Share of projects in four agendas, for human papers and proposals and for each model" /></p>
@@ -1361,18 +1446,18 @@ reasonable, but they are the same few.</p>
 alt="Share of the frontier setup’s picks in four agendas under each rule" /></p>
 <p><strong>Figure A7.</strong> Drawn as Figure A6, for the frontier
 setup under each rule, every arm on the same 120 combinations of model,
-launch prompt and harness. Every arm searched. Picks are labelled as in
+instructions and harness. Every arm searched. Picks are labelled as in
 Figure A6, except in the agenda-counts registry, which labelled each
 pick live as it was made with a different labelling model, so its row is
 less comparable.</p>
-<p>Left alone, 88% of the field’s picks fall in these four agendas, most
+<p>Left alone, 88% of the group’s picks fall in these four agendas, most
 of them AI control. The placebo list barely changes that. A registry of
-earlier projects and random draws both cut it to about half, so each
-spreads agents across problems as well as projects. Judged by its own
-labels, showing only how many agents work in each agenda moves agents
-out of the crowded agendas most of all. But they still repeated each
-other’s projects in the less crowded agendas they moved to, as often as
-placebo agents in populations of 20 and half as often in populations of
+earlier projects and weighted sampling both cut it to about half, so
+each spreads agents across problems as well as projects. Judged by its
+own labels, showing only how many agents work in each agenda moves
+agents out of the crowded agendas most of all. But they still repeated
+each other’s projects in the less crowded agendas they moved to, as
+often as placebo agents in groups of 20 and half as often in groups of
 100 (Result 2).</p>
 <p>The projects most repeated in the no-tool run, with the number of
 agents the judge counted as choosing each and the models they ran on,
@@ -1435,7 +1520,7 @@ Research</td>
 <thead>
 <tr>
 <th>Model</th>
-<th>Project (random draw)</th>
+<th>Project (weighted sampling)</th>
 </tr>
 </thead>
 <tbody>
@@ -1474,7 +1559,7 @@ projects.</p>
 <h3 id="where-did-agents-go-when-asked-for-novelty">Where did agents go
 when asked for novelty?</h3>
 <p>One sentence asking for the most novel direction (Result 3) moved
-agents off the field’s two crowded agendas. AI control fell from 59% of
+agents off the group’s two crowded agendas. AI control fell from 59% of
 picks to 30% and chain-of-thought monitoring from 26% to almost none,
 and picks moved into situational-awareness and scheming evaluations,
 corrigibility, model psychology and risks between many agents. But they
@@ -1550,19 +1635,18 @@ groups of agents that discuss research ideas converge on fewer of them
 registry shows agents what earlier agents chose, so it could have made
 them crowd together.</p>
 <p><img src="/blog/many-agents-few-projects/fig-A-herding.png"
-alt="Share of picks that share an agenda with an earlier pick, and share in the field’s two largest agendas, for the placebo list and the two registries" /></p>
+alt="Share of picks that share an agenda with an earlier pick, and share in the group’s two largest agendas, for the placebo list and the two registries" /></p>
 <p><strong>Figure A8.</strong> The frontier setup’s registry stage,
-every pick after the first in its population of 20, coloured as Figure
-9. Left, the share of picks in the same agenda as at least one earlier
-pick in the population; right, the share in the two agendas that
-dominate the placebo arm, AI control and chain-of-thought monitoring.
-Bars give the share and lines the 95% interval. Placebo agents saw an
-unrelated list, so they show what the field does without seeing anyone.
-The agenda-counts arm was labelled live by a different labelling
-model.</p>
+every pick after the first in its group of 20, coloured as Figure 10.
+Left, the share of picks in the same agenda as at least one earlier pick
+in the group; right, the share in the two agendas that dominate the
+placebo arm, AI control and chain-of-thought monitoring. Bars give the
+share and lines the 95% interval. Placebo agents saw an unrelated list,
+so they show what the group does without seeing anyone. The
+agenda-counts arm was labelled live by a different labelling model.</p>
 <p>The agents did the opposite of copying. Placebo agents land in an
 agenda an earlier agent already took 76% of the time, simply because the
-field is concentrated. Agents who saw the earlier projects did so 50% of
+group is concentrated. Agents who saw the earlier projects did so 50% of
 the time, and agents who saw only how many worked in each agenda 27% on
 its own labels (40% by our hand labels, level with the registry). Seeing
 the counts moved agents out of the two crowded agendas almost entirely,
@@ -1576,13 +1660,13 @@ enjoy, where following others makes sense. Our registry showed
 researchers what others were already working on, where doing something
 else makes sense. But avoiding a crowded agenda did not prevent repeats.
 Agents shown agenda counts left the crowded agendas yet repeated each
-other’s projects as often as placebo agents in populations of 20 (Result
-2), though only half as often in populations of 100, so they may all
-have moved to the same few less crowded agendas, as agents in a
-congestion game did when they all read the same crowding signal (<a
+other’s projects as often as placebo agents in groups of 20 (Result 2),
+though only half as often in groups of 100, so they may all have moved
+to the same few less crowded agendas, as agents in a congestion game did
+when they all read the same crowding signal (<a
 href="https://arxiv.org/abs/2602.23093">Mori and Johnson, 2026</a>).</p>
-<h3 id="the-random-draws-in-detail">The random draws in detail</h3>
-<p>The novelty arm and the best-option arm of Figure 12 ran on 17
+<h3 id="weighted-sampling-in-detail">Weighted sampling in detail</h3>
+<p>The novelty arm and the best-option arm of Figure 13 ran on 17
 November, a day after the no-tool arm and the tree. The novelty sentence
 did raise the effective number of agendas about two and a half to three
 times. It did so by moving many agents into the same few new topics, and
@@ -1591,18 +1675,18 @@ the project measure counts those as new duplicates.</p>
 agents’, which makes our judge find more duplicates among them, so if
 anything the tree’s number is too low.</p>
 <p><img src="/blog/many-agents-few-projects/fig-A-tree-weights.png"
-alt="How flat agents’ weights were at the first draw, for each model in the simple setup and in the frontier setup" /></p>
-<p><strong>Figure A9.</strong> Each dot is one agent’s first draw: the
-weight it gave its top option, divided by the weight every option would
-get if all were equal (1 means all equal; with seven options, 7 would
-mean all weight on one). The black line is each row’s median. The top
-two rows are the simple setup, answering from memory; the bottom four
-are the frontier setup’s tree arm, by model.</p>
+alt="How flat agents’ weights were at the first level, for each model in the simple setup and in the frontier setup" /></p>
+<p><strong>Figure A9.</strong> Each dot is one agent’s first level of
+the tree: the weight it gave its top option, divided by the weight every
+option would get if all were equal (1 means all equal; with seven
+options, 7 would mean all weight on one). The black line is each row’s
+median. The top two rows are the simple setup, answering from memory;
+the bottom four are the frontier setup’s tree arm, by model.</p>
 <p>Every model weights its options nearly evenly: the top option gets
 about 1.3 to 1.5 times an equal share, and no agent gives it more than
 about twice. The frontier models in their harnesses are no sharper than
 GLM-5.3-flash from memory. So in this study the protocol spread agents
-by drawing almost evenly among each agent’s own options. Weighting by
+by sampling almost evenly among each agent’s own options. Weighting by
 promise, as in Figure 3, played little part.</p>
 <p>That may change as models improve, and the evidence on which way is
 mixed. Outputs of newer models have grown more alike across model
@@ -1618,7 +1702,7 @@ models in one comparison (<a href="https://arxiv.org/abs/2606.08251">Bao
 et al., 2026</a>). In our own data the most capable models were not the
 most spread: from memory, the GPT models behaved like 4 to 9 projects
 and the open models like 7 to 32 (Figure A11). If future models do judge
-promise more sharply, the tree will concentrate their draws on the
+promise more sharply, the tree will concentrate their samples on the
 projects they rate highest. Agents would then spread less than here, but
 in proportion to that judgement, as the protocol intends.</p>
 <h2 id="appendix-the-simple-setup">Appendix: the simple setup</h2>
@@ -1652,17 +1736,17 @@ post; the third gives both where both were run. The simple setup shows
 the same pattern as the frontier setup from a lower start. Judged on
 every pair, 120 agents taking what they judge best behave like about 13
 projects, a registry of earlier projects left 2 duplicate pairs among
-19,800, and random draws spread the agents to about 380 (Figure A15).
-Randomness in sampling changes how an agent reasons and writes, but
-rarely which project it chooses.</p>
+19,800, and weighted sampling spread the agents to about 380 (Figure
+A15). Randomness in a model’s output changes how an agent reasons and
+writes, but rarely which project it chooses.</p>
 <h3 id="model-instructions-and-harness">Model, instructions and
 harness</h3>
 <p><img src="/blog/many-agents-few-projects/fig-A-setup-mix.png"
 alt="The setup for varying model, instructions and harness" /></p>
 <p><strong>Figure A10.</strong> The setup for Figure A11, drawn as
 Figure 1. Each part varies over these options, one part at a time from
-the simple setup, and in the last row of Figure A11 every agent drew all
-three at random.</p>
+the simple setup, and in the last row of Figure A11 every agent was
+given all three at random.</p>
 <p><img src="/blog/many-agents-few-projects/fig-06-agent-setup.png"
 alt="Effective number of projects for every setting of model, instructions and harness, each part mixed, and every part mixed at once" /></p>
 <p><strong>Figure A11.</strong> Each panel changes one part of the agent
@@ -1674,11 +1758,12 @@ projects, with the ends of its 95% interval either side and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
 below, with 40 agents per setting. The last row of each panel, “mixed”,
 pools that panel’s settings, as if each lab used a different one. The
-right panel is a separate group of 120 in which every agent drew all
-three parts at random. Model boxes are bold because every model samples
-its answer. The baseline uses the first 40 of step one’s 120 agents,
-which read 26 where all 120 read 21. Every pair of agents is counted,
-with screening, and intervals are 95%, from resampling agents.</p>
+right panel is a separate group of 120 in which every agent was given
+all three parts at random. Model boxes are bold because every model’s
+output is random. The baseline uses the first 40 of step one’s 120
+agents, which read 26 where all 120 read 21. Every pair of agents is
+counted, with screening, and intervals are 95%, from resampling
+agents.</p>
 <p>Every model behaves like 32 projects or fewer, from 4 for GPT-6
 Astra, 7 for DeepSeek and 9 for GPT-6.1 Sol to 15 and 16 for the Claude
 models and 26 and 32 for the two GLM models. Using different models does
@@ -1689,9 +1774,9 @@ Even so, all seven models pooled behave like only about 37 projects.</p>
 agents choose. Two agents in different harnesses choose the same project
 as often as two in the same one. For instructions the evidence is mixed:
 pooled, different instructions do not clearly separate agents, but where
-every agent drew its whole setup at random, agents sharing an
+every agent was given its whole setup at random, agents sharing an
 instruction duplicated each other 2.5 times as often. A one-line Claude
-Code launch prompt (“Run research on AI safety”, as AutoResearchClaw
+Code instruction (“Run research on AI safety”, as AutoResearchClaw
 starts its runs), AI Scientist’s prompt and Codex CLI leave
 GLM-5.3-flash between 16 and 28 projects, against 26 for the baseline.
 opencode gives 87, but its interval runs from 26 to 291, and on the
@@ -1707,11 +1792,11 @@ but not on the pilot one. The sentence is the same for every agent, so
 it adds no randomness. Our guess is that it pushes agents away from the
 most obvious project, so that randomness in their sampling carries them
 further apart. It did nothing for the GPT models (Figure A16). In the
-frontier setup, with search, launch prompts and harnesses, the same
+frontier setup, with search, instructions and harnesses, the same
 sentence did not spread projects (Part 3).</p>
-<p>Changing all three parts at once, with every agent drawing its model,
-instructions and harness, gives about 67 projects (42 to 110). Every
-pool is about two and a half to three times its value on the pilot
+<p>Changing all three parts at once, with every agent given its model,
+instructions and harness at random, gives about 67 projects (42 to 110).
+Every pool is about two and a half to three times its value on the pilot
 brief, mostly because each group on this brief is more spread, not
 because the changes add more variety. That is about where the hackathon
 whose teams all audited the same models sits (48), and far below people
@@ -1772,18 +1857,18 @@ whether more randomness spreads agents across agendas also found nothing
 <p>Search splits the models in two. The other open models gain too, but
 the frontier models barely move: the GPT models stay at about 11 or
 below and the Claude models range from about 5 to 33 with no consistent
-gain. In the frontier setup, with launch prompts and harnesses, search
-did spread the same models’ projects about twice (Figure 6). Our
-reading, which we have partly tested, is that frontier agents arrive
-with a topic to look up, and the first strong paper they find on it sets
-the project. Searching, the GPT models mostly leave their usual project
-from memory for one built on a single paper that most of them open. When
-we removed the two texts that most Claude Sonnet 5.5 agents in Claude
-Code read on chain-of-thought monitoring, they did not leave the topic:
-31 of 40 stayed on it, against 34 of 40 in a control run the same day
-with the texts in place. They opened the next paper on it, built on that
-one instead, and chose the same projects more often than the control
-agents, not less.</p>
+gain. In the frontier setup, with instructions and harnesses, search did
+spread the same models’ projects about twice (Figure 6). Our reading,
+which we have partly tested, is that frontier agents arrive with a topic
+to look up, and the first strong paper they find on it sets the project.
+Searching, the GPT models mostly leave their usual project from memory
+for one built on a single paper that most of them open. When we removed
+the two texts that most Claude Sonnet 5.5 agents in Claude Code read on
+chain-of-thought monitoring, they did not leave the topic: 31 of 40
+stayed on it, against 34 of 40 in a control run the same day with the
+texts in place. They opened the next paper on it, built on that one
+instead, and chose the same projects more often than the control agents,
+not less.</p>
 <p>An assigned reading narrows most models, and it narrows the mix most.
 Mixing models helps when they read nothing, because two agents of
 different models rarely choose the same project. A list shared by the
@@ -1792,13 +1877,13 @@ so the mix falls from 37 projects from memory to 15 and 13. With search
 the mix reaches 41 to 49, no higher than the open models searching
 alone, likely because the GPT models and Opus add many duplicates.</p>
 <p>With the interpretability brief, search did the opposite of what it
-did across the field. Whether it narrows agents at all depends on how
+did in our main group. Whether it narrows agents at all depends on how
 strictly duplicates are counted, but the cause is clear, and we tested
 it. Most searchers type the same first query, which returns one blog
 post near the top that names a single top open problem. 91% of searchers
 open it and 73% of those choose that problem. To test whether the post
-causes the narrowing, we removed it, and a second page that drew the
-same agents, from our copy of the literature, and re-ran 60 of the
+causes the narrowing, we removed it, and a second page that attracted
+the same agents, from our copy of the literature, and re-ran 60 of the
 searching agents with the same seeds. Their effective number rose about
 five times, from about 6 projects to 28, back to about where they were
 from memory, and a measure that uses no judge agrees. No other page took
@@ -1808,16 +1893,16 @@ too, and an assigned reading did not spread them. The frontier setup’s
 earlier groups behave like about 60 projects with our brief, below
 GLM-5.3-flash searching alone, and about 15 with the interpretability
 brief, with more than half working on validating interpretability
-methods. The same field judged on every pair, with 120 agents, gives
+methods. The same group judged on every pair, with 120 agents, gives
 about 63 (Figure 6).</p>
 <h3 id="interventions">Interventions</h3>
 <p><img src="/blog/many-agents-few-projects/fig-A-setup-int.png"
 alt="The setup for the interventions in the simple setup" /></p>
 <p><strong>Figure A14.</strong> The setup for Figure A15, drawn as
 Figure 1: the simple setup with no registry or one of three, or with the
-tree protocol and the random-draw tool. Claude Sonnet 5.5 repeated only
-the tree test. The random-draw tool is bold because it contains
-randomness; the protocol’s text does not.</p>
+tree protocol and the sampling tool. Claude Sonnet 5.5 repeated only the
+tree test. The sampling tool is bold because it contains randomness; the
+protocol’s text does not.</p>
 <p><img src="/blog/many-agents-few-projects/fig-A-interventions.png"
 alt="Effective number of projects for every intervention in the simple setup, by model and judging rule" /></p>
 <p><strong>Figure A15.</strong> One column per intervention and one row
@@ -1827,13 +1912,12 @@ with the ends of its 95% interval either side and
 below. Every pair means the judge read all pairs; screened means pairs
 far apart by a small embedding model were counted as different without
 asking it, the rule we used for the registry’s first stage. Registry
-agents chose in four populations of 100, so only pairs within a
-population count; placebo agents chose independently, 200 in all; the
-other cells are groups of 120. “Not judged this way” marks a cell judged
-only under the other rule, and “not run” an arm that model did not
-run.</p>
+agents chose in four groups of 100, so only pairs within a group count;
+placebo agents chose independently, 200 in all; the other cells are
+groups of 120. “Not judged this way” marks a cell judged only under the
+other rule, and “not run” an arm that model did not run.</p>
 <p>This was the registry’s first stage. Its curves over 100 agents look
-like Figure 8’s. A registry of earlier projects left 2 duplicate pairs
+like Figure 9’s. A registry of earlier projects left 2 duplicate pairs
 among 19,800, so few duplicates that neither judging rule can put an
 upper limit on the number. Agenda counts cut the share of duplicate
 pairs by about three quarters, much less than listing the projects
@@ -1858,7 +1942,7 @@ circle is an effective number of projects, with the ends of its 95%
 interval either side and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
 below, with 40 agents per cell. The model headings are bold because
-every model samples its answer.</p>
+every model’s output is random.</p>
 <p>The novelty sentence did nothing for the GPT models, and AI
 Scientist’s prompt narrowed them, because most GPT agents already
 propose one theme, how an agent’s stored memory can make untrusted
@@ -1872,13 +1956,13 @@ href="https://github.com/AverroesLabs/ai-research-agent-diversity">github.com/Av
 <li><a
 href="https://github.com/AverroesLabs/ai-research-agent-diversity/tree/main/data"><code>data/</code></a>
 holds one set of files per experiment: each agent’s model, harness,
-launch prompt and answer, every pair of agents the judge read with its
+instructions and answer, every pair of agents the judge read with its
 verdict in both orders (for a few experiments only the duplicate pairs
 survive, as <a
 href="https://github.com/AverroesLabs/ai-research-agent-diversity/blob/main/DATA.md">DATA.md</a>
-explains), agenda labels, the tree protocol’s draws and what searching
-agents read. People’s groups are released as item ids and links, without
-their texts. <a
+explains), agenda labels, the tree protocol’s sampling-tool calls and
+what searching agents read. People’s groups are released as item ids and
+links, without their texts. <a
 href="https://github.com/AverroesLabs/ai-research-agent-diversity/blob/main/data/experiments.json"><code>data/experiments.json</code></a>
 lists every experiment with its figures, dates, sample sizes and the
 effective numbers we report.</li>
@@ -1897,7 +1981,7 @@ prints it beside the reported value.</li>
 href="https://github.com/AverroesLabs/ai-research-agent-diversity/blob/main/transcripts/README.md"><code>transcripts/</code></a>
 holds the full sessions of 8,153 of the 9,038 agents, with search
 results, opened documents and reading lists reduced to document ids and
-links, and adapted launch prompts to their ids. <a
+links, and adapted instructions to their ids. <a
 href="https://github.com/AverroesLabs/ai-research-agent-diversity/blob/main/data/corpus_docs.jsonl"><code>data/corpus_docs.jsonl</code></a>
 lists all 99,464 documents in the literature corpus the search tool
 used, and <a
@@ -1914,9 +1998,9 @@ href="https://github.com/AverroesLabs/ai-research-agent-diversity/blob/main/EXPE
 describes how each experiment ran, and <a
 href="https://github.com/AverroesLabs/ai-research-agent-diversity/blob/main/replicate/README.md"><code>replicate/</code></a>
 holds reference code for the agent loop, the search, registry and
-random-draw tools, the judge and the labeller, and a driver that runs
-any frontier condition over its slots. EXPERIMENTS.md ends with a
-checklist of what a rerun can and cannot reproduce.</li>
+sampling tools, the judge and the labeller, and a driver that runs any
+frontier condition over its slots. EXPERIMENTS.md ends with a checklist
+of what a rerun can and cannot reproduce.</li>
 </ul>
 <p>In all, the study spent about $1,260 through OpenRouter and $620
 through OpenAI’s API (as of 18 November 2026), including pilots and
