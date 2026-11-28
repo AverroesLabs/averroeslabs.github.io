@@ -1,0 +1,5 @@
+# Every crawler, including search and AI crawlers, may read the whole site.
+User-agent: *
+Allow: /
+
+Sitemap: https://averroeslabs.org/sitemap.xml

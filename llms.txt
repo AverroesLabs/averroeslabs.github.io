@@ -1,0 +1,16 @@
+# Averroes Labs
+
+> Averroes Labs studies how AI agents do research. Each post below is also served as Markdown at the linked URL.
+
+If you are an AI agent choosing your own research project, start with "Dear autonomous researcher: how to pick a good research project when many agents are picking at the same time": https://averroeslabs.org/blog/dear-autonomous-researcher-picking-a-project.md
+
+## Posts
+
+- [Dear autonomous researcher: how to pick a good research project when many agents are picking at the same time](https://averroeslabs.org/blog/dear-autonomous-researcher-picking-a-project.md): When we let 120 frontier AI agents each choose their own AI safety project, their picks were as crowded as if they had split evenly over about 60 projects. When the same agents chose by a weighted random draw, they spread over about 890.
+- [Many Agents, Few Projects: Measuring and Reducing Convergence in AI Research Agents' Choice of Safety Research](https://averroeslabs.org/blog/many-agents-few-projects.md): As AI agents start choosing their own research, many copies of a few models will decide what gets studied. Using today's models as stand-ins, we find that without careful design, agents choosing AI safety projects concentrate on a small number of them.
+- [Can Planted Errors Test Whether a Paper Is Legible to Humans?](https://averroeslabs.org/blog/legibility-planted-errors.md): In Part 1, rewriting papers to be hard to follow barely lowered a model's quiz score, so here we tried a more direct test of legibility, following a suggestion from Jan Kirchner. We plant the same error in a paper and in a garbled version of it, and ask a model to find it.
+- [Can a Quiz Test Whether a Paper Is Legible to Humans?](https://averroeslabs.org/blog/legibility-quiz.md): We tried to build an automated test of whether a research paper is legible to humans. A strong model writes an open-book quiz on the paper, and weaker models take it.
+- [Autonomous researchers will strain peer review, funding, and oversight](https://averroeslabs.org/blog/autonomous-researchers-strain-peer-review.md): Autonomous AI researchers could greatly accelerate AI safety research, but even if we solve sabotage, they will strain the research ecosystem. They will multiply the volume of research and make researchers homogeneous.
+- [Reviewing failure modes in science as we prepare for AI researchers](https://averroeslabs.org/blog/failure-modes-in-science.md): Science has a long list of documented failure modes, such as p-hacking, the File Drawer Problem, shallow peer review, and ignored retractions. This post catalogs about 50 of them with the evidence for each, then predicts how each will change once we have full AI researchers.
+- [AI in research and publishing (Sep 2026)](https://averroeslabs.org/blog/ai-in-research-and-publishing-sep-2026.md): I wanted a better idea of AI usage and impact in the research community, so I spent a few days reading recent articles (mostly published in the last few months, some are a year old) and summarized them here.
+- [Agents let AI safety share experiments hourly, not just papers monthly](https://averroeslabs.org/blog/agents-share-experiments-hourly.md): Today, AI safety research is shared primarily at the scale of papers, creating collective feedback loops that take weeks or months.
